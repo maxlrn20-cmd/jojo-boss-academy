@@ -586,6 +586,13 @@ body.ia-on .wrap{max-width:780px}
 .ia-typing{display:inline-flex;gap:5px;padding:4px 0}.ia-typing i{width:7px;height:7px;border-radius:50%;background:var(--ink2);animation:iadot 1.2s infinite}.ia-typing i:nth-child(2){animation-delay:.2s}.ia-typing i:nth-child(3){animation-delay:.4s}
 @keyframes iadot{0%,60%,100%{opacity:.25}30%{opacity:1}}
 @media (prefers-reduced-motion:reduce){.ia-typing i{animation:none;opacity:.6}}
+.swrow{display:flex;align-items:center;justify-content:space-between;gap:14px;cursor:pointer}
+.swrow>span{display:flex;flex-direction:column;gap:2px;min-width:0}
+.sw{appearance:none;-webkit-appearance:none;width:51px;height:31px;border-radius:999px;background:var(--surface3);position:relative;flex:none;cursor:pointer;transition:background-color .25s;margin:0}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.2);transition:transform .3s var(--spring)}
+.sw:checked{background:#34C759}.sw:checked::after{transform:translateX(20px)}
+:root[data-theme="dark"] .sw:not(:checked){background:#39393D}
+.pdetails summary .muted{white-space:nowrap;padding-left:10px}
 </style>
 </head><body>
 <div id="root"></div>
@@ -4652,7 +4659,7 @@ JBA.chapter({
     search: I('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>'),
     moon: I('<path d="M20 14.5A8 8 0 1 1 9.5 4 6.5 6.5 0 0 0 20 14.5z"/>'),
     sun: I('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'),
-    focus: I('<circle cx="12" cy="12" r="3"/><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/>'),
+    focus: I('<path d="M18 8a6 6 0 0 0-9.3-5M6 8c0 7-3 9-3 9h13M17.7 13.5c.5 1.9 1.3 3.5 1.3 3.5M13.7 21a2 2 0 0 1-3.4 0M3 3l18 18"/>'),
     gear: I('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/>'),
     star: I('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>'),
     starFill: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" fill="currentColor"/></svg>`,
@@ -4724,7 +4731,7 @@ JBA.chapter({
           <button class="xpchip" id="xpchip" data-go="progres" aria-label="Ma progression"></button>
           <button class="iconbtn" data-act="search" aria-label="Rechercher dans les cours">${ICON.search}</button>
           <button class="iconbtn" data-act="theme" id="themebtn" aria-label="Changer de thème"></button>
-          <button class="iconbtn" data-act="focus" id="focusbtn" aria-label="Mode concentration">${ICON.focus}</button>
+          <button class="iconbtn" data-act="focus" id="focusbtn" aria-label="Ne pas déranger">${ICON.focus}</button>
           <button class="iconbtn desk-only" data-act="more" aria-label="Plus : compte et rubriques">${ICON.more}</button>
         </header>
         <main id="main" tabindex="-1"></main>
@@ -4800,7 +4807,7 @@ JBA.chapter({
         ui.sheetRow({ href: "#holly", i: "dog", t: "Holly University" })])}
       ${ui.sheetGroup("Réglages", [
         ui.sheetRow({ act: "sheet-dark", i: "moon", t: "Mode sombre", end: toggle(dark) }),
-        ui.sheetRow({ act: "sheet-focus", i: "focus", t: "Mode concentration", end: toggle(S.focus) }),
+        ui.sheetRow({ act: "sheet-focus", i: "focus", t: "Ne pas déranger", end: toggle(S.focus) }),
         ui.sheetRow({ act: "askname", i: "home", t: "Prénom", end: `<span class="pcount">${esc(J.name())}</span><span class="pchev">${ICON.chev}</span>` }),
         ui.sheetRow({ href: "#reglages", i: "gear", t: "Tous les réglages" })])}
     </div>`;
@@ -4883,7 +4890,7 @@ JBA.chapter({
   /* ---------- Clics globaux ---------- */
   const ACT = ui.ACT = {};
   ACT["sheet-dark"] = () => { const dark = document.documentElement.dataset.theme === "dark" || (S.theme === "system" && matchMedia("(prefers-color-scheme: dark)").matches); S.theme = dark ? "light" : "dark"; J.save(); ui.applyTheme(); ui.refreshSheet(); };
-  ACT["sheet-focus"] = () => { S.focus = !S.focus; J.save(); ui.refreshChrome(); ui.refreshSheet(); };
+  ACT["sheet-focus"] = () => { J.setDnd(!S.focus); ui.refreshSheet(); };
   function onClick(e) {
     const go = e.target.closest("[data-go]"); if (go) { location.hash = "#" + go.dataset.go; return; }
     const a = e.target.closest("[data-act]"); if (!a) return;
@@ -4892,7 +4899,16 @@ JBA.chapter({
   ACT.search = () => ui.search();
   ACT.more = () => ui.sheet();
   ACT.theme = () => { S.theme = isDark() ? "light" : "dark"; J.save(); ui.applyTheme(); };
-  ACT.focus = () => { S.focus = !S.focus; J.save(); ui.refreshChrome(); ui.toast(S.focus ? "Mode concentration activé : Holly se fait discret." : "Mode concentration désactivé : Holly est de retour."); };
+  /* Ne pas déranger : épure l'appli et, si c'est réglé, lance les raccourcis Apple « Holly silence » / « Holly réveil » qui activent le mode Ne pas déranger de l'appareil. */
+  J.isApple = () => /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
+  J.DND_ON = "Holly silence"; J.DND_OFF = "Holly réveil";
+  J.runShortcut = name => { try { location.href = "shortcuts://run-shortcut?name=" + encodeURIComponent(name); } catch (e) { } };
+  J.setDnd = (on, quiet) => {
+    S.focus = on; J.save(); ui.refreshChrome();
+    if (!quiet) ui.toast(on ? (S.dndPhone && J.isApple() ? "Ne pas déranger activé, aussi sur ton appareil. Reviens ici après Raccourcis." : "Ne pas déranger activé : Holly se fait discret.") : "Ne pas déranger désactivé : Holly est de retour.");
+    if (S.dndPhone && J.isApple()) setTimeout(() => J.runShortcut(on ? J.DND_ON : J.DND_OFF), 350);
+  };
+  ACT.focus = () => J.setDnd(!S.focus);
   document.addEventListener("keydown", e => { if ((e.key === "/" || (e.key === "k" && (e.metaKey || e.ctrlKey))) && !/input|textarea/i.test(document.activeElement.tagName)) { e.preventDefault(); ui.search(); } });
 
   /* ======================= ACCUEIL ======================= */
@@ -5472,7 +5488,21 @@ JBA.chapter({
       <header class="stack"><span class="eyebrow">Préférences</span><h1>Réglages</h1></header>
       <div class="card stack"><h3>Prénom</h3><div class="row between"><span>Bienvenue chez toi, <b>${esc(J.name())} Boss</b>.</span><button class="btn sec sm" data-act="askname">Modifier</button></div></div>
       <div class="card stack"><h3>Apparence</h3><div class="seg">${[["system", "Comme l'appareil"], ["light", "Clair"], ["dark", "Sombre"]].map(([k, t]) => `<button class="${S.theme === k ? "on" : ""}" data-act="settheme" data-k="${k}">${t}</button>`).join("")}</div>
-        <label class="row" style="gap:10px"><input type="checkbox" id="set-focus" ${S.focus ? "checked" : ""}> <span><b>Mode concentration</b><br><span class="small muted">Masque les illustrations et les bulles de Holly pendant la lecture (les corrections restent visibles).</span></span></label></div>
+</div>
+      <div class="card stack"><h3>Ne pas déranger</h3>
+        <label class="swrow"><span><b>Activer Ne pas déranger</b><span class="small muted">L'appli se fait discrète pendant que tu révises.</span></span><input type="checkbox" class="sw" id="set-focus" ${S.focus ? "checked" : ""}></label>
+        <label class="swrow"><span><b>Aussi sur mon iPhone ou mon Mac</b><span class="small muted">Plus aucune notification pendant les révisions.</span></span><input type="checkbox" class="sw" id="set-dndphone" ${S.dndPhone ? "checked" : ""}></label>
+        <details class="pdetails" ${S.dndPhone ? "" : "open"} style="box-shadow:none;background:var(--surface2)"><summary>Préparer l'iPhone ou le Mac <span class="muted">2 minutes</span></summary>
+          <ol class="list small" style="margin-top:10px">
+            <li>Ouvre l'app <b>Raccourcis</b> (déjà installée sur iPhone et Mac), touche <b>+</b>.</li>
+            <li>Touche <b>Ajouter une action</b>, cherche <b>« Concentration »</b> et choisis l'action qui règle la concentration (en anglais « Set Focus ») : <b>Activer</b>, <b>Ne pas déranger</b>, <b>Jusqu'à la désactivation</b>.</li>
+            <li>Nomme ce raccourci exactement <b>${J.DND_ON}</b>.</li>
+            <li>Crée un deuxième raccourci avec la même action réglée sur <b>Désactiver</b>, et nomme-le <b>${J.DND_OFF}</b>.</li>
+            <li>Coche la case ci-dessus. Quand tu actives Ne pas déranger dans l'appli, Raccourcis s'ouvre une seconde : reviens ensuite ici.</li>
+          </ol>
+          <div class="row"><button class="btn sec sm" data-act="dndtest" data-on="1">Tester « ${J.DND_ON} »</button><button class="btn ghost sm" data-act="dndtest" data-on="0">Tester « ${J.DND_OFF} »</button></div>
+          <p class="small muted" style="margin-top:8px">Apple ne permet pas à un site de couper les notifications directement : ces deux raccourcis le font à sa place. ${J.isApple() ? "" : "Cet appareil n'est pas un iPhone ou un Mac : seule la partie dans l'appli fonctionnera ici."}</p>
+        </details></div>
       <div class="card stack"><h3>Holly, l'IA de droit</h3><p class="small muted">Holly répond gratuitement grâce à Gemini (Google). Crée une clé sur <b>aistudio.google.com</b> → « Get API key », puis colle-la ici. Elle reste enregistrée sur cet appareil.</p>${J.ia && J.ia.engine === "claude" ? `<p class="small" style="color:var(--ok);font-weight:600">Ici, Holly passe déjà par Claude : pas besoin de clé.</p>` : ""}
         <input class="input" id="gem-key" type="password" autocomplete="off" placeholder="Colle ta clé ici (AIza… ou AQ.…)" value="${esc(J.geminiKey ? J.geminiKey() : "")}"><div class="row"><button class="btn pri sm" data-act="gemsave">Enregistrer la clé</button>${J.geminiKey && J.geminiKey() ? `<button class="btn ghost sm" data-act="gemdel">Retirer</button><a class="btn sec sm" href="#ia">Parler à Holly</a>` : ""}</div></div>
       <div class="card stack"><h3>Sauvegarde de la progression</h3><p class="small muted">Ta progression est enregistrée automatiquement dans ce navigateur. Pour la transférer sur un autre appareil, copie le code ci-dessous et colle-le dans « Importer » de l'autre côté.</p>
@@ -5481,11 +5511,15 @@ JBA.chapter({
         <div class="row" style="margin-top:6px">${confirmReset ? `<span class="small" style="color:var(--ko);font-weight:700">Tout effacer ? Cette action est définitive.</span><button class="btn sm" style="background:var(--ko);color:#fff" data-act="reset2">Oui, tout effacer</button><button class="btn ghost sm" data-act="reset0">Annuler</button>` : `<button class="btn ghost sm" data-act="reset1">Réinitialiser ma progression</button>`}</div></div>
       <div class="card stack"><h3>À propos de Jojo Boss Academy</h3><p class="small">Contenus pédagogiques construits uniquement à partir des cours fournis (Droit constitutionnel 1, M. Verpeaux, UNJF ; Introduction au droit privé, P. Vannier). Chaque fiche indique sa source et ses pages. Les quelques compléments extérieurs (réformes postérieures, coquilles du polycopié) sont toujours séparés et signalés « hors cours ».</p><p class="small">Illustrations : Holly, les lieux et les motifs sont des dessins originaux réalisés pour ce site (aucune image externe). Police : celle du système (San Francisco sur Mac et iPhone). <a href="ASSETS.md" target="_blank" rel="noopener">Détail des sources et licences</a>.</p><p class="small muted">Raccourci clavier : <span class="kbd">/</span> pour rechercher.</p></div>`;
     },
-    after() { const f = $("#set-focus"); if (f) f.addEventListener("change", () => { S.focus = f.checked; J.save(); ui.refreshChrome(); }); }
+    after() {
+      const f = $("#set-focus"); if (f) f.addEventListener("change", () => J.setDnd(f.checked));
+      const d = $("#set-dndphone"); if (d) d.addEventListener("change", () => { S.dndPhone = d.checked; J.save(); ui.toast(d.checked ? "C'est noté : Ne pas déranger pilotera aussi ton appareil." : "Ne pas déranger restera limité à l'appli."); });
+    }
   };
   ACT.gemsave = () => { const v = ($("#gem-key").value || "").trim(); if (!/^[\w.\-]{20,}$/.test(v)) { ui.toast("Cette clé ne ressemble pas à une clé Gemini : recopie-la en entier."); return; } J.setGeminiKey(v); ui.toast("Clé enregistrée : Holly est réveillé !"); ui.rerender(); };
   ACT.gemdel = () => { J.setGeminiKey(""); ui.toast("Clé retirée."); ui.rerender(); };
   ACT.askname = () => ui.askName(false);
+  ACT.dndtest = b => J.runShortcut(b.dataset.on === "1" ? J.DND_ON : J.DND_OFF);
   ACT.settheme = b => { S.theme = b.dataset.k; J.save(); ui.applyTheme(); ui.rerender(); };
   ACT.copyexp = () => { const t = $("#exp"); try { navigator.clipboard.writeText(t.value).then(() => ui.toast("Code copié."), () => { t.select(); ui.toast("Sélectionné : copie-le avec Ctrl+C ou un appui long."); }); } catch (e) { t.select(); ui.toast("Sélectionné : copie-le avec Ctrl+C ou un appui long."); } };
   ACT.imp = () => { try { J.importData($("#imp").value.trim()); ui.applyTheme(); ui.toast("Progression importée."); ui.rerender(); } catch (e) { ui.toast("Ce code ne ressemble pas à une sauvegarde Jojo Boss Academy."); } };
@@ -5925,7 +5959,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
 })();
 
 </script>
-<script>window.JBA_BUILD="20261103-214700";
+<script>window.JBA_BUILD="20261103-215625";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
