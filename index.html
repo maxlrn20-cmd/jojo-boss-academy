@@ -474,6 +474,38 @@ html{scroll-behavior:smooth}
 .search-ov{animation:fadein .18s ease}.search-ov>div{animation:popin .3s var(--ease)}
 .ptoggle,.ptoggle i{transition:background-color .25s,transform .3s var(--spring)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* ===== Écrans simplifiés ===== */
+.pgroup{background:var(--cell,var(--surface));border-radius:12px;overflow:hidden}
+.wrap .pgroup{box-shadow:var(--shadow)}
+.wrap .plabel{margin:4px 16px 8px}
+.pcount{color:var(--ink2);font-size:15px;margin-right:2px}
+.seg.wide{display:flex;width:100%;border-radius:9px}
+.seg.wide button{flex:1;padding:7px 6px;text-align:center}
+.btn.block{width:100%}
+.grings{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.gring{display:flex;flex-direction:column;align-items:center;gap:2px}
+.gring svg{width:72px;height:72px}
+.gring svg circle:last-child{transition:stroke-dashoffset .9s var(--ease)}
+.gring b{font-size:15px;margin-top:4px}
+.gring span{font-size:12px;color:var(--ink2)}
+.hero.home h1{font-size:clamp(36px,6.6vw,68px)}
+.hero.home .art{max-width:230px}
+.searchfield{display:flex;align-items:center;gap:8px;background:var(--surface3);border-radius:10px;padding:0 10px;height:38px;color:var(--ink2)}
+.searchfield svg{width:17px;height:17px;flex:none}
+.searchfield input{border:0;background:none;outline:none;flex:1;font-size:17px;color:var(--ink);min-width:0}
+.selpill select{appearance:none;-webkit-appearance:none;border:0;background:var(--surface3);border-radius:999px;padding:7px 28px 7px 14px;font-size:14px;font-weight:500;color:var(--ink);cursor:pointer;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 15px) 52%,calc(100% - 10px) 52%;background-size:5px 5px;background-repeat:no-repeat}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.prow .num-tile{background:var(--surface2);color:var(--framboise);font-weight:700;font-size:15px}
+.mini-ring{--p:0;width:22px;height:22px;border-radius:50%;flex:none;background:conic-gradient(var(--c,#0A84FF) calc(var(--p)*1%),var(--surface3) 0);-webkit-mask:radial-gradient(circle,transparent 6px,#000 6.5px);mask:radial-gradient(circle,transparent 6px,#000 6.5px)}
+.favstar{color:#FF9500;font-size:14px}
+.pdetails{background:var(--surface);border-radius:12px;padding:12px 16px;box-shadow:var(--shadow)}
+.pdetails summary{cursor:pointer;display:flex;justify-content:space-between;font-weight:500;list-style:none}
+.pdetails summary::-webkit-details-marker{display:none}
+.pdetails summary::after{content:"›";color:var(--ink2);transform:rotate(90deg);transition:transform .2s;margin-left:8px}
+.pdetails[open] summary::after{transform:rotate(-90deg)}
+.pdetails summary .muted{margin-left:auto;font-weight:400}
+.bignum{font-size:64px;font-weight:700;letter-spacing:-.04em;line-height:1}
 </style>
 </head><body>
 <div id="root"></div>
@@ -758,6 +790,9 @@ JBA.chapter({
       "Contrôle abstrait / concret ; a priori / a posteriori. QPC (révision du 23 juillet 2008, art. 61-1) : filtrage par la Cour de cassation ou le Conseil d'État (3 mois), décision du Conseil constitutionnel (3 mois), abrogation."
     ]}
   ],
+  complements: [
+    "Correction : le cours renvoie au « considérant 34 » de la décision 92-312 DC pour la formule « le pouvoir constituant est souverain » ; elle figure au considérant 19."
+  ],
   defs: [
     { t: "Constitution", d: "Norme suprême de l'État, à la fois première et supérieure aux autres normes.", p: "p. 2" },
     { t: "Pouvoir constituant originaire", d: "Pouvoir d'établir une Constitution, a priori inconditionné, dans un contexte de rupture ou de table rase.", p: "p. 2" },
@@ -786,7 +821,7 @@ JBA.chapter({
   juris: [
     { name: "Marbury c. Madison", court: "Cour suprême des États-Unis", date: "1803", faits: "Non détaillés dans le cours.", question: "La Cour suprême peut-elle contrôler la conformité des lois et des actes de l'Exécutif à la Constitution, alors que la Constitution ne le prévoit pas ?", solution: "La Cour s'est elle-même attribué compétence pour contrôler les actes de l'Exécutif et les lois par rapport à la Constitution (rôle du Chief Justice Marshall).", portee: "Fonde le contrôle de constitutionnalité diffus américain, par voie d'exception." },
     { name: "Arrighi", court: "Conseil d'État", date: "6 novembre 1936", faits: "Non détaillés dans le cours.", question: "Le juge administratif peut-il examiner une exception d'inconstitutionnalité de la loi ?", solution: "Refus, compte tenu de « l'état actuel du droit public ».", portee: "Illustre le légicentrisme : la loi ne peut être contrôlée par le juge ordinaire." },
-    { name: "Maastricht II (92-312 DC)", court: "Conseil constitutionnel", date: "2 septembre 1992", faits: "Non détaillés dans le cours.", question: "Le pouvoir constituant dérivé est-il limité dans sa manière de réviser la Constitution ?", solution: "« Le pouvoir constituant est souverain, il lui est loisible d'abroger, de modifier ou de compléter des dispositions de valeur constitutionnelle dans la forme qu'il estime appropriée » (cons. 34).", portee: "Conforte la thèse selon laquelle pouvoir dérivé et originaire sont de même nature." }
+    { name: "Maastricht II (92-312 DC)", court: "Conseil constitutionnel", date: "2 septembre 1992", faits: "Non détaillés dans le cours.", question: "Le pouvoir constituant dérivé est-il limité dans sa manière de réviser la Constitution ?", solution: "« Le pouvoir constituant est souverain, il lui est loisible d'abroger, de modifier ou de compléter des dispositions de valeur constitutionnelle dans la forme qu'il estime appropriée » (cons. 19).", portee: "Conforte la thèse selon laquelle pouvoir dérivé et originaire sont de même nature." }
   ],
   dates: [
     { d: "1787", e: "Constitution fédérale des États-Unis (Convention de Philadelphie)." },
@@ -2636,7 +2671,7 @@ JBA.chapter({
       "Pénal : tribunal de police (contraventions), tribunal correctionnel (délits), cour d'assises (crimes), sans hiérarchie entre eux.",
       "36 cours d'appel, souvent d'anciens parlements.",
       "Juridictions spécialisées : conseil de prud'hommes, tribunal de commerce, tribunal paritaire des baux ruraux ; juge des enfants, juridictions militaires.",
-      "Suppressions de 1982 (tribunal permanent des forces armées, Cour de sûreté de l'État — Badinter).",
+      "Suppressions de 1981-1982 sous l'influence de Robert Badinter : Cour de sûreté de l'État (loi du 4 août 1981), tribunaux permanents des forces armées (loi du 21 juillet 1982).",
       "Haute Cour (loi constitutionnelle du 23 février 2007) : destitution du Président pour manquement incompatible avec son mandat ; Cour de justice de la République (27 juillet 1993) : 15 juges dont 12 parlementaires et 3 conseillers à la Cour de cassation.",
       "Instruction : juge d'instruction (à charge et à décharge), chambre de l'instruction, juge des libertés et de la détention."
     ]},
@@ -2662,6 +2697,7 @@ JBA.chapter({
     ]}
   ],
   complements: [
+    "Correction : le cours place en 1982 la suppression de la Cour de sûreté de l'État et du tribunal permanent des forces armées. La Cour de sûreté de l'État a été supprimée par la loi du 4 août 1981 ; les tribunaux permanents des forces armées par la loi du 21 juillet 1982. La peine de mort a été abolie par la loi du 9 octobre 1981.",
     "Le cours indique « 26 juges » à la CJUE alors qu'il mentionne par ailleurs 27 États membres : la Cour compte un juge par État membre, soit 27.",
     "Le cours parle de « trois niveaux » de juridiction mais d'un « double degré » : la cassation n'est pas un troisième degré, car elle ne rejuge pas les faits."
   ],
@@ -2696,7 +2732,8 @@ JBA.chapter({
     { d: "1951", e: "Traité de Paris : Cour de justice des Communautés." },
     { d: "1959", e: "Cour européenne des droits de l'homme." },
     { d: "1979", e: "Formation restreinte de la Cour de cassation." },
-    { d: "1982", e: "Suppression de la Cour de sûreté de l'État et du tribunal permanent des forces armées." },
+    { d: "4 août 1981", e: "Suppression de la Cour de sûreté de l'État." },
+    { d: "21 juillet 1982", e: "Suppression des tribunaux permanents des forces armées." },
     { d: "31 décembre 1987", e: "Cours administratives d'appel." },
     { d: "24 octobre 1988", e: "Tribunal de première instance des Communautés." },
     { d: "27 juillet 1993", e: "Cour de justice de la République." },
@@ -2705,7 +2742,7 @@ JBA.chapter({
     { d: "1er janvier 2012", e: "Suppression des avoués." }
   ],
   authors: [
-    { n: "Robert Badinter", i: "Suppression de la peine de mort et de juridictions d'exception (1982)." }
+    { n: "Robert Badinter", i: "Abolition de la peine de mort (loi du 9 octobre 1981) et suppression de juridictions d'exception (1981-1982)." }
   ],
   conditions: [
     "Agir en justice : intérêt légitime, né et actuel ; qualité ; capacité.",
@@ -3236,7 +3273,7 @@ JBA.chapter({
       "Acte d'avocat (loi du 28 mars 2011) : pleine foi de l'écriture et de la signature."
     ]},
     { h: "Section 2. L'écrit électronique", p: "p. 17-19", pts: [
-      "Signature « à la griffe » (1966) ; loi du 12 juillet 1981 : copie fidèle et durable.",
+      "Signature « à la griffe » (1966) ; loi du 12 juillet 1980 : copie fidèle et durable.",
       "Civ. 1re, 8 novembre 1989 : conventions sur la preuve licites pour les droits disponibles (preuve informatique).",
       "Loi du 13 mars 2000 : art. 1365 (définition large de l'écrit) et art. 1366 (même force probante que le papier : identification + intégrité).",
       "Signature électronique sécurisée : propre au signataire, sous son contrôle exclusif, lien détectant toute modification ; décret du 18 avril 2002 ; directive du 8 juin 2000 (art. 9) ; LCEN du 21 juin 2004 (écrit électronique à titre de validité, même authentique) ; décrets du 10 août 2005 (notaires, huissiers).",
@@ -3250,13 +3287,15 @@ JBA.chapter({
     { h: "Section 4. Les preuves imparfaites", p: "p. 21-24", pts: [
       "Témoignages (vu ou entendu) ≠ commune renommée ; livres de commerce, registres domestiques, lettres missives, quittances.",
       "Lettre recommandée avec AR : jamais preuve parfaite en soi, mais fait foi de la date.",
-      "Présomptions légales (lient le juge, dispensent de preuve) : irréfragables (remise du titre libératoire, art. 1342-9 ; autorité de la chose jugée), simples, mixtes ; bonne foi présumée ; solidarité présumée en droit commercial ; art. 2276 ; période légale de conception (du 300e au 180e jour) ; présomption de paternité.",
+      "Présomptions légales (lient le juge, dispensent de preuve) : irréfragables (autorité de la chose jugée), simples (remise volontaire du titre au débiteur, art. 1342-9), simples, mixtes ; bonne foi présumée ; solidarité présumée en droit commercial ; art. 2276 ; période légale de conception (du 300e au 180e jour) ; présomption de paternité.",
       "Présomptions judiciaires : graves, précises et concordantes ; ex. absence de protestation après un relevé bancaire, constat d'huissier.",
       "Loyauté de la preuve : art. 9 CPC ; enregistrement à l'insu jugé illicite selon le cours ; filature d'un salarié disproportionnée (art. 8 CEDH, art. 9 C. civ.).",
       "Mineurs : jamais entendus sous serment ; descendants ne témoignent pas dans le divorce de leurs parents."
     ]}
   ],
   complements: [
+    "Mise à jour : depuis l'ordonnance du 10 février 2016, la remise volontaire du titre au débiteur (art. 1342-9 C. civ.) ne crée plus qu'une présomption simple de libération ; l'ancien article 1282 prévoyait une présomption irréfragable pour l'acte sous seing privé.",
+    "Correction : le cours date du « 12 juillet 1981 » la loi sur la valeur probante des copies ; il s'agit de la loi n° 80-525 du 12 juillet 1980. Les fiches et le quiz utilisent la bonne date.",
     "Mise à jour importante : depuis deux arrêts de l'Assemblée plénière de la Cour de cassation du 22 décembre 2023, une preuve obtenue de manière déloyale (par exemple un enregistrement clandestin) n'est plus systématiquement écartée en matière civile : le juge apprécie si sa production est indispensable à l'exercice du droit à la preuve et si l'atteinte aux droits de l'adversaire est strictement proportionnée. Le cours, antérieur, présente l'ancienne solution.",
     "Le cours cite « l'article 135 du code civil » pour l'autorité de la chose jugée : il s'agit de l'article 1355.",
     "Le cours renvoie à « l'article 1341 » pour les cas où l'écrit est exigé : depuis la réforme de 2016, il s'agit de l'article 1359. De même, l'ancien art. 1326 correspond à l'art. 1376, l'ancien art. 1325 à l'art. 1375, et l'ancien art. 1384 à l'art. 1242."
@@ -3297,7 +3336,7 @@ JBA.chapter({
   dates: [
     { d: "1966", e: "Signature « à la griffe »." },
     { d: "17 décembre 1973", e: "Décret sur l'inscription de faux." },
-    { d: "12 juillet 1981", e: "Loi : valeur probante des copies fidèles et durables." },
+    { d: "12 juillet 1980", e: "Loi : valeur probante des copies fidèles et durables." },
     { d: "8 novembre 1989", e: "Civ. 1re : preuve informatique." },
     { d: "13 mars 2000", e: "Loi sur la preuve électronique et la signature électronique." },
     { d: "8 juin 2000", e: "Directive européenne sur le commerce électronique." },
@@ -3367,14 +3406,14 @@ JBA.chapter({
     { q: "Quelle est la seule mention en principe obligatoire d'un acte sous seing privé ?", o: ["La date", "La signature", "Le lieu", "Le nom d'un témoin"], a: [1], e: "La date n'est pas une condition de validité.", n: "Acte sous seing privé", p: "p. 15", d: 1 },
     { q: "Un engagement unilatéral de payer une somme doit comporter…", o: ["La somme en chiffres et en lettres", "Un témoin", "Un notaire", "Une date certaine"], a: [0], e: "Art. 1376 (ancien art. 1326).", n: "Acte sous seing privé", p: "p. 15", d: 2 },
     { q: "Un acte sous seing privé acquiert date certaine…", o: ["Du jour de son enregistrement", "Du jour du décès d'un signataire", "Du jour où sa substance est constatée dans un acte public", "Du jour de sa rédaction"], a: [0, 1, 2], e: "Trois hypothèses.", n: "Date certaine", p: "p. 16", d: 3 },
-    { q: "Quelle loi a créé l'acte contresigné par avocat ?", o: ["Loi du 13 mars 2000", "Loi du 28 mars 2011", "LCEN 2004", "Loi du 12 juillet 1981"], a: [1], e: "Il fait pleine foi de l'écriture et de la signature.", n: "Acte d'avocat", p: "p. 17", d: 2 },
+    { q: "Quelle loi a créé l'acte contresigné par avocat ?", o: ["Loi du 13 mars 2000", "Loi du 28 mars 2011", "LCEN 2004", "Loi du 12 juillet 1980"], a: [1], e: "Il fait pleine foi de l'écriture et de la signature.", n: "Acte d'avocat", p: "p. 17", d: 2 },
     { q: "Selon l'art. 1366, l'écrit électronique a la même force probante que l'écrit papier si…", o: ["L'auteur peut être dûment identifié", "Il est établi et conservé de manière à garantir son intégrité", "Il est imprimé", "Il est notarié"], a: [0, 1], e: "Conditions issues de la loi du 13 mars 2000.", n: "Écrit électronique", p: "p. 18", d: 2 },
     { q: "Dans l'arrêt du 8 novembre 1989, la Cour de cassation admet…", o: ["Les conventions sur la preuve pour les droits disponibles", "L'interdiction de la preuve informatique", "La preuve par commune renommée", "L'inscription de faux électronique"], a: [0], e: "La preuve informatique est admise.", n: "Écrit électronique", p: "p. 18", d: 3 },
     { q: "L'aveu judiciaire en droit civil est…", o: ["Une preuve imparfaite", "Une preuve parfaite, indivisible et irrévocable", "Toujours révocable", "Interdit"], a: [1], e: "Révocable seulement pour erreur de fait.", n: "Aveu", p: "p. 19", d: 2 },
     { q: "Le serment décisoire est…", o: ["Déféré par le juge", "Déféré par une partie à l'autre", "Une preuve imparfaite", "Réservé au pénal"], a: [1], e: "Celui qui le reçoit peut le prêter ou le référer ; c'est une preuve parfaite.", n: "Serment", p: "p. 20", d: 2 },
     { q: "Le juge peut déférer le serment d'office…", o: ["Pour suppléer l'absence totale de preuve", "Lorsqu'il existe des preuves mais insuffisantes", "Dans tous les cas", "Pour remplacer un écrit exigé"], a: [1], e: "Ce serment n'est jamais une preuve parfaite.", n: "Serment", p: "p. 21", d: 2 },
     { q: "La lettre recommandée avec accusé de réception…", o: ["Est toujours une preuve parfaite", "Fait foi de la date mais n'est pas en soi une preuve parfaite de l'engagement", "N'a aucune valeur", "Vaut acte authentique"], a: [1], e: "Elle peut valoir indice ou commencement de preuve.", n: "Preuves imparfaites", p: "p. 21", d: 2 },
-    { q: "La remise volontaire du titre au débiteur fait présumer…", o: ["Une donation", "Sa libération (présomption irréfragable)", "Une fraude", "Rien"], a: [1], e: "Art. 1342-9 C. civ.", n: "Présomptions", p: "p. 22", d: 3 },
+    { q: "La remise volontaire du titre au débiteur fait présumer…", o: ["Une donation", "Sa libération (présomption simple)", "Une fraude", "Rien"], a: [1], e: "Art. 1342-9 C. civ. : depuis la réforme de 2016, la remise volontaire de l'original ou de la copie exécutoire vaut présomption simple de libération.", n: "Présomptions", p: "p. 22", d: 3 },
     { q: "La période légale de conception s'étend…", o: ["Du 300e au 180e jour avant la naissance", "Du 9e au 3e mois", "Du 365e au 180e jour", "Des 302 jours"], a: [0], e: "Soit du dixième au sixième mois avant la naissance.", n: "Présomptions", p: "p. 22", d: 3 },
     { q: "Les présomptions judiciaires doivent être…", o: ["Graves", "Précises", "Concordantes", "Irréfragables"], a: [0, 1, 2], e: "Elles sont des preuves imparfaites laissées à l'appréciation du juge.", n: "Présomptions judiciaires", p: "p. 23", d: 2 },
     { q: "La solidarité est présumée…", o: ["En droit civil", "En droit commercial", "Toujours", "Jamais"], a: [1], e: "Jamais en droit civil.", n: "Présomptions", p: "p. 22", d: 3 }
@@ -3406,7 +3445,7 @@ JBA.chapter({
   plan: [
     { h: "Section 1. L'existence des personnes physiques", p: "p. 24-28", pts: [
       "Personnes physiques : individus nés, vivants et viables, quelle que soit leur capacité ; droits de la personnalité (vie privée, image, dignité, honneur, présomption d'innocence).",
-      "Déclaration de naissance dans les trois jours à la mairie du lieu de naissance ; à défaut, jugement du tribunal judiciaire ; contenu de l'acte de naissance.",
+      "Déclaration de naissance dans les cinq jours (trois jours selon le cours, délai porté à cinq par la loi du 18 novembre 2016) à la mairie du lieu de naissance ; à défaut, jugement du tribunal judiciaire ; contenu de l'acte de naissance.",
       "Conditions : né vivant et viable ; art. 79-1 C. civ. : acte de naissance et de décès sur certificat médical ; sinon acte d'enfant sans vie.",
       "Infans conceptus pro nato habetur quoties de commodis ejus agitur : l'enfant conçu est réputé né chaque fois qu'il y va de son intérêt (ex. succession du père décédé).",
       "Civ. 1re, 6 février 2008 : l'art. 79-1 al. 2 ne subordonne l'acte d'enfant sans vie ni au poids ni à la durée de grossesse (seuils de l'OMS : 22 semaines ou 500 g) ; décrets du 22 août 2008 (certificat d'accouchement, livret de famille). Le fœtus n'a pas pour autant la personnalité juridique.",
@@ -3430,7 +3469,7 @@ JBA.chapter({
     { h: "Section 4. La reconnaissance des personnes morales", p: "p. 32-35", pts: [
       "Planiol nie leur existence ; théorie de la fiction vs théorie de la réalité.",
       "Civ. 2e, 28 janvier 1954 : la personnalité civile appartient à tout groupement pourvu d'une possibilité d'expression collective pour la défense d'intérêts licites.",
-      "Principe de spécialité ; action en justice : syndicats pour l'intérêt collectif de la profession (loi de 1912) ; associations pour les intérêts de leurs membres ou sur habilitation législative (consommateurs, lutte contre le racisme).",
+      "Principe de spécialité ; action en justice : syndicats pour l'intérêt collectif de la profession (loi du 12 mars 1920 ; le cours indique 1912) ; associations pour les intérêts de leurs membres ou sur habilitation législative (consommateurs, lutte contre le racisme).",
       "Responsabilité pénale des personnes morales (Code pénal de 1994) : amende au quintuple, dissolution, interdictions, fermeture, exclusion des marchés publics, affichage.",
       "Formalités : immatriculation au RCS, déclaration en préfecture (associations) ou en mairie (syndicats) ; statuts écrits, annonce légale.",
       "Identification : nom, domicile (siège social ; théorie des « gares principales »), nationalité (siège social) ; patrimoine distinct ; durée des sociétés limitée à 99 ans."
@@ -3444,6 +3483,9 @@ JBA.chapter({
     ]}
   ],
   complements: [
+    "Mise à jour : le cours indique un délai de « trois jours » pour déclarer une naissance. Depuis la loi du 18 novembre 2016, l'article 55 du Code civil prévoit cinq jours après l'accouchement (huit jours dans certaines communes éloignées).",
+    "Correction : le cours attribue à « une loi de 1912 » le droit des syndicats d'agir pour l'intérêt collectif de la profession. Ce droit a été dégagé par l'arrêt des chambres réunies de la Cour de cassation du 5 avril 1913, puis consacré par la loi du 12 mars 1920.",
+    "Précision : les décrets sur l'acte d'enfant sans vie sont datés du 20 août 2008 (n° 2008-798 et 2008-800) et ont été publiés au Journal officiel du 22 août 2008, date retenue par le cours.",
     "Mise à jour essentielle (Holly est concerné !) : depuis la loi du 16 février 2015, l'article 515-14 du Code civil dispose que « les animaux sont des êtres vivants doués de sensibilité. Sous réserve des lois qui les protègent, les animaux sont soumis au régime des biens ». Le cours, qui dit que les animaux n'ont « pas encore de statut particulier », est antérieur sur ce point.",
     "Le cours date la loi Waldeck-Rousseau sur les syndicats du « 21 mars 1984 » : il s'agit de la loi du 21 mars 1884.",
     "La loi anti-Perruche est la loi du 4 mars 2002 (citée aussi par erreur « 14 mars » dans le cours).",
@@ -3484,7 +3526,7 @@ JBA.chapter({
     { d: "1791", e: "Première loi de protection des animaux." },
     { d: "1850", e: "Loi Grammont." },
     { d: "1er juillet 1901", e: "Loi sur les associations." },
-    { d: "1912", e: "Action des syndicats pour l'intérêt collectif de la profession." },
+    { d: "12 mars 1920", e: "Loi reconnaissant aux syndicats l'action pour l'intérêt collectif de la profession (après l'arrêt des chambres réunies du 5 avril 1913)." },
     { d: "28 janvier 1954", e: "Théorie de la réalité des personnes morales." },
     { d: "23 septembre 1967", e: "Ordonnance créant les GIE." },
     { d: "10 juillet 1976", e: "L'animal défini comme être sensible." },
@@ -3494,7 +3536,7 @@ JBA.chapter({
     { d: "29 juin 2001", e: "Ass. plén. : pas d'homicide involontaire du fœtus." },
     { d: "4 mars 2002", e: "Loi anti-Perruche." },
     { d: "6 février 2008", e: "Civ. 1re : acte d'enfant sans vie." },
-    { d: "22 août 2008", e: "Décrets sur l'enfant sans vie." }
+    { d: "20 août 2008", e: "Décrets sur l'enfant sans vie (publiés au JO du 22 août)." }
   ],
   authors: [
     { n: "Planiol", i: "Niait l'existence des personnes morales." }
@@ -3518,7 +3560,7 @@ JBA.chapter({
   traps: [
     "L'acte d'enfant sans vie ne confère PAS la personnalité juridique.",
     "Absent = présumé vivant (jusqu'à la déclaration d'absence) ; disparu = présumé mort immédiatement.",
-    "Les associations ne bénéficient pas d'une loi générale comme celle de 1912 pour les syndicats.",
+    "Les associations ne bénéficient pas d'une loi générale comme celle de 1920 pour les syndicats.",
     "La nationalité d'une personne morale dépend de son siège social, pas de ses dirigeants.",
     "Animaux : penser à l'art. 515-14 (2015), non mentionné par le cours."
   ],
@@ -3554,7 +3596,7 @@ JBA.chapter({
   ],
   qcm: [
     { q: "Quelles conditions faut-il réunir pour acquérir la personnalité juridique ?", o: ["Être né", "Être né vivant", "Être né viable", "Être majeur"], a: [0, 1, 2], e: "La capacité est indifférente.", n: "Personnalité juridique", p: "p. 24-25", d: 1 },
-    { q: "Dans quel délai une naissance doit-elle être déclarée ?", o: ["24 heures", "Trois jours", "Un mois", "Un an"], a: [1], e: "À la mairie du lieu de naissance ; à défaut, jugement.", n: "Naissance", p: "p. 24", d: 1 },
+    { q: "Dans quel délai une naissance doit-elle être déclarée ?", o: ["24 heures", "Cinq jours", "Un mois", "Un an"], a: [1], e: "Art. 55 C. civ. : dans les cinq jours de l'accouchement, à la mairie du lieu de naissance ; à défaut, jugement. Le cours indique encore trois jours, délai antérieur à la loi du 18 novembre 2016.", n: "Naissance", p: "p. 24", d: 1 },
     { q: "Que signifie l'adage infans conceptus… ?", o: ["L'enfant est majeur à 18 ans", "L'enfant conçu est réputé né chaque fois qu'il y va de son intérêt", "L'enfant mort-né a la personnalité", "L'enfant suit la nationalité du père"], a: [1], e: "Ex. succession du père décédé avant la naissance.", n: "Infans conceptus", p: "p. 25", d: 1 },
     { q: "Selon Civ. 1re, 6 février 2008, l'acte d'enfant sans vie est subordonné…", o: ["À 22 semaines d'aménorrhée", "À un poids de 500 g", "À aucun seuil de poids ou de durée", "À une décision du juge"], a: [2], e: "La cour d'appel avait ajouté au texte des conditions qu'il ne prévoit pas.", n: "Enfant sans vie", p: "p. 25", d: 2 },
     { q: "Par l'arrêt du 29 juin 2001, l'Assemblée plénière a jugé que…", o: ["L'homicide involontaire s'applique au fœtus", "L'homicide involontaire ne s'étend pas à l'enfant à naître", "Le fœtus a la personnalité juridique", "L'avortement est un homicide"], a: [1], e: "Principe de légalité des délits et des peines.", n: "Enfant à naître", p: "p. 26", d: 2 },
@@ -3635,16 +3677,17 @@ JBA.chapter({
     ]},
     { h: "Section 4. Le sexe", p: "p. 48-50", pts: [
       "Mention obligatoire masculin ou féminin ; importance réduite pour le mariage depuis la loi du 17 mai 2013.",
-      "CEDH, 25 juin 1992 (B. c/ France) puis Ass. plén., 11 décembre 1992 : rectification de la mention du sexe sur le fondement de l'art. 8 CEDH et des art. 9 et 57 C. civ. ; jugement constitutif, effet pour l'avenir.",
+      "CEDH, 25 mars 1992 (B. c/ France) puis Ass. plén., 11 décembre 1992 : rectification de la mention du sexe sur le fondement de l'art. 8 CEDH et des art. 9 et 57 C. civ. ; jugement constitutif, effet pour l'avenir.",
       "Loi du 18 novembre 2016, art. 61-5 C. civ. : majeur ou mineur émancipé démontrant par une réunion suffisante de faits que la mention ne correspond pas au sexe dans lequel il se présente et est connu (présentation publique, entourage, changement de prénom).",
       "Art. 61-6 : l'absence de traitements médicaux, d'opération ou de stérilisation ne peut motiver un refus."
     ]}
   ],
   complements: [
+    "Correction : le cours date l'arrêt B. c/ France de la CEDH du « 25 juin 1992 » ; il a été rendu le 25 mars 1992. Les fiches et le quiz utilisent la bonne date.",
     "Le cours date du « 28 juin 2004 » la seconde loi sur le nom ; la réforme du nom de famille résulte de la loi du 4 mars 2002 modifiée par la loi du 18 juin 2003, entrée en vigueur le 1er janvier 2005.",
     "Le cours mentionne une « loi du 17 mars 2013 » : il s'agit de la loi du 17 mai 2013 ouvrant le mariage aux couples de même sexe (citée correctement ailleurs).",
     "Les dates données par le cours pour le livret de famille (« institué en 1977 », « décret du 15 mai 1974 ») sont incohérentes : vérifie ce point avant l'examen.",
-    "L'arrêt de la CEDH du 25 juin 1992 est l'arrêt B. c/ France."
+    "L'arrêt de la CEDH du 25 mars 1992 est l'arrêt B. c/ France."
   ],
   defs: [
     { t: "État civil", d: "Ensemble des actes retraçant la vie d'une personne de sa naissance à sa mort (naissance, mariage, décès).", p: "p. 38" },
@@ -3673,7 +3716,7 @@ JBA.chapter({
     { name: "Bordas", court: "Cass. com.", date: "1985", faits: "Non détaillés dans le cours.", question: "Le nom peut-il faire l'objet d'un accord commercial ?", solution: "L'inaliénabilité et l'imprescriptibilité du nom ne s'opposent pas à un accord sur son utilisation comme dénomination ou nom commercial.", portee: "Patrimonialisation du nom en matière commerciale." },
     { name: "Ducasse", court: "Cour de cassation", date: "2003", faits: "Alain Ducasse avait autorisé la société Alain Ducasse Diffusion à exploiter son nom ; il contestait ensuite des dépôts de marques par celle-ci.", question: "A-t-il perdu tout droit sur son nom ?", solution: "Cassation : il n'était ni établi ni allégué qu'il aurait renoncé à ses droits de propriété incorporelle sur son patronyme.", portee: "La renonciation ne se présume pas." },
     { name: "Prénoms et calendriers", court: "Cass. 1re civ.", date: "10 juin 1981", faits: "Non détaillés dans le cours.", question: "Le calendrier invoqué pour un prénom doit-il émaner d'une autorité officielle ?", solution: "Non : il n'existe aucune liste officielle, sous réserve que le prénom ne soit pas ridicule.", portee: "Grande liberté des parents." },
-    { name: "B. c/ France", court: "CEDH", date: "25 juin 1992", faits: "Refus de rectifier l'état civil d'une personne transgenre.", question: "Ce refus viole-t-il l'art. 8 de la Convention ?", solution: "Condamnation de la France.", portee: "A conduit au revirement de l'Assemblée plénière." },
+    { name: "B. c/ France", court: "CEDH", date: "25 mars 1992", faits: "Refus de rectifier l'état civil d'une personne transgenre.", question: "Ce refus viole-t-il l'art. 8 de la Convention ?", solution: "Condamnation de la France.", portee: "A conduit au revirement de l'Assemblée plénière." },
     { name: "René / Renée", court: "Cass. ass. plén.", date: "11 décembre 1992", faits: "Une personne déclarée de sexe masculin, ayant subi un traitement et une opération, demandait la modification de son prénom et de la mention de son sexe.", question: "La mention du sexe à l'état civil peut-elle être rectifiée ?", solution: "Oui, sur le fondement de l'art. 8 CEDH et des art. 9 et 57 C. civ. (respect de la vie privée).", portee: "Première admission de la rectification ; régime aujourd'hui remplacé par les art. 61-5 et 61-6 (2016), sans condition médicale." }
   ],
   dates: [
@@ -3762,7 +3805,7 @@ JBA.chapter({
     { q: "Dans l'arrêt Bordas (1985), la Cour de cassation admet…", o: ["La vente du nom à une autre personne physique", "Un accord sur l'utilisation du nom comme nom commercial", "L'usurpation de nom", "La prescription du nom"], a: [1], e: "Sans remettre en cause l'inaliénabilité du nom pour identifier une autre personne.", n: "Nom commercial", p: "p. 46", d: 3 },
     { q: "Quelle loi consacre la liberté de choix des prénoms ?", o: ["Loi du 11 germinal an XI", "Loi du 8 janvier 1993", "Loi du 17 mai 2011", "Loi du 18 novembre 2016"], a: [1], e: "Sous le contrôle de l'intérêt de l'enfant (procureur, JAF).", n: "Prénom", p: "p. 47", d: 2 },
     { q: "Si un prénom paraît contraire à l'intérêt de l'enfant, l'officier d'état civil…", o: ["Le refuse lui-même", "Avise le procureur de la République", "Le modifie librement", "Ne fait rien"], a: [1], e: "Le procureur peut saisir le JAF qui ordonne la suppression.", n: "Prénom", p: "p. 47", d: 2 },
-    { q: "Quel arrêt a admis pour la première fois la rectification de la mention du sexe ?", o: ["CEDH, 25 juin 1992", "Ass. plén., 11 décembre 1992", "CE, 4 décembre 2009", "Civ. 1re, 10 juin 1981"], a: [1], e: "Après la condamnation de la France par la CEDH.", n: "Sexe", p: "p. 49", d: 2 },
+    { q: "Quel arrêt a admis pour la première fois la rectification de la mention du sexe ?", o: ["CEDH, 25 mars 1992", "Ass. plén., 11 décembre 1992", "CE, 4 décembre 2009", "Civ. 1re, 10 juin 1981"], a: [1], e: "Après la condamnation de la France par la CEDH.", n: "Sexe", p: "p. 49", d: 2 },
     { q: "Depuis la loi du 18 novembre 2016, la modification de la mention du sexe suppose…", o: ["Une opération chirurgicale", "Une réunion suffisante de faits (présentation, entourage, prénom)", "Un traitement médical", "L'accord des parents"], a: [1], e: "L'art. 61-6 interdit de motiver un refus par l'absence de traitement, d'opération ou de stérilisation.", n: "Sexe", p: "p. 50", d: 2 }
   ],
   cards: [
@@ -4430,7 +4473,7 @@ JBA.chapter({
   const L = {
     accueil: ["Bonjour Jojo. J'ai préparé le cours. Enfin, je crois.", "Te revoilà ! J'ai gardé ta place au chaud. Un peu trop, j'ai dormi dessus.", "Aujourd'hui, on révise. Demain aussi. Et après-demain, promenade.", "J'ai relu le cours de droit constitutionnel cette nuit. Enfin, j'ai dormi sur le classeur.", "Bonjour cheffe. Le professeur Holly est prêt. Il lui manque juste ses lunettes. Ah, elles sont sur sa tête.", "Je t'attendais. J'ai même rangé le Code civil. Il était sous le canapé."],
     bon: ["WOUF ! C'est juste !", "Exactement ! Je le savais. Enfin, je le savais après toi.", "Bonne réponse. Je remue la queue en signe d'approbation juridique.", "Parfait. Même le Conseil constitutionnel n'aurait pas mieux dit.", "Oui ! Tu mérites une friandise. Moi aussi, par solidarité.", "Juste ! Je note ça dans mon carnet de professeur. Il est un peu mâchouillé."],
-    adele: ["Oh non… tu es aussi nulle que la grosse Adèle.", "Faux. Quelque part, la grosse Adèle est très fière de toi.", "Attention : tu commences à réviser comme la grosse Adèle.", "Cette réponse sent la grosse Adèle à plein nez.", "La grosse Adèle vient de t'écrire : « Bienvenue au club. »", "Ne fais pas ta grosse Adèle, relis la correction.", "Erreur niveau grosse Adèle. On se reprend tout de suite.", "Holly a déjà vu la grosse Adèle faire exactement cette erreur. Il a eu honte pour elle.", "Encore une comme ça et on t'inscrit en TD avec la grosse Adèle.", "La grosse Adèle confond la Constitution et le menu du kebab. Ne deviens pas comme elle.", "Même la grosse Adèle aurait hésité. Puis elle aurait répondu encore plus faux.", "Raté. La grosse Adèle applaudit des deux mains."],
+    adele: ["Oh non… tu es aussi nulle que la grosse Adèle.", "Faux. Quelque part, la grosse Adèle est très fière de toi.", "Attention : tu commences à réviser comme la grosse Adèle.", "Cette réponse sent la grosse Adèle à plein nez.", "La grosse Adèle vient de t'écrire : « Bienvenue au club. »", "Ne fais pas ta grosse Adèle, relis la correction.", "Erreur niveau grosse Adèle. On se reprend tout de suite.", "Holly a déjà vu la grosse Adèle faire exactement cette erreur. Il a eu honte pour elle.", "Encore une comme ça et on t'inscrit en TD avec la grosse Adèle.", "La grosse Adèle confond la Constitution et le menu du kebab. Ne deviens pas comme elle.", "Même la grosse Adèle aurait hésité. Puis elle aurait répondu encore plus faux.", "Raté. La grosse Adèle applaudit des deux mains.", "Même la grosse Adèle avait trouvé celle-là. Enfin, presque.", "Tu viens de débloquer le badge « Grosse Adèle ». Ce n'est pas un compliment.", "La grosse Adèle a révisé ce chapitre une fois, en 2019. Toi tu n'as pas d'excuse.", "Faux. La grosse Adèle aurait au moins eu la décence de dire « je sais pas ».", "Cette erreur sera ajoutée au dossier de la grosse Adèle. Il est déjà bien rempli.", "Ne laisse pas la grosse Adèle gagner. Elle n'a jamais gagné, ce n'est pas aujourd'hui qu'elle va commencer.", "Si la grosse Adèle passait l'examen, elle répondrait exactement ça. Réfléchis-y.", "Holly a aboyé deux fois : en langage canin, ça veut dire « grosse Adèle ».", "Raté. Quelque part, la grosse Adèle se sent un peu moins seule.", "La grosse Adèle croit que le Code civil est un code promo. Toi, tu vaux mieux que ça.", "Mauvaise réponse. La grosse Adèle vient de te demander tes fiches, elle pense que vous êtes au même niveau.", "Tu as répondu comme la grosse Adèle au partiel. Elle est encore en train d'attendre sa note.", "Ce n'est pas grave, ce n'est pas comme si tu étais la grosse Adèle. Ah si, un peu, là.", "La grosse Adèle a validé ta réponse. C'est exactement pour ça qu'elle est fausse.", "Erreur. Holly propose de ne rien dire à personne, surtout pas à la grosse Adèle."],
     mauvais: ["Bon… On va reprendre. Même moi, je me trompe parfois de chemin pendant les promenades.", "Pas grave. Une fois, j'ai confondu le Sénat et mon panier.", "Presque ! Relis la correction, je t'attends ici. Je ne bouge pas. Je ne bouge jamais.", "Ce n'est pas ça, mais c'est comme ça qu'on apprend. Moi, j'ai appris « assis » en vingt-trois essais.", "Oups. On mettra cette notion dans les « à revoir ». Je la surveillerai de près."],
     finLecon: ["Bravo ! Maintenant, je propose une petite pause. J'ai justement repéré un endroit confortable.", "Leçon terminée. Je valide avec ma patte.", "Encore un chapitre de lu. Je suis tellement fier que j'en ai oublié pourquoi j'aboyais."],
     qcmReussi: ["Tu es tellement forte que je vais bientôt devoir prendre des cours avec toi.", "Très beau score. Je l'encadrerai au-dessus de ma gamelle.", "Bravo ! Si tu continues comme ça, je vais demander une augmentation de croquettes."],
@@ -4735,82 +4778,42 @@ JBA.chapter({
   VIEWS.accueil = {
     render() {
       const L = J.level(), d = J.day();
-      const chRead = J.list.filter(c => J.chs(c.id).read).length;
-      const answered = Object.values(S.q).reduce((s, x) => s + (x.seen || 0), 0);
-      const avg = J.qcmAvg();
-      const casesDone = Object.values(S.cases).filter(c => c.done).length;
-      const mastered = J.mastered(J.cards);
       const recs = J.recommend();
-      const weak = J.weakNotions(5);
+      const errN = J.questions.filter(q => (S.q[q.id] || {}).last === "ko").length;
       const goals = [
-        { t: "Lire ou réviser une leçon", v: Math.min(d.lesson, 1), max: 1 },
-        { t: "Répondre à 10 questions", v: Math.min(d.q, 10), max: 10 },
-        { t: "Réviser 15 flashcards", v: Math.min(d.cards, 15), max: 15 }
+        { t: "Leçon", v: Math.min(d.lesson, 1), max: 1, c: "#FF2D55" },
+        { t: "Questions", v: Math.min(d.q, 10), max: 10, c: "#34C759" },
+        { t: "Cartes", v: Math.min(d.cards, 15), max: 15, c: "#0A84FF" }
       ];
-      const tip = J.line("conseil");
-      const badgesGot = J.BADGES.filter(b => S.badges[b.id]);
-      const mood = d.q + d.cards + d.lesson === 0 ? "happy" : goals.every(g => g.v >= g.max) ? "celebrate" : "encourage";
+      const ring = g => { const r = 26, C = 2 * Math.PI * r, f = g.v / g.max; return `<div class="gring"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="${r}" fill="none" stroke="${g.c}" stroke-opacity=".18" stroke-width="8"/><circle cx="32" cy="32" r="${r}" fill="none" stroke="${g.c}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - f)}" transform="rotate(-90 32 32)"/></svg><b class="tnum">${g.v}/${g.max}</b><span>${g.t}</span></div>`; };
+      const last = S.last && S.last !== "#accueil" ? S.last : null;
+      const rows = [];
+      if (recs[0]) rows.push(ui.sheetRow({ href: recs[0].href, i: "book", t: esc(recs[0].txt) }));
+      if (errN) rows.push(ui.sheetRow({ act: "quiz-errors", i: "quiz", t: "Refaire mes erreurs", end: `<span class="pcount tnum">${errN}</span><span class="pchev">${ICON.chev}</span>` }));
+      rows.push(ui.sheetRow({ href: "#cartes", i: "cards", t: "Cartes du jour", end: `<span class="pcount tnum">${J.dueCards(J.cards).length || ""}</span><span class="pchev">${ICON.chev}</span>` }));
       return `
       <section class="hero home">
-        <div class="stack" style="gap:16px">
-          <span class="eyebrow">Ton QG de révision</span>
+        <div class="stack" style="gap:14px">
           <h1>Bienvenue chez toi,<br class="br-d"> Jojo Boss.</h1>
-          <p style="font-size:18px;max-width:52ch">Le droit, les sushis et un professeur à quatre pattes. Bienvenue dans ton univers de réussite.</p>
           <p class="slogan">De Coco Plage au Code civil, rien ne résiste à Jojo Boss.</p>
-          <div class="row" style="margin-top:4px"><a class="btn pri" href="${S.last && S.last !== "#accueil" ? esc(S.last) : "#cours"}">${S.last && S.last !== "#accueil" ? "Reprendre mes révisions" : "Commencer à réviser"} ${ICON.arrow.replace("<svg", "<svg width=18 height=18")}</a><a class="btn link" href="#holly">Découvrir mon univers ›</a></div>
+          <div class="row" style="margin-top:4px"><a class="btn pri" href="${last ? esc(last) : "#cours"}">${last ? "Reprendre mes révisions" : "Commencer à réviser"}</a><a class="btn link" href="#holly">Découvrir mon univers ›</a></div>
         </div>
         <div class="art"><div class="bob">${H("prof", { label: "Holly en professeur de droit, avec un Code civil et des sushis" })}</div></div>
       </section>
 
-      <section class="grid g2">
-        <div class="card stack">
-          <div class="row between"><span class="eyebrow">Niveau ${L.n} sur 7</span><span class="small muted tnum">${S.xp} XP${L.next ? ` · encore ${L.next.xp - S.xp} XP` : ""}</span></div>
-          <h2>${esc(L.name)}</h2>
-          <div class="bar" role="progressbar" aria-valuenow="${L.pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${L.pct}%"></i></div>
-          <p class="small muted">${L.next ? `Prochain niveau : <b>${esc(L.next.name)}</b>` : "Niveau maximum. Holly s'incline."} · série de ${J.streak()} jour${J.streak() > 1 ? "s" : ""} · ${S.days.length} jour${S.days.length > 1 ? "s" : ""} de révision</p>
-          <div class="grid g4" style="margin-top:6px">
-            <div class="stat"><b class="tnum">${chRead}/${J.list.length}</b><span>leçons lues</span></div>
-            <div class="stat"><b class="tnum">${S.quizzes.length}</b><span>quiz terminés</span></div>
-            <div class="stat"><b class="tnum">${avg == null ? "—" : avg + " %"}</b><span>moyenne aux quiz</span></div>
-            <div class="stat"><b class="tnum">${casesDone}</b><span>cas pratiques</span></div>
-            <div class="stat"><b class="tnum">${mastered}</b><span>cartes maîtrisées</span></div>
-            <div class="stat"><b class="tnum">${answered}</b><span>réponses données</span></div>
-          </div>
-        </div>
-        <div class="card stack tint-rose">
-          <div class="row between"><span class="eyebrow">Holly du jour</span><span class="pill fav">${new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })}</span></div>
-          ${ui.sayHTML(mood, J.line(d.q + d.cards ? "motivation" : "accueil"))}
-          <div class="note turq"><b>Conseil du professeur :</b> ${esc(tip)}</div>
-          ${recs[0] ? `<a class="btn sec sm" href="${recs[0].href}" style="align-self:flex-start">Recommandation : ${esc(recs[0].txt)}</a>` : ""}
-        </div>
+      <section class="card stack">
+        <div class="row between"><h3>Aujourd'hui</h3><a class="small" href="#progres" style="text-decoration:none">Niveau ${L.n} · ${esc(L.name)} ›</a></div>
+        <div class="grings">${goals.map(ring).join("")}</div>
+        <div class="bar" role="progressbar" aria-label="Progression vers le niveau suivant" aria-valuenow="${L.pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${L.pct}%"></i></div>
+        <p class="small muted tnum">${S.xp} XP${L.next ? ` · ${L.next.xp - S.xp} avant ${esc(L.next.name)}` : ""}${J.streak() > 1 ? ` · ${J.streak()} jours d'affilée` : ""}</p>
       </section>
 
-      <section class="grid g2">
-        <div class="card stack">
-          <div class="row between"><h3>Objectifs du jour</h3><span class="small muted">${goals.filter(g => g.v >= g.max).length}/3</span></div>
-          ${goals.map(g => `<div class="stack" style="gap:6px"><div class="row between small"><span>${g.v >= g.max ? "✓ " : ""}${g.t}</span><span class="tnum muted">${g.v}/${g.max}</span></div><div class="bar turq"><i style="width:${g.v / g.max * 100}%"></i></div></div>`).join("")}
-          <div class="row" style="margin-top:4px"><span class="small muted">Révision express :</span>${[5, 10, 15].map(m => `<button class="chip" data-act="express" data-min="${m}">${m} min</button>`).join("")}</div>
-        </div>
-        <div class="card stack">
-          <h3>Recommandations</h3>
-          ${recs.length ? recs.map(r => `<a href="${r.href}" class="res-item" style="border:1px solid var(--line)"><b>${esc(r.txt)}</b><span class="small muted">${esc(r.why)}</span></a>`).join("") : `<p class="muted">Tout est à jour. Holly propose une sieste bien méritée.</p>`}
-        </div>
-      </section>
+      <section class="stack" style="gap:0"><p class="plabel">Continuer</p><div class="pgroup">${rows.join("")}</div></section>
 
-      <section class="grid g2">
-        <div class="card stack">
-          <h3>Notions à revoir</h3>
-          ${weak.length ? `<div class="chips">${weak.map(w => `<a class="chip" href="#ch-${w.ch}" style="text-decoration:none">${esc(w.n)} <span class="muted small">· ${esc(J.SUBJECTS[J.byId[w.ch].subject].short)} ${J.byId[w.ch].num}</span></a>`).join("")}</div><button class="btn sec sm" data-act="quiz-errors" style="align-self:flex-start">Refaire mes erreurs</button>` : `<p class="muted">Aucune erreur en attente. Les notions ratées aux quiz apparaîtront ici.</p>`}
-          <h3 style="margin-top:8px">Activité récente</h3>
-          ${S.history.length ? `<ul class="hist">${S.history.slice(0, 6).map(h => `<li><span>${esc(h.label)}</span><span class="muted small tnum">+${h.xp} XP · ${J.fmtDate(h.t)}</span></li>`).join("")}</ul>` : `<p class="muted">Ton activité s'affichera ici.</p>`}
-        </div>
-        <div class="stack">
-          <div class="card stack">
-            <div class="row between"><h3>Badges</h3><a class="small" href="#progres">Tout voir</a></div>
-            ${badgesGot.length ? `<div class="chips">${badgesGot.map(b => `<span class="pill maitrisee">${esc(b.name)}</span>`).join("")}</div>` : `<p class="muted small">Premier badge : lis une leçon en entier.</p>`}
-          </div>
-        </div>
-      </section>`;
+      <section class="stack" style="gap:0"><p class="plabel">Révision express</p>
+        <div class="seg wide">${[5, 10, 15].map(m => `<button data-act="express" data-min="${m}">${m} min</button>`).join("")}</div></section>
+
+      <section class="card flat">${ui.sayHTML("happy", J.line(d.q + d.cards ? "motivation" : "accueil"), true)}</section>`;
     }
   };
   ACT.express = (b) => { const m = +b.dataset.min; J.express = { cards: m === 5 ? 8 : m === 10 ? 12 : 15, quiz: m === 5 ? 3 : m === 10 ? 6 : 10, min: m }; location.hash = "#cartes"; ui.toast(`Révision express de ${m} minutes : flashcards, puis quiz.`); };
@@ -4823,38 +4826,31 @@ JBA.chapter({
     render() {
       const chs = J.list.filter(c => (libSubj === "all" || c.subject === libSubj) && (libFilter === "all" || (libFilter === "fav" ? J.chs(c.id).fav : J.chs(c.id).status === libFilter)) && (!libQ || J.norm(c.title + c.summary).includes(J.norm(libQ))));
       const subj = ["dc", "ip"].filter(s => libSubj === "all" || libSubj === s);
+      const dot = { decouvrir: "var(--surface3)", encours: "#0A84FF", revoir: "#FF9500", maitrisee: "#34C759" };
+      const row = c => { const st = J.chs(c.id), p = J.chapterProgress(c); return `<a class="prow" href="#ch-${c.id}"><span class="tile num-tile">${c.num}</span><span class="pmain"><span class="pt">${esc(c.title)}</span></span>${st.fav ? `<span class="favstar" aria-label="Favori">★</span>` : ""}<span class="mini-ring" style="--p:${p};--c:${dot[st.status]}" title="${STATUS[st.status]} · ${p} %"></span><span class="pchev">${ICON.chev}</span></a>`; };
       return `
-      <header class="stack"><span class="eyebrow">Bibliothèque</span><h1>Mes cours</h1><p class="muted" style="max-width:62ch">Deux matières, dix-neuf chapitres.</p></header>
-      <div class="card flat stack" style="padding:14px">
-        <input class="input" id="lib-q" placeholder="Filtrer les chapitres…" value="${esc(libQ)}">
-        <div class="row between">
-          <div class="seg" role="group" aria-label="Matière">${[["all", "Tout"], ["dc", "Droit constit."], ["ip", "Intro droit privé"]].map(([k, t]) => `<button data-act="lib-subj" data-k="${k}" class="${libSubj === k ? "on" : ""}">${t}</button>`).join("")}</div>
-          <div class="chips">${[["all", "Tous"], ["fav", "Favoris"], ...Object.entries(STATUS)].map(([k, t]) => `<button class="chip ${libFilter === k ? "on" : ""}" data-act="lib-filter" data-k="${k}">${t}</button>`).join("")}</div>
+      <header class="stack"><h1>Mes cours</h1></header>
+      <div class="stack" style="gap:10px">
+        <div class="searchfield">${ICON.search}<input id="lib-q" placeholder="Rechercher" value="${esc(libQ)}" aria-label="Rechercher un chapitre"></div>
+        <div class="row between" style="gap:10px">
+          <div class="seg" role="group" aria-label="Matière">${[["all", "Tout"], ["dc", "Constit."], ["ip", "Droit privé"]].map(([k, t]) => `<button data-act="lib-subj" data-k="${k}" class="${libSubj === k ? "on" : ""}">${t}</button>`).join("")}</div>
+          <label class="selpill"><span class="sr">Filtrer</span><select id="lib-f">${[["all", "Tous"], ["fav", "Favoris"], ...Object.entries(STATUS)].map(([k, t]) => `<option value="${k}" ${libFilter === k ? "selected" : ""}>${t}</option>`).join("")}</select></label>
         </div>
       </div>
-      ${subj.map(s => { const list = chs.filter(c => c.subject === s); if (!list.length) return ""; const S0 = J.SUBJECTS[s]; const avgP = Math.round(J.chaptersOf(s).reduce((a, c) => a + J.chapterProgress(c), 0) / J.chaptersOf(s).length); return `
-        <section class="stack" style="gap:14px">
-          <div class="subjhead"><span class="ic">${s === "dc" ? ICON.scale : ICON.book}</span><div><h2>${S0.name}</h2><p class="small muted">${S0.desc} · ${S0.author} · progression ${avgP} %</p></div></div>
-          <div class="grid g3">${list.map(chCard).join("")}</div>
-        </section>`; }).join("") || `<div class="empty">${ui.sayHTML("perplexed", "Aucun chapitre ne correspond à ce filtre. Même moi je suis perdu.", true)}</div>`}
-      <details class="card flat"><summary style="cursor:pointer;font-weight:700">Inventaire des documents analysés</summary>
+      ${subj.map(s => { const list = chs.filter(c => c.subject === s); if (!list.length) return ""; const S0 = J.SUBJECTS[s]; return `
+        <section class="stack" style="gap:0"><p class="plabel">${S0.name}</p><div class="pgroup">${list.map(row).join("")}</div></section>`; }).join("") || `<div class="empty">Aucun chapitre ne correspond.</div>`}
+      <details class="card flat"><summary style="cursor:pointer;font-weight:600">Documents d'origine</summary>
         <div class="scroll-x" style="margin-top:12px"><table class="tbl"><thead><tr><th>Document</th><th>Matière</th><th>Contenu</th><th>Remarque</th></tr></thead><tbody>
         ${J.list.map(c => `<tr><td>${window.JBA_NOPDF ? esc(c.source) : `<a href="${c.pdf}" target="_blank" rel="noopener">${esc(c.source)}</a>`}</td><td>${J.SUBJECTS[c.subject].short}</td><td>${esc(c.title)} · ${c.plan.length} parties · ${c.qcm.length} QCM</td><td class="small muted">${c.note ? esc(c.note) : c.complements ? c.complements.length + " complément(s) signalé(s)" : "Lu en entier"}</td></tr>`).join("")}
         </tbody></table></div>
         <p class="small muted" style="margin-top:10px">Les PDF « COURS INTRO 1 » (parties I à IV) et « COURS 2 » (parties V à X) forment le cours d'Introduction au droit privé. Les leçons 1 à 9 forment le cours de Droit constitutionnel 1. Les compléments extérieurs au cours sont toujours signalés à part dans les fiches.</p>
       </details>`;
     },
-    after() { const i = $("#lib-q"); if (i) i.addEventListener("input", () => { libQ = i.value; const p = i.selectionStart; ui.rerender(); const n = $("#lib-q"); n.focus(); n.setSelectionRange(p, p); }); }
+    after() {
+      const i = $("#lib-q"); if (i) i.addEventListener("input", () => { libQ = i.value; const p = i.selectionStart; ui.rerender(); const n = $("#lib-q"); n.focus(); n.setSelectionRange(p, p); });
+      const f = $("#lib-f"); if (f) f.addEventListener("change", () => { libFilter = f.value; ui.rerender(); });
+    }
   };
-  function chCard(c) {
-    const st = J.chs(c.id), p = J.chapterProgress(c);
-    return `<a class="chcard" href="#ch-${c.id}">
-      <div class="row between" style="align-items:flex-start"><span class="num">${String(c.num).padStart(2, "0")}</span><span class="ring" style="--p:${p}"><span>${p}%</span></span></div>
-      <h3>${esc(c.title)}</h3>
-      <p class="small muted" style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${esc(c.summary)}</p>
-      <div class="row"><span class="pill ${st.status}">${STATUS[st.status]}</span>${st.fav ? `<span class="pill fav">★ Favori</span>` : ""}${st.best != null ? `<span class="pill encours tnum">Quiz ${st.best} %</span>` : ""}</div>
-    </a>`;
-  }
   ACT["lib-subj"] = b => { libSubj = b.dataset.k; ui.rerender(); };
   ACT["lib-filter"] = b => { libFilter = b.dataset.k; ui.rerender(); };
 
@@ -4978,21 +4974,15 @@ JBA.chapter({
       if (J.quiz && J.quiz.finished) return quizResult();
       const chList = J.list.filter(c => QC.subj === "all" || c.subject === QC.subj);
       const errCount = J.questions.filter(q => (S.q[q.id] || {}).last === "ko").length;
+      const seg = (f, opts, cur) => `<div class="seg wide">${opts.map(([k, t]) => `<button class="${cur === k ? "on" : ""}" data-act="qc" data-f="${f}" data-v="${k}">${t}</button>`).join("")}</div>`;
       return `
-      <header class="row between" style="align-items:flex-end"><div class="stack"><span class="eyebrow">Entraînement</span><h1>Sushi Quiz</h1><p class="muted">Une question à la fois.</p></div>
-        <div style="width:150px" class="deco">${H("sushi")}</div></header>
-      <div class="card stack">
-        <h3>1. Quelle matière ?</h3>
-        <div class="seg">${[["all", "Les deux"], ["dc", "Droit constit."], ["ip", "Intro droit privé"]].map(([k, t]) => `<button class="${QC.subj === k ? "on" : ""}" data-act="qc" data-f="subj" data-v="${k}">${t}</button>`).join("")}</div>
-        <details ${QC.chs.length ? "open" : ""}><summary style="cursor:pointer;font-weight:700">Choisir des chapitres précis (${QC.chs.length ? QC.chs.length + " sélectionné" + (QC.chs.length > 1 ? "s" : "") : "tous"})</summary>
-          <div class="chips" style="margin-top:10px">${chList.map(c => `<button class="chip ${QC.chs.includes(c.id) ? "on" : ""}" data-act="qc-ch" data-id="${c.id}">${J.SUBJECTS[c.subject].short} ${c.num} · ${esc(c.title)}</button>`).join("")}</div></details>
-        <h3>2. Combien de questions ?</h3>
-        <div class="seg">${[5, 10, 20, 30].map(n => `<button class="${QC.n === n ? "on" : ""}" data-act="qc" data-f="n" data-v="${n}">${n}</button>`).join("")}</div>
-        <h3>3. Quelle difficulté ?</h3>
-        <div class="grid g3">${[[0, "Toutes", "Un plateau varié"], [1, "Maki", "Facile"], [2, "California Roll", "Intermédiaire"], [3, "Dragon Roll", "Difficile"], [4, "Chef Sushi", "Expert"]].map(([k, t, s]) => `<button class="level-card ${QC.d === k ? "on" : ""}" data-act="qc" data-f="d" data-v="${k}"><span>${k ? sushiIco(k) : A.maki(20) + A.nigiri(22)}</span><span><b>${t}</b><br><span class="small muted">${s}</span></span></button>`).join("")}</div>
-        <div class="row" style="margin-top:6px"><button class="btn pri" data-act="qstart">Lancer le quiz</button><button class="btn sec" data-act="quiz-errors" ${errCount ? "" : "disabled"}>Refaire mes erreurs (${errCount})</button></div>
-      </div>
-      <div class="grid g2">${["dc", "ip"].map(s => { const qs = J.questions.filter(q => J.byId[q.ch].subject === s); const seen = qs.filter(q => S.q[q.id]).length; return `<div class="card flat stack"><span class="eyebrow">${J.SUBJECTS[s].name}</span><b class="tnum">${qs.length} questions · ${seen} déjà vues</b><div class="bar"><i style="width:${seen / qs.length * 100}%"></i></div></div>`; }).join("")}</div>`;
+      <header class="row between" style="align-items:flex-end"><h1>Sushi Quiz</h1><div style="width:96px" class="deco">${H("sushi")}</div></header>
+      <section class="stack" style="gap:0"><p class="plabel">Matière</p>${seg("subj", [["all", "Les deux"], ["dc", "Constit."], ["ip", "Droit privé"]], QC.subj)}</section>
+      <section class="stack" style="gap:0"><p class="plabel">Questions</p>${seg("n", [[5, "5"], [10, "10"], [20, "20"], [30, "30"]], QC.n)}</section>
+      <section class="stack" style="gap:0"><p class="plabel">Difficulté</p>${seg("d", [[0, "Toutes"], [1, "Maki"], [2, "California"], [3, "Dragon"], [4, "Chef"]], QC.d)}</section>
+      <details class="pdetails" ${QC.chs.length ? "open" : ""}><summary>Chapitres <span class="muted">${QC.chs.length ? QC.chs.length + " choisi" + (QC.chs.length > 1 ? "s" : "") : "Tous"}</span></summary>
+        <div class="chips" style="margin-top:10px">${chList.map(c => `<button class="chip ${QC.chs.includes(c.id) ? "on" : ""}" data-act="qc-ch" data-id="${c.id}">${c.num} · ${esc(c.title)}</button>`).join("")}</div></details>
+      <div class="stack" style="gap:10px"><button class="btn pri block" data-act="qstart">Lancer le quiz</button>${errCount ? `<button class="btn link" data-act="quiz-errors">Refaire mes erreurs (${errCount})</button>` : ""}</div>`;
     }
   };
   ACT.qc = b => { const f = b.dataset.f; QC[f] = f === "subj" || f === "mode" ? b.dataset.v : +b.dataset.v; if (f === "subj") QC.chs = []; ui.rerender(); };
@@ -5090,15 +5080,19 @@ JBA.chapter({
       if (J.flash && J.flash.finished) return cardDone();
       const pool = deck();
       const due = J.dueCards(pool).length, nw = J.newCards(pool).length, m = J.mastered(pool);
+      const n = Math.min(20, due + nw) || Math.min(20, pool.length);
       return `
-      <header class="row between" style="align-items:flex-end"><div class="stack"><span class="eyebrow">Mémorisation</span><h1>Flashcards</h1><p class="muted" style="max-width:60ch">Les cartes mal connues reviennent plus souvent.</p></div><div style="width:140px" class="deco">${H("etudiant")}</div></header>
-      <div class="card stack">
-        <div class="seg">${[["all", "Les deux matières"], ["dc", "Droit constit."], ["ip", "Intro droit privé"]].map(([k, t]) => `<button class="${FC.subj === k ? "on" : ""}" data-act="fc" data-f="subj" data-v="${k}">${t}</button>`).join("")}</div>
-        <label class="stack small" for="fc-ch" style="gap:6px"><b>Chapitre</b><select id="fc-ch" class="input"><option value="">Tous les chapitres</option>${J.list.filter(c => FC.subj === "all" || c.subject === FC.subj).map(c => `<option value="${c.id}" ${FC.ch === c.id ? "selected" : ""}>${esc(chLabel(c.id))}</option>`).join("")}</select></label>
-        <div class="stack" style="gap:6px"><b class="small">Thèmes</b><div class="chips">${Object.entries(J.CARDKIND).map(([k, t]) => `<button class="chip ${FC.kinds.includes(k) ? "on" : ""}" data-act="fc-k" data-k="${k}">${t}s</button>`).join("")}</div></div>
-        <div class="grid g4"><div class="stat"><b class="tnum">${pool.length}</b><span>cartes</span></div><div class="stat"><b class="tnum">${due}</b><span>à revoir aujourd'hui</span></div><div class="stat"><b class="tnum">${nw}</b><span>jamais vues</span></div><div class="stat"><b class="tnum">${m}</b><span>maîtrisées</span></div></div>
-        <div class="row"><button class="btn pri" data-act="fcstart" ${pool.length ? "" : "disabled"}>Commencer (${Math.min(20, due + nw) || Math.min(20, pool.length)} cartes)</button><button class="btn sec" data-act="fcall" ${pool.length ? "" : "disabled"}>Tout réviser au hasard</button></div>
-      </div>`;
+      <header class="row between" style="align-items:flex-end"><h1>Flashcards</h1><div style="width:90px" class="deco">${H("etudiant")}</div></header>
+      <section class="card stack" style="align-items:center;text-align:center;gap:6px">
+        <b class="bignum tnum">${due + nw || pool.length}</b><span class="muted">${due ? `à revoir aujourd'hui${nw ? ` · ${nw} nouvelles` : ""}` : nw ? "cartes jamais vues" : "cartes"}</span>
+        <span class="small muted tnum">${m} maîtrisée${m > 1 ? "s" : ""} sur ${pool.length}</span>
+        <button class="btn pri block" data-act="fcstart" ${pool.length ? "" : "disabled"} style="margin-top:10px">Commencer · ${n} cartes</button>
+        <button class="btn link" data-act="fcall" ${pool.length ? "" : "disabled"}>Tout réviser au hasard</button>
+      </section>
+      <section class="stack" style="gap:0"><p class="plabel">Matière</p><div class="seg wide">${[["all", "Les deux"], ["dc", "Constit."], ["ip", "Droit privé"]].map(([k, t]) => `<button class="${FC.subj === k ? "on" : ""}" data-act="fc" data-f="subj" data-v="${k}">${t}</button>`).join("")}</div></section>
+      <details class="pdetails" ${FC.ch || FC.kinds.length ? "open" : ""}><summary>Affiner <span class="muted">${FC.ch ? "1 chapitre" : "Tous les chapitres"}${FC.kinds.length ? " · " + FC.kinds.length + " thème" + (FC.kinds.length > 1 ? "s" : "") : ""}</span></summary>
+        <div class="stack" style="margin-top:12px"><select id="fc-ch" class="input" aria-label="Chapitre"><option value="">Tous les chapitres</option>${J.list.filter(c => FC.subj === "all" || c.subject === FC.subj).map(c => `<option value="${c.id}" ${FC.ch === c.id ? "selected" : ""}>${esc(chLabel(c.id))}</option>`).join("")}</select>
+        <div class="chips">${Object.entries(J.CARDKIND).map(([k, t]) => `<button class="chip ${FC.kinds.includes(k) ? "on" : ""}" data-act="fc-k" data-k="${k}">${t}s</button>`).join("")}</div></div></details>`;
     },
     after() { const s = $("#fc-ch"); if (s) s.addEventListener("change", () => { FC.ch = s.value; ui.rerender(); }); }
   };
@@ -5475,7 +5469,7 @@ JBA.chapter({
 })();
 
 </script>
-<script>window.JBA_BUILD="20261103-201044";
+<script>window.JBA_BUILD="20261103-202122";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
