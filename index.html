@@ -506,6 +506,26 @@ html{scroll-behavior:smooth}
 .pdetails[open] summary::after{transform:rotate(-90deg)}
 .pdetails summary .muted{margin-left:auto;font-weight:400}
 .bignum{font-size:64px;font-weight:700;letter-spacing:-.04em;line-height:1}
+
+/* ===== Flashcard qui se retourne ===== */
+.fcard{perspective:1600px;-webkit-tap-highlight-color:transparent}
+.fcard .inner{min-height:min(62vh,440px);transition:transform .7s cubic-bezier(.3,1.25,.45,1);transform-style:preserve-3d;-webkit-transform-style:preserve-3d}
+.fcard.on .inner{transform:rotateY(180deg)}
+.fcard:active .inner{scale:.985}
+.fcard .face{position:absolute;inset:0;border-radius:28px;padding:28px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;overflow:auto;box-shadow:0 10px 30px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.fcard .front{background:linear-gradient(170deg,var(--surface) 55%,var(--rose2))}
+.fcard .back{background:linear-gradient(170deg,var(--surface) 50%,var(--turq2));transform:rotateY(180deg)}
+.fcard .face .k{position:absolute;top:16px;left:50%;transform:translateX(-50%);font-size:12px;font-weight:600;color:var(--ink2);background:var(--surface3);padding:3px 10px;border-radius:999px}
+.fcard .fholly{width:132px;flex:none;margin-top:8px}
+.fcard .fholly.sm{width:76px}
+.fcard .face .t{font-size:clamp(20px,5vw,25px);font-weight:600;letter-spacing:-.02em;line-height:1.28;margin:0;max-width:30ch}
+.fcard .back .t{font-weight:500;font-size:clamp(17px,4.4vw,20px);line-height:1.42}
+.fcard .hint{font-size:13px;color:var(--ink2);margin:0}
+.fcard .ref{font-size:12.5px;color:var(--ink2);margin:0}
+.rate{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .3s .25s,transform .4s .25s var(--spring)}
+.rate.show{opacity:1;transform:none;pointer-events:auto}
+.rate .btn{flex-direction:column;gap:6px;padding:10px 6px;font-size:14px;min-height:64px;border-radius:16px}
+.dotc{width:10px;height:10px;border-radius:50%}
 </style>
 </head><body>
 <div id="root"></div>
@@ -5114,17 +5134,38 @@ JBA.chapter({
     return `
       <div class="row between"><span class="eyebrow">${J.express ? `Révision express · ` : ""}Carte ${F.i + 1} sur ${n}</span><button class="btn ghost sm" data-act="fcquit">Arrêter</button></div>
       <div class="bar turq"><i style="width:${F.i / n * 100}%"></i></div>
-      <div style="max-width:760px;width:100%;align-self:center" class="stack">
-        <button class="flip ${F.flipped ? "on" : ""}" data-act="fcflip" aria-label="${F.flipped ? "Revoir la question" : "Voir la réponse"}">
+      <div style="max-width:560px;width:100%;align-self:center" class="stack">
+        <button class="flip fcard ${F.flipped ? "on" : ""}" id="fcard" data-act="fcflip" aria-label="Retourner la carte" aria-pressed="${F.flipped}">
           <div class="inner">
-            <div class="face"><span class="k pill encours">${J.CARDKIND[c.k]}</span><p class="t">${esc(c.q)}</p><p class="small muted">${esc(chLabel(c.ch))}</p><p class="small" style="color:var(--turq);font-weight:700">Touche la carte pour voir la réponse</p></div>
-            <div class="face back"><span class="k pill maitrisee">Réponse</span><p class="t">${esc(c.a)}</p>${c.p ? `<p class="ref">${esc(c.p)}</p>` : ""}</div>
+            <div class="face front">
+              <span class="k">${J.CARDKIND[c.k]}</span>
+              <div class="fholly">${H("prof")}</div>
+              <p class="t">${esc(c.q)}</p>
+              <p class="hint">Touche pour retourner</p>
+            </div>
+            <div class="face back">
+              <span class="k">Réponse</span>
+              <div class="fholly sm">${H("happy")}</div>
+              <p class="t">${esc(c.a)}</p>
+              ${c.p ? `<p class="ref">${esc(c.p)}</p>` : ""}
+              <p class="hint">${esc(chLabel(c.ch))}</p>
+            </div>
           </div>
         </button>
-        ${F.flipped ? `<div class="grid g3"><button class="btn sec" data-act="fcrate" data-r="0" style="border-color:var(--ko)">Je ne connais pas</button><button class="btn sec" data-act="fcrate" data-r="1" style="border-color:var(--gold)">Je connais un peu</button><button class="btn pri" data-act="fcrate" data-r="2" style="background:var(--ok)">Je maîtrise</button></div>` : `<p class="small muted" style="text-align:center">${esc(J.line("flash"))}</p>`}
+        <div class="rate ${F.flipped ? "show" : ""}" id="fcrate" aria-hidden="${!F.flipped}">
+          <button class="btn sec" data-act="fcrate" data-r="0"><span class="dotc" style="background:#FF3B30"></span>Je ne connais pas</button>
+          <button class="btn sec" data-act="fcrate" data-r="1"><span class="dotc" style="background:#FF9500"></span>Un peu</button>
+          <button class="btn sec" data-act="fcrate" data-r="2"><span class="dotc" style="background:#34C759"></span>Je maîtrise</button>
+        </div>
       </div>`;
   }
-  ACT.fcflip = () => { J.flash.flipped = !J.flash.flipped; ui.rerender(); };
+  ACT.fcflip = () => {
+    const F = J.flash; F.flipped = !F.flipped;
+    const el = document.getElementById("fcard"), r = document.getElementById("fcrate");
+    if (!el) { ui.rerender(); return; }
+    el.classList.toggle("on", F.flipped); el.setAttribute("aria-pressed", F.flipped);
+    if (r) { r.classList.toggle("show", F.flipped); r.setAttribute("aria-hidden", !F.flipped); }
+  };
   ACT.fcrate = b => {
     const F = J.flash, id = F.queue[F.i], r = +b.dataset.r;
     J.rateCard(id, r); F.stats[r]++;
@@ -5469,7 +5510,7 @@ JBA.chapter({
 })();
 
 </script>
-<script>window.JBA_BUILD="20261103-202122";
+<script>window.JBA_BUILD="20261103-203001";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
