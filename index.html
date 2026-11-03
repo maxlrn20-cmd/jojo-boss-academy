@@ -5433,6 +5433,8 @@ JBA.chapter({
       <header class="stack"><span class="eyebrow">Préférences</span><h1>Réglages</h1></header>
       <div class="card stack"><h3>Apparence</h3><div class="seg">${[["system", "Comme l'appareil"], ["light", "Clair"], ["dark", "Sombre"]].map(([k, t]) => `<button class="${S.theme === k ? "on" : ""}" data-act="settheme" data-k="${k}">${t}</button>`).join("")}</div>
         <label class="row" style="gap:10px"><input type="checkbox" id="set-focus" ${S.focus ? "checked" : ""}> <span><b>Mode concentration</b><br><span class="small muted">Masque les illustrations et les bulles de Holly pendant la lecture (les corrections restent visibles).</span></span></label></div>
+      <div class="card stack"><h3>Holly, l'IA de droit</h3><p class="small muted">Holly répond gratuitement grâce à Gemini (Google). Crée une clé sur <b>aistudio.google.com</b> → « Get API key », puis colle-la ici. Elle reste enregistrée sur cet appareil.</p>${J.ia && J.ia.engine === "claude" ? `<p class="small" style="color:var(--ok);font-weight:600">Ici, Holly passe déjà par Claude : pas besoin de clé.</p>` : ""}
+        <input class="input" id="gem-key" type="password" autocomplete="off" placeholder="AIza…" value="${esc(J.geminiKey ? J.geminiKey() : "")}"><div class="row"><button class="btn pri sm" data-act="gemsave">Enregistrer la clé</button>${J.geminiKey && J.geminiKey() ? `<button class="btn ghost sm" data-act="gemdel">Retirer</button><a class="btn sec sm" href="#ia">Parler à Holly</a>` : ""}</div></div>
       <div class="card stack"><h3>Sauvegarde de la progression</h3><p class="small muted">Ta progression est enregistrée automatiquement dans ce navigateur. Pour la transférer sur un autre appareil, copie le code ci-dessous et colle-le dans « Importer » de l'autre côté.</p>
         <textarea class="input" id="exp" readonly style="min-height:90px;font-size:12px">${esc(J.exportData())}</textarea><button class="btn sec sm" data-act="copyexp" style="align-self:flex-start">Copier le code</button>
         <label for="imp" class="small"><b>Importer une progression</b></label><textarea class="input" id="imp" style="min-height:90px;font-size:12px" placeholder="Colle ici un code de sauvegarde"></textarea><button class="btn sec sm" data-act="imp" style="align-self:flex-start">Importer</button>
@@ -5441,6 +5443,8 @@ JBA.chapter({
     },
     after() { const f = $("#set-focus"); if (f) f.addEventListener("change", () => { S.focus = f.checked; J.save(); ui.refreshChrome(); }); }
   };
+  ACT.gemsave = () => { const v = ($("#gem-key").value || "").trim(); if (!/^AIza[\w-]{20,}$/.test(v)) { ui.toast("Cette clé ne ressemble pas à une clé Gemini (elle commence par AIza)."); return; } J.setGeminiKey(v); ui.toast("Clé enregistrée : Holly est réveillé !"); ui.rerender(); };
+  ACT.gemdel = () => { J.setGeminiKey(""); ui.toast("Clé retirée."); ui.rerender(); };
   ACT.settheme = b => { S.theme = b.dataset.k; J.save(); ui.applyTheme(); ui.rerender(); };
   ACT.copyexp = () => { const t = $("#exp"); try { navigator.clipboard.writeText(t.value).then(() => ui.toast("Code copié."), () => { t.select(); ui.toast("Sélectionné : copie-le avec Ctrl+C ou un appui long."); }); } catch (e) { t.select(); ui.toast("Sélectionné : copie-le avec Ctrl+C ou un appui long."); } };
   ACT.imp = () => { try { J.importData($("#imp").value.trim()); ui.applyTheme(); ui.toast("Progression importée."); ui.rerender(); } catch (e) { ui.toast("Ce code ne ressemble pas à une sauvegarde Jojo Boss Academy."); } };
@@ -5459,14 +5463,53 @@ JBA.chapter({
     const saveChat = () => { try { localStorage.setItem(CHATKEY, JSON.stringify(IA.msgs.filter(x => !x.pending && x.content).slice(-30))); } catch (e) { } };
 
     /* Connexion à Claude : null hors de claude.ai (GitHub Pages, fichier ouvert en local). */
+    /* ---------- Gemini (gratuit) : utilisé quand Claude n'est pas là (GitHub Pages, téléphone…) ---------- */
+    const GKEY = "jojo-boss-academy-gemini-key", GMODEL = "gemini-2.5-flash";
+    const gKey = () => { try { return (localStorage.getItem(GKEY) || "").trim(); } catch (e) { return ""; } };
+    function gemini(key) {
+      const fn = async (input, o = {}) => {
+        const msgs = typeof input === "string" ? [{ role: "user", content: input }] : input;
+        const sys = msgs[0] && msgs[0].role === "user" && msgs[1] && msgs[1].role === "assistant" ? msgs[0].content : "";
+        const rest = sys ? msgs.slice(2) : msgs;
+        const body = { contents: rest.map(m => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] })), generationConfig: { temperature: 0.4, maxOutputTokens: 2048 } };
+        if (sys) body.systemInstruction = { parts: [{ text: sys }] };
+        let r;
+        try { r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GMODEL}:streamGenerateContent?alt=sse&key=${encodeURIComponent(key)}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: o.signal }); }
+        catch (e) { throw { code: e && e.name === "AbortError" ? "cancelled" : "network", message: String(e) }; }
+        if (!r.ok) { const c = r.status === 429 ? "rate_limited" : r.status === 400 || r.status === 403 ? "bad_key" : "server"; throw { code: c, message: "HTTP " + r.status }; }
+        const rd = r.body.getReader(), dec = new TextDecoder(); let buf = "", text = "", fin = "";
+        try {
+          for (;;) {
+            const { done, value } = await rd.read(); if (done) break;
+            buf += dec.decode(value, { stream: true });
+            let i; while ((i = buf.indexOf("\n")) >= 0) {
+              const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
+              if (!line.startsWith("data:")) continue;
+              try { const j = JSON.parse(line.slice(5)); const c = j.candidates && j.candidates[0]; if (c) { const t = (c.content && c.content.parts || []).map(x => x.text || "").join(""); if (t) { text += t; o.onText && o.onText({ text, delta: t }); } if (c.finishReason) fin = c.finishReason; } } catch (e) { }
+            }
+          }
+        } catch (e) { if (e && e.name === "AbortError") throw { code: "cancelled", message: "", text }; throw { code: "network", message: String(e), text }; }
+        if (!text && fin === "SAFETY") throw { code: "refused", message: "" };
+        return { text, truncated: fin === "MAX_TOKENS" };
+      };
+      fn.limits = async () => ({ maxPromptBytes: 900000 });
+      return fn;
+    }
+    IA.engine = "";
+    IA.hasClaude = !!(window.claude && typeof window.claude.use === "function");
+    const within = (p, ms) => Promise.race([p, new Promise(r => setTimeout(() => r(undefined), ms))]);
     IA.ready = (async () => {
       try {
-        if (!window.claude || typeof window.claude.use !== "function") return null;
-        const s = await window.claude.use("sample");
-        if (s) { try { const lim = await s.limits(); IA.tools = !!(lim && lim.tools); IA.max = lim && lim.maxPromptBytes; } catch (e) { } }
-        return s || null;
-      } catch (e) { return null; }
-    })().then(s => { IA.sample = s; if ((location.hash || "") === "#ia") ui.rerender(); return s; });
+        if (IA.hasClaude) {
+          const s = await within(window.claude.use("sample"), 12000);
+          if (s) { IA.engine = "claude"; within(s.limits(), 4000).then(l => { if (l) { IA.tools = !!l.tools; IA.max = l.maxPromptBytes; } }).catch(() => { }); return s; }
+        }
+      } catch (e) { }
+      const k = gKey(); if (k) { IA.engine = "gemini"; return gemini(k); }
+      return null;
+    })().then(s => { IA.sample = s; if ((location.hash || "") === "#ia" && !IA.busy) { const t = document.getElementById("ia-q"); if (t && t.value) IA.draft = t.value; ui.rerender(); } return s; });
+    J.setGeminiKey = k => { try { k ? localStorage.setItem(GKEY, k) : localStorage.removeItem(GKEY); } catch (e) { } if (IA.engine !== "claude") { IA.engine = k ? "gemini" : ""; IA.sample = k ? gemini(k) : null; IA.tools = false; } };
+    J.geminiKey = gKey;
 
     /* ---------- Texte complet d'un chapitre ---------- */
     const SUB = id => J.SUBJECTS[J.byId[id].subject].short;
@@ -5617,13 +5660,13 @@ Règles :
 
     VIEWS.ia = {
       render() {
-        const avail = IA.sample, waiting = avail === undefined, has = IA.msgs.length > 0;
+        const avail = IA.sample, waiting = avail === undefined, off = avail === null, has = IA.msgs.length > 0;
         const sc = IA.scope && J.byId[IA.scope];
         const empty = `<div class="ia-empty">
             <div class="big" aria-hidden="true">${H("prof")}</div>
-            ${!waiting && !avail ? `<h2>Holly dort ici</h2><p>Holly répond grâce à Claude, et cette version du site n'y est pas reliée. Ouvre la version Claude de Jojo Boss Academy (le lien claude.ai) pour discuter avec lui.</p><button class="btn sec sm" data-act="search">Rechercher dans mes cours</button>`
+            ${off ? `<h2>Réveille Holly</h2><p>Pour que Holly réponde ici, colle une fois ta clé Gemini gratuite (créée sur aistudio.google.com) dans les Réglages.</p><a class="btn pri sm" href="#reglages">Ouvrir les Réglages</a> <button class="btn sec sm" data-act="search">Rechercher dans mes cours</button>`
             : `<h2>On révise quoi, Jojo ?</h2><p>Pose-moi n'importe quelle question de droit. Je m'appuie sur tes cours et je te dis où relire.</p>
-            <div class="ia-sugg">${SUGG.map(([a, b2, q], k) => `<button data-act="ia-sugg" data-k="${k}" ${avail ? "" : "disabled"}><b>${esc(a)}</b><span>${esc(b2)}</span></button>`).join("")}</div>`}
+            <div class="ia-sugg">${SUGG.map(([a, b2, q], k) => `<button data-act="ia-sugg" data-k="${k}"><b>${esc(a)}</b><span>${esc(b2)}</span></button>`).join("")}</div>`}
           </div>`;
         return `<div class="ia-page">
           <div class="ia-head">${avatar()}<div class="grow"><b>Holly</b><span class="sub">IA de droit · tes cours de L1</span></div>${has ? `<button class="ia-new" data-act="ia-clear" ${IA.busy ? "disabled" : ""} aria-label="Nouvelle conversation" title="Nouvelle conversation">${IC.neu}</button>` : ""}</div>
@@ -5632,7 +5675,7 @@ Règles :
             ${sc ? `<div class="ia-scope"><span>Sur : ${esc(label(sc))}</span><button data-act="ia-unscope" aria-label="Ne plus limiter à ce chapitre">×</button></div>` : ""}
             <form class="ia-box" id="ia-form">
               <label for="ia-q" style="position:absolute;left:-9999px">Ta question</label>
-              <textarea id="ia-q" rows="1" placeholder="${waiting ? "Holly se réveille…" : avail ? "Écris à Holly…" : "Disponible dans la version Claude"}" ${avail ? "" : "disabled"} enterkeyhint="send"></textarea>
+              <textarea id="ia-q" rows="1" placeholder="${off ? "Ajoute ta clé Gemini dans les Réglages" : "Écris à Holly…"}" ${off ? "disabled" : ""} enterkeyhint="send"></textarea>
               ${IA.busy ? `<button type="button" class="ia-send" data-act="ia-stop" aria-label="Arrêter">${IC.stop}</button>` : `<button type="submit" class="ia-send" id="ia-send" disabled aria-label="Envoyer">${IC.up}</button>`}
             </form>
             <p class="ia-note">Holly peut se tromper. Vérifie les points importants dans tes cours.</p>
@@ -5643,12 +5686,12 @@ Règles :
         syncMode();
         const ta = $("#ia-q"), form = $("#ia-form"), send = $("#ia-send");
         if (ta) {
-          const fit = () => { ta.style.height = "auto"; ta.style.height = Math.min(200, ta.scrollHeight) + "px"; if (send) send.disabled = !IA.sample || !ta.value.trim(); };
+          const fit = () => { ta.style.height = "auto"; ta.style.height = Math.min(200, ta.scrollHeight) + "px"; if (send) send.disabled = IA.sample === null || !ta.value.trim(); };
           ta.addEventListener("input", fit);
           ta.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing && matchMedia("(hover:hover)").matches) { e.preventDefault(); form.requestSubmit(); } });
           if (IA.draft) { ta.value = IA.draft; IA.draft = ""; }
           fit();
-          if (IA.sample && !IA.busy && matchMedia("(hover:hover)").matches) ta.focus();
+          if (IA.sample !== null && !IA.busy && matchMedia("(hover:hover)").matches) ta.focus();
         }
         if (form) form.addEventListener("submit", e => { e.preventDefault(); const q = ta.value.trim(); if (q) ask(q); });
         if (IA.msgs.length) requestAnimationFrame(() => scrollEnd(false));
@@ -5658,15 +5701,17 @@ Règles :
     /* ---------- Envoi d'une question ---------- */
     const ERR = {
       not_granted: "Tu n'as pas autorisé cette page à interroger Claude. Tu peux le réactiver dans les autorisations de la page, puis reposer ta question.",
-      rate_limited: "Holly reprend son souffle : réessaie dans une minute.", queue_overflow: "Holly reprend son souffle : réessaie dans une minute.",
+      rate_limited: "Holly reprend son souffle (limite gratuite atteinte) : réessaie dans une minute.", queue_overflow: "Holly reprend son souffle : réessaie dans une minute.",
       prompt_too_large: "C'est trop de cours d'un coup. Ouvre le chapitre concerné et utilise « Une question sur ce chapitre ? », ou raccourcis ta question.",
       session_expired: "Ta session Claude a expiré : recharge la page.",
       refused: "Holly ne peut pas répondre à cette question.",
+      bad_key: "La clé Gemini ne fonctionne pas : vérifie-la dans les Réglages.", network: "Pas de connexion : vérifie Internet puis réessaie.", server: "Le serveur de Holly a un souci : réessaie dans un instant.",
       sampling_disabled: "Les réponses de Holly ne sont pas disponibles sur ce compte.", capability_disabled: "Les réponses de Holly ne sont pas disponibles ici.", capability_removed: "Les réponses de Holly ne sont pas disponibles ici.", not_declared: "Les réponses de Holly ne sont pas disponibles ici."
     };
     async function ask(q) {
       if (IA.busy) return;
-      const s = IA.sample; if (!s) return;
+      const s = IA.sample === undefined ? await IA.ready : IA.sample;
+      if (!s) { IA.draft = q; ui.rerender(); return; }
       const prevUser = [...IA.msgs].reverse().find(m => m.role === "user");
       const picked = pickChapters(q, prevUser && prevUser.content);
       const used = picked.map(c => c.id);
@@ -5839,7 +5884,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
 })();
 
 </script>
-<script>window.JBA_BUILD="20261103-204500";
+<script>window.JBA_BUILD="20261103-205500";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
