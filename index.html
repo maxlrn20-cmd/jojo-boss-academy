@@ -5464,7 +5464,7 @@ JBA.chapter({
 
     /* Connexion à Claude : null hors de claude.ai (GitHub Pages, fichier ouvert en local). */
     /* ---------- Gemini (gratuit) : utilisé quand Claude n'est pas là (GitHub Pages, téléphone…) ---------- */
-    const GKEY = "jojo-boss-academy-gemini-key", GMODEL = "gemini-2.5-flash";
+    const GKEY = "jojo-boss-academy-gemini-key", GMODEL = "gemini-3.5-flash-lite";
     const gKey = () => { try { return (localStorage.getItem(GKEY) || "").trim(); } catch (e) { return ""; } };
     function gemini(key) {
       const fn = async (input, o = {}) => {
@@ -5485,7 +5485,7 @@ JBA.chapter({
             let i; while ((i = buf.indexOf("\n")) >= 0) {
               const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
               if (!line.startsWith("data:")) continue;
-              try { const j = JSON.parse(line.slice(5)); const c = j.candidates && j.candidates[0]; if (c) { const t = (c.content && c.content.parts || []).map(x => x.text || "").join(""); if (t) { text += t; o.onText && o.onText({ text, delta: t }); } if (c.finishReason) fin = c.finishReason; } } catch (e) { }
+              try { const j = JSON.parse(line.slice(5)); const c = j.candidates && j.candidates[0]; if (c) { const t = (c.content && c.content.parts || []).filter(x => !x.thought).map(x => x.text || "").join(""); if (t) { text += t; o.onText && o.onText({ text, delta: t }); } if (c.finishReason) fin = c.finishReason; } } catch (e) { }
             }
           }
         } catch (e) { if (e && e.name === "AbortError") throw { code: "cancelled", message: "", text }; throw { code: "network", message: String(e), text }; }
@@ -5884,7 +5884,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
 })();
 
 </script>
-<script>window.JBA_BUILD="20261103-210700";
+<script>window.JBA_BUILD="20261103-211800";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
