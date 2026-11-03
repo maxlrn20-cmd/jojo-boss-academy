@@ -4488,7 +4488,8 @@ JBA.chapter({
   J.S = S;
   let saveT;
   J.save = () => { clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { } }, 150); };
-  J.resetAll = () => { const t = S.theme; Object.keys(S).forEach(k => delete S[k]); Object.assign(S, fresh(), { theme: t }); J.save(); };
+  J.resetAll = () => { const t = S.theme, nm = S.name; Object.keys(S).forEach(k => delete S[k]); Object.assign(S, fresh(), { theme: t, name: nm }); J.save(); };
+  J.name = () => ((S.name || "").trim() || "Jojo");
   J.exportData = () => JSON.stringify(S);
   J.importData = (txt) => { const o = JSON.parse(txt); if (!o || o.v !== 1) throw new Error("format"); Object.keys(S).forEach(k => delete S[k]); Object.assign(S, fresh(), o); J.save(); };
   J.chs = id => (S.ch[id] = S.ch[id] || { read: false, fiche: false, status: "decouvrir", fav: false, best: null, tries: 0, opened: 0 });
@@ -4674,6 +4675,41 @@ JBA.chapter({
   ];
 
   /* ---------- Coquille ---------- */
+  /* ---------- Personnalisation du prénom : « Jojo » devient le prénom choisi partout à l'écran ---------- */
+  const BASE_TITLE = document.title;
+  ui.personalize = (root) => {
+    const n = J.name(); document.title = n === "Jojo" ? BASE_TITLE : BASE_TITLE.replace(/Jojo/g, n);
+    if (n === "Jojo" || !root) return;
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: t => /Jojo/.test(t.nodeValue) && !(t.parentNode && /^(TEXTAREA|SCRIPT|STYLE)$/.test(t.parentNode.nodeName)) ? 1 : 3 });
+    const list = []; while (w.nextNode()) list.push(w.currentNode);
+    list.forEach(t => { t.nodeValue = t.nodeValue.replace(/Jojo/g, n); });
+    root.querySelectorAll && root.querySelectorAll("[aria-label*=Jojo],[placeholder*=Jojo]").forEach(e => ["aria-label", "placeholder"].forEach(a => { const v = e.getAttribute(a); if (v) e.setAttribute(a, v.replace(/Jojo/g, n)); }));
+  };
+  const watchNames = () => {
+    ui.personalize(document.body);
+    new MutationObserver(ms => { if (J.name() === "Jojo") return; ms.forEach(m => { if (m.type === "characterData") ui.personalize(m.target.parentNode); else m.addedNodes.forEach(x => ui.personalize(x.nodeType === 3 ? x.parentNode : x)); }); }).observe(document.body, { childList: true, subtree: true, characterData: true });
+  };
+  ui.askName = (first) => {
+    const ov = document.createElement("div"); ov.className = "celebrate";
+    ov.innerHTML = `<form class="card" style="max-width:400px" id="name-form"><div style="width:150px">${H("happy")}</div>
+      <h2>${first ? "Bienvenue !" : "Ton prénom"}</h2><p class="muted">${first ? "Comment tu t'appelles ? Holly va personnaliser toute l'appli pour toi." : "Il apparaît partout dans l'appli, avec « Boss » derrière."}</p>
+      <input class="input" id="name-in" maxlength="24" autocomplete="given-name" placeholder="Ton prénom" value="${esc(S.name || "")}" style="text-align:center;font-size:20px">
+      <p class="small muted" id="name-prev">Bienvenue chez toi, ${esc(J.name())} Boss.</p>
+      <div class="row" style="justify-content:center"><button class="btn pri" type="submit">C'est moi</button>${first ? "" : `<button class="btn ghost" type="button" data-close>Annuler</button>`}</div></form>`;
+    document.body.appendChild(ov);
+    const inp = ov.querySelector("#name-in"), prev = ov.querySelector("#name-prev");
+    inp.addEventListener("input", () => { prev.textContent = `Bienvenue chez toi, ${(inp.value.trim() || "Jojo")} Boss.`; });
+    setTimeout(() => inp.focus(), 50);
+    ov.addEventListener("click", e => { if (e.target.closest("[data-close]")) ov.remove(); });
+    ov.querySelector("#name-form").addEventListener("submit", e => {
+      e.preventDefault(); const v = inp.value.trim().replace(/\s+/g, " ").slice(0, 24);
+      const old = J.name(); S.name = v; S.nameAsked = true; J.save(); ov.remove();
+      if (old !== "Jojo" && old !== J.name()) { location.reload(); return; }
+      ui.personalize(document.body); ui.rerender(); ui.refreshSheet && ui.refreshSheet();
+      ui.toast(`Enchanté, ${J.name()} Boss !`);
+    });
+  };
+
   ui.mount = () => {
     $("#root").innerHTML = `<div class="app">
       <aside class="side" aria-label="Navigation principale">
@@ -4703,6 +4739,8 @@ JBA.chapter({
     ui.applyTheme();
     ui.refreshChrome();
     route();
+    watchNames();
+    if (!S.nameAsked) setTimeout(() => ui.askName(true), 600);
     J.day(); J.save();
     J.sessionStart = Date.now();
     setInterval(() => { if (Date.now() - J.sessionStart > 45 * 60e3 && !J._pauseNudged) { J._pauseNudged = true; ui.toast(J.line("longue")); } }, 60e3);
@@ -4763,6 +4801,7 @@ JBA.chapter({
       ${ui.sheetGroup("Réglages", [
         ui.sheetRow({ act: "sheet-dark", i: "moon", t: "Mode sombre", end: toggle(dark) }),
         ui.sheetRow({ act: "sheet-focus", i: "focus", t: "Mode concentration", end: toggle(S.focus) }),
+        ui.sheetRow({ act: "askname", i: "home", t: "Prénom", end: `<span class="pcount">${esc(J.name())}</span><span class="pchev">${ICON.chev}</span>` }),
         ui.sheetRow({ href: "#reglages", i: "gear", t: "Tous les réglages" })])}
     </div>`;
   };
@@ -5431,6 +5470,7 @@ JBA.chapter({
     render() {
       return `
       <header class="stack"><span class="eyebrow">Préférences</span><h1>Réglages</h1></header>
+      <div class="card stack"><h3>Prénom</h3><div class="row between"><span>Bienvenue chez toi, <b>${esc(J.name())} Boss</b>.</span><button class="btn sec sm" data-act="askname">Modifier</button></div></div>
       <div class="card stack"><h3>Apparence</h3><div class="seg">${[["system", "Comme l'appareil"], ["light", "Clair"], ["dark", "Sombre"]].map(([k, t]) => `<button class="${S.theme === k ? "on" : ""}" data-act="settheme" data-k="${k}">${t}</button>`).join("")}</div>
         <label class="row" style="gap:10px"><input type="checkbox" id="set-focus" ${S.focus ? "checked" : ""}> <span><b>Mode concentration</b><br><span class="small muted">Masque les illustrations et les bulles de Holly pendant la lecture (les corrections restent visibles).</span></span></label></div>
       <div class="card stack"><h3>Holly, l'IA de droit</h3><p class="small muted">Holly répond gratuitement grâce à Gemini (Google). Crée une clé sur <b>aistudio.google.com</b> → « Get API key », puis colle-la ici. Elle reste enregistrée sur cet appareil.</p>${J.ia && J.ia.engine === "claude" ? `<p class="small" style="color:var(--ok);font-weight:600">Ici, Holly passe déjà par Claude : pas besoin de clé.</p>` : ""}
@@ -5445,6 +5485,7 @@ JBA.chapter({
   };
   ACT.gemsave = () => { const v = ($("#gem-key").value || "").trim(); if (!/^[\w.\-]{20,}$/.test(v)) { ui.toast("Cette clé ne ressemble pas à une clé Gemini : recopie-la en entier."); return; } J.setGeminiKey(v); ui.toast("Clé enregistrée : Holly est réveillé !"); ui.rerender(); };
   ACT.gemdel = () => { J.setGeminiKey(""); ui.toast("Clé retirée."); ui.rerender(); };
+  ACT.askname = () => ui.askName(false);
   ACT.settheme = b => { S.theme = b.dataset.k; J.save(); ui.applyTheme(); ui.rerender(); };
   ACT.copyexp = () => { const t = $("#exp"); try { navigator.clipboard.writeText(t.value).then(() => ui.toast("Code copié."), () => { t.select(); ui.toast("Sélectionné : copie-le avec Ctrl+C ou un appui long."); }); } catch (e) { t.select(); ui.toast("Sélectionné : copie-le avec Ctrl+C ou un appui long."); } };
   ACT.imp = () => { try { J.importData($("#imp").value.trim()); ui.applyTheme(); ui.toast("Progression importée."); ui.rerender(); } catch (e) { ui.toast("Ce code ne ressemble pas à une sauvegarde Jojo Boss Academy."); } };
@@ -5721,7 +5762,7 @@ Règles :
       IA.msgs.push(bot);
       IA.busy = true; saveChat(); ui.rerender(); scrollEnd(false);
 
-      const ctx = `${RULES}
+      const ctx = `${RULES.replace(/Jojo/g, J.name())}
 
 CATALOGUE DES CHAPITRES (identifiant, titre, résumé) :
 ${CATALOGUE()}
@@ -5884,7 +5925,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
 })();
 
 </script>
-<script>window.JBA_BUILD="20261103-211800";
+<script>window.JBA_BUILD="20261103-214700";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
