@@ -4902,11 +4902,13 @@ JBA.chapter({
   /* Ne pas déranger : épure l'appli et, si c'est réglé, lance les raccourcis Apple « Holly silence » / « Holly réveil » qui activent le mode Ne pas déranger de l'appareil. */
   J.isApple = () => /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
   J.DND_ON = "Holly silence"; J.DND_OFF = "Holly réveil";
-  J.runShortcut = name => { try { location.href = "shortcuts://run-shortcut?name=" + encodeURIComponent(name); } catch (e) { } };
+  J.shortcutURL = name => "shortcuts://run-shortcut?name=" + encodeURIComponent(name);
+  /* Doit être appelé directement dans le geste de l'utilisateur (sinon iOS ignore l'ouverture de Raccourcis) : on clique un vrai lien. */
+  J.runShortcut = name => { try { const l = document.createElement("a"); l.href = J.shortcutURL(name); l.rel = "noopener"; l.style.display = "none"; document.body.appendChild(l); l.click(); setTimeout(() => l.remove(), 1000); } catch (e) { try { location.href = J.shortcutURL(name); } catch (e2) { } } };
   J.setDnd = (on, quiet) => {
+    if (S.dndPhone && J.isApple()) J.runShortcut(on ? J.DND_ON : J.DND_OFF);
     S.focus = on; J.save(); ui.refreshChrome();
-    if (!quiet) ui.toast(on ? (S.dndPhone && J.isApple() ? "Ne pas déranger activé, aussi sur ton appareil. Reviens ici après Raccourcis." : "Ne pas déranger activé : Holly se fait discret.") : "Ne pas déranger désactivé : Holly est de retour.");
-    if (S.dndPhone && J.isApple()) setTimeout(() => J.runShortcut(on ? J.DND_ON : J.DND_OFF), 350);
+    if (!quiet) ui.toast(on ? (S.dndPhone && J.isApple() ? "Ne pas déranger activé, aussi sur ton appareil. Reviens ici après Raccourcis." : J.isApple() ? "Activé dans l'appli. Pour couper aussi les notifications de l'appareil : Réglages > Ne pas déranger." : "Ne pas déranger activé : Holly se fait discret.") : "Ne pas déranger désactivé : Holly est de retour.");
   };
   ACT.focus = () => J.setDnd(!S.focus);
   document.addEventListener("keydown", e => { if ((e.key === "/" || (e.key === "k" && (e.metaKey || e.ctrlKey))) && !/input|textarea/i.test(document.activeElement.tagName)) { e.preventDefault(); ui.search(); } });
@@ -5500,7 +5502,8 @@ JBA.chapter({
             <li>Crée un deuxième raccourci avec la même action réglée sur <b>Désactiver</b>, et nomme-le <b>${J.DND_OFF}</b>.</li>
             <li>Coche la case ci-dessus. Quand tu actives Ne pas déranger dans l'appli, Raccourcis s'ouvre une seconde : reviens ensuite ici.</li>
           </ol>
-          <div class="row"><button class="btn sec sm" data-act="dndtest" data-on="1">Tester « ${J.DND_ON} »</button><button class="btn ghost sm" data-act="dndtest" data-on="0">Tester « ${J.DND_OFF} »</button></div>
+          <div class="row"><a class="btn sec sm" href="${J.shortcutURL(J.DND_ON)}">Tester « ${J.DND_ON} »</a><a class="btn ghost sm" href="${J.shortcutURL(J.DND_OFF)}">Tester « ${J.DND_OFF} »</a></div>
+          <p class="small muted" style="margin-top:8px">Si « Tester » n'ouvre pas Raccourcis : vérifie que les deux raccourcis portent exactement ces noms, puis essaie depuis Safari (pas depuis l'icône de l'écran d'accueil) pour voir si iOS demande une autorisation.</p>
           <p class="small muted" style="margin-top:8px">Apple ne permet pas à un site de couper les notifications directement : ces deux raccourcis le font à sa place. ${J.isApple() ? "" : "Cet appareil n'est pas un iPhone ou un Mac : seule la partie dans l'appli fonctionnera ici."}</p>
         </details></div>
       <div class="card stack"><h3>Holly, l'IA de droit</h3><p class="small muted">Holly répond gratuitement grâce à Gemini (Google). Crée une clé sur <b>aistudio.google.com</b> → « Get API key », puis colle-la ici. Elle reste enregistrée sur cet appareil.</p>${J.ia && J.ia.engine === "claude" ? `<p class="small" style="color:var(--ok);font-weight:600">Ici, Holly passe déjà par Claude : pas besoin de clé.</p>` : ""}
@@ -5959,7 +5962,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
 })();
 
 </script>
-<script>window.JBA_BUILD="20261103-215625";
+<script>window.JBA_BUILD="20261103-215907";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
