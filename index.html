@@ -4430,6 +4430,7 @@ JBA.chapter({
   const L = {
     accueil: ["Bonjour Jojo. J'ai préparé le cours. Enfin, je crois.", "Te revoilà ! J'ai gardé ta place au chaud. Un peu trop, j'ai dormi dessus.", "Aujourd'hui, on révise. Demain aussi. Et après-demain, promenade.", "J'ai relu le cours de droit constitutionnel cette nuit. Enfin, j'ai dormi sur le classeur.", "Bonjour cheffe. Le professeur Holly est prêt. Il lui manque juste ses lunettes. Ah, elles sont sur sa tête.", "Je t'attendais. J'ai même rangé le Code civil. Il était sous le canapé."],
     bon: ["WOUF ! C'est juste !", "Exactement ! Je le savais. Enfin, je le savais après toi.", "Bonne réponse. Je remue la queue en signe d'approbation juridique.", "Parfait. Même le Conseil constitutionnel n'aurait pas mieux dit.", "Oui ! Tu mérites une friandise. Moi aussi, par solidarité.", "Juste ! Je note ça dans mon carnet de professeur. Il est un peu mâchouillé."],
+    adele: ["Oh non… tu es aussi nulle que la grosse Adèle.", "Faux. Quelque part, la grosse Adèle est très fière de toi.", "Attention : tu commences à réviser comme la grosse Adèle.", "Cette réponse sent la grosse Adèle à plein nez.", "La grosse Adèle vient de t'écrire : « Bienvenue au club. »", "Ne fais pas ta grosse Adèle, relis la correction.", "Erreur niveau grosse Adèle. On se reprend tout de suite.", "Holly a déjà vu la grosse Adèle faire exactement cette erreur. Il a eu honte pour elle.", "Encore une comme ça et on t'inscrit en TD avec la grosse Adèle.", "La grosse Adèle confond la Constitution et le menu du kebab. Ne deviens pas comme elle.", "Même la grosse Adèle aurait hésité. Puis elle aurait répondu encore plus faux.", "Raté. La grosse Adèle applaudit des deux mains."],
     mauvais: ["Bon… On va reprendre. Même moi, je me trompe parfois de chemin pendant les promenades.", "Pas grave. Une fois, j'ai confondu le Sénat et mon panier.", "Presque ! Relis la correction, je t'attends ici. Je ne bouge pas. Je ne bouge jamais.", "Ce n'est pas ça, mais c'est comme ça qu'on apprend. Moi, j'ai appris « assis » en vingt-trois essais.", "Oups. On mettra cette notion dans les « à revoir ». Je la surveillerai de près."],
     finLecon: ["Bravo ! Maintenant, je propose une petite pause. J'ai justement repéré un endroit confortable.", "Leçon terminée. Je valide avec ma patte.", "Encore un chapitre de lu. Je suis tellement fier que j'en ai oublié pourquoi j'aboyais."],
     qcmReussi: ["Tu es tellement forte que je vais bientôt devoir prendre des cours avec toi.", "Très beau score. Je l'encadrerai au-dessus de ma gamelle.", "Bravo ! Si tu continues comme ça, je vais demander une augmentation de croquettes."],
@@ -4626,18 +4627,18 @@ JBA.chapter({
       <div class="row between" style="padding:2px 4px 8px"><h2 style="font-size:30px">Plus</h2><button class="pclose" data-close aria-label="Fermer">${ICON.x}</button></div>
       ${ui.sheetGroups.map(f => f()).join("")}
       ${ui.sheetGroup("Réviser", [
-        ui.sheetRow({ href: "#cours", i: "book", t: "Mes cours", sub: "Leçons, fiches et fiches express" }),
+        ui.sheetRow({ href: "#cours", i: "book", t: "Mes cours" }),
         ui.sheetRow({ href: "#quiz", i: "quiz", t: "Sushi Quiz" }),
         ui.sheetRow({ href: "#cartes", i: "cards", t: "Flashcards" }),
         ui.sheetRow({ href: "#cas", i: "scale", t: "Cas pratiques" }),
         ui.sheetRow({ href: "#examen", i: "exam", t: "Examens blancs" })])}
-      ${ui.sheetGroup("Toi et Holly", [
-        ui.sheetRow({ href: "#progres", i: "trophy", t: "Ma progression", sub: `Niveau ${J.level().n} · ${S.xp} XP` }),
+      ${ui.sheetGroup("Moi", [
+        ui.sheetRow({ href: "#progres", i: "trophy", t: "Ma progression" }),
         ui.sheetRow({ href: "#holly", i: "dog", t: "Holly University" })])}
-      ${ui.sheetGroup("Affichage", [
+      ${ui.sheetGroup("Réglages", [
         ui.sheetRow({ act: "sheet-dark", i: "moon", t: "Mode sombre", end: toggle(dark) }),
         ui.sheetRow({ act: "sheet-focus", i: "focus", t: "Mode concentration", end: toggle(S.focus) }),
-        ui.sheetRow({ href: "#reglages", i: "gear", t: "Réglages", sub: "Sauvegarde, export, à propos" })])}
+        ui.sheetRow({ href: "#reglages", i: "gear", t: "Tous les réglages" })])}
     </div>`;
   };
   ui.sheet = () => {
@@ -4823,7 +4824,7 @@ JBA.chapter({
       const chs = J.list.filter(c => (libSubj === "all" || c.subject === libSubj) && (libFilter === "all" || (libFilter === "fav" ? J.chs(c.id).fav : J.chs(c.id).status === libFilter)) && (!libQ || J.norm(c.title + c.summary).includes(J.norm(libQ))));
       const subj = ["dc", "ip"].filter(s => libSubj === "all" || libSubj === s);
       return `
-      <header class="stack"><span class="eyebrow">Bibliothèque</span><h1>Mes cours</h1><p class="muted" style="max-width:62ch">Deux matières, dix-neuf chapitres, construits à partir de tes documents. Chaque chapitre a sa fiche, son quiz, ses flashcards et, souvent, un cas pratique.</p></header>
+      <header class="stack"><span class="eyebrow">Bibliothèque</span><h1>Mes cours</h1><p class="muted" style="max-width:62ch">Deux matières, dix-neuf chapitres.</p></header>
       <div class="card flat stack" style="padding:14px">
         <input class="input" id="lib-q" placeholder="Filtrer les chapitres…" value="${esc(libQ)}">
         <div class="row between">
@@ -4978,7 +4979,7 @@ JBA.chapter({
       const chList = J.list.filter(c => QC.subj === "all" || c.subject === QC.subj);
       const errCount = J.questions.filter(q => (S.q[q.id] || {}).last === "ko").length;
       return `
-      <header class="row between" style="align-items:flex-end"><div class="stack"><span class="eyebrow">Entraînement</span><h1>Sushi Quiz</h1><p class="muted">Une question à la fois, correction immédiate, toutes tirées de tes cours.</p></div>
+      <header class="row between" style="align-items:flex-end"><div class="stack"><span class="eyebrow">Entraînement</span><h1>Sushi Quiz</h1><p class="muted">Une question à la fois.</p></div>
         <div style="width:150px" class="deco">${H("sushi")}</div></header>
       <div class="card stack">
         <h3>1. Quelle matière ?</h3>
@@ -5018,7 +5019,7 @@ JBA.chapter({
   }
   function quizQuestion() {
     const Q = J.quiz, it = Q.items[Q.i], q = it.q, multi = q.a.length > 1, n = Q.items.length;
-    const fb = Q.answered ? (() => { const ok = Q.results[Q.i].ok; return `<div class="fb ${ok ? "ok" : "ko"}" aria-live="polite">${ui.sayHTML(ok ? "celebrate" : "perplexed", J.line(ok ? "bon" : "mauvais"), true, true)}<p><b>${ok ? "Bonne réponse." : "Réponse attendue : " + q.a.map(i => esc(q.o[i])).join(" ; ")}</b></p><p>${esc(q.e)}</p><p class="small muted">Notion : ${esc(q.n)} · ${esc(chLabel(q.ch))} · ${esc(q.p)}</p></div>`; })() : "";
+    const fb = Q.answered ? (() => { const ok = Q.results[Q.i].ok; return `<div class="fb ${ok ? "ok" : "ko"}" aria-live="polite">${ui.sayHTML(ok ? "celebrate" : "perplexed", J.line(ok ? "bon" : "adele"), true, true)}<p><b>${ok ? "Bonne réponse." : "Réponse attendue : " + q.a.map(i => esc(q.o[i])).join(" ; ")}</b></p><p>${esc(q.e)}</p><p class="small muted">Notion : ${esc(q.n)} · ${esc(chLabel(q.ch))} · ${esc(q.p)}</p></div>`; })() : "";
     return `
       <div class="row between"><span class="eyebrow">Sushi Quiz · question ${Q.i + 1} sur ${n}</span><button class="btn ghost sm" data-act="qquit">Quitter</button></div>
       <div class="bar"><i style="width:${(Q.i + (Q.answered ? 1 : 0)) / n * 100}%"></i></div>
@@ -5090,7 +5091,7 @@ JBA.chapter({
       const pool = deck();
       const due = J.dueCards(pool).length, nw = J.newCards(pool).length, m = J.mastered(pool);
       return `
-      <header class="row between" style="align-items:flex-end"><div class="stack"><span class="eyebrow">Mémorisation</span><h1>Flashcards</h1><p class="muted" style="max-width:60ch">Recto : la question. Verso : la réponse. Les cartes que tu connais mal reviennent plus souvent, celles que tu maîtrises s'espacent (1, 3, 7, 14 puis 30 jours).</p></div><div style="width:140px" class="deco">${H("etudiant")}</div></header>
+      <header class="row between" style="align-items:flex-end"><div class="stack"><span class="eyebrow">Mémorisation</span><h1>Flashcards</h1><p class="muted" style="max-width:60ch">Les cartes mal connues reviennent plus souvent.</p></div><div style="width:140px" class="deco">${H("etudiant")}</div></header>
       <div class="card stack">
         <div class="seg">${[["all", "Les deux matières"], ["dc", "Droit constit."], ["ip", "Intro droit privé"]].map(([k, t]) => `<button class="${FC.subj === k ? "on" : ""}" data-act="fc" data-f="subj" data-v="${k}">${t}</button>`).join("")}</div>
         <label class="stack small" for="fc-ch" style="gap:6px"><b>Chapitre</b><select id="fc-ch" class="input"><option value="">Tous les chapitres</option>${J.list.filter(c => FC.subj === "all" || c.subject === FC.subj).map(c => `<option value="${c.id}" ${FC.ch === c.id ? "selected" : ""}>${esc(chLabel(c.id))}</option>`).join("")}</select></label>
@@ -5155,7 +5156,7 @@ JBA.chapter({
     render() {
       const cs = allCases();
       return `
-      <header class="row between" style="align-items:flex-end"><div class="stack"><span class="eyebrow">Méthode</span><h1>Cas pratiques</h1><p class="muted" style="max-width:60ch">Des situations à résoudre avec le syllogisme juridique. Rédige ta réponse, puis compare avec la correction détaillée.</p></div><div style="width:150px" class="deco">${H("avocat")}</div></header>
+      <header class="row between" style="align-items:flex-end"><div class="stack"><span class="eyebrow">Méthode</span><h1>Cas pratiques</h1><p class="muted" style="max-width:60ch">Rédige, puis compare avec la correction.</p></div><div style="width:150px" class="deco">${H("avocat")}</div></header>
       <div class="card tint-turq stack"><h3>Le syllogisme juridique en cinq temps</h3><ol class="list"><li><b>Qualification juridique des faits</b> : traduire l'histoire en catégories du droit.</li><li><b>Problème de droit</b> : la question juridique, formulée de manière générale.</li><li><b>Règle de droit</b> : textes, principes, jurisprudences applicables (la majeure).</li><li><b>Application aux faits</b> : confronter la règle aux faits de l'espèce (la mineure).</li><li><b>Conclusion</b> : la réponse claire à la question posée.</li></ol></div>
       <div class="grid g2">${cs.map(x => { const s = S.cases[x.id] || {}; return `<a class="chcard" href="#cas-${x.id}"><div class="row between"><span class="eyebrow">${esc(J.SUBJECTS[J.byId[x.ch].subject].short)} ${J.byId[x.ch].num}</span><span class="diff">${"⚖".repeat(x.k.level)}<span class="muted">${"·".repeat(3 - x.k.level)}</span> ${["", "Facile", "Moyen", "Difficile"][x.k.level]}</span></div><h3>${esc(x.k.title)}</h3><p class="small muted" style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${esc(x.k.facts)}</p><div class="row">${s.done ? `<span class="pill maitrisee">Fait · ${s.score}/5</span>` : s.text ? `<span class="pill encours">Brouillon enregistré</span>` : `<span class="pill decouvrir">À faire</span>`}</div></a>`; }).join("")}</div>`;
     }
@@ -5197,7 +5198,7 @@ JBA.chapter({
       if (J.exam && !J.exam.finished) return examItem();
       if (J.exam && J.exam.finished) return examCorrection();
       return `
-      <header class="row between" style="align-items:flex-end"><div class="stack"><span class="eyebrow">Conditions réelles</span><h1>Examens blancs</h1><p class="muted" style="max-width:60ch">QCM, questions de cours, réflexion et cas pratique, sous chronomètre. Les QCM sont corrigés automatiquement ; tu notes toi-même tes réponses rédigées en les comparant à la correction : la note sur 20 est donc indicative.</p></div><div style="width:150px" class="deco">${H("robe")}</div></header>
+      <header class="row between" style="align-items:flex-end"><div class="stack"><span class="eyebrow">Conditions réelles</span><h1>Examens blancs</h1><p class="muted" style="max-width:60ch">En conditions réelles, sous chronomètre.</p></div><div style="width:150px" class="deco">${H("robe")}</div></header>
       <div class="grid g3">
         <div class="card stack"><span class="eyebrow">Par chapitre · 20 min</span><h3>Un chapitre</h3><select id="ex-ch" class="input">${J.list.map(c => `<option value="${c.id}">${esc(chLabel(c.id))}</option>`).join("")}</select><button class="btn pri" data-act="exgo" data-k="ch">Commencer</button></div>
         <div class="card stack"><span class="eyebrow">Par matière · 45 min</span><h3>Une matière entière</h3><select id="ex-s" class="input"><option value="dc">Droit constitutionnel</option><option value="ip">Introduction au droit privé</option></select><button class="btn pri" data-act="exgo" data-k="s">Commencer</button></div>
@@ -5459,13 +5460,13 @@ JBA.chapter({
       const av = u.photoURL ? `<img class="av" src="${esc(u.photoURL)}" alt="" referrerpolicy="no-referrer">` : `<span class="av">${esc((u.displayName || "?")[0])}</span>`;
       return ui.sheetGroup("", [
         ui.sheetRow({ act: "noop", lead: av, t: esc(u.displayName || "Connectée"), sub: esc(u.email || ""), end: "" }).replace('class="prow"', 'class="prow pacct"'),
-        ui.sheetRow({ act: "syncnow", i: "check", t: "Progression synchronisée", sub: `<span class="cloud-sub">${stateTxt()}</span>`, end: "" }).replace('<span class="tile" style="background:#8E8E93">', '<span class="tile" style="background:#34C759">'),
+        ui.sheetRow({ act: "syncnow", i: "check", t: "Synchronisé", sub: `<span class="cloud-sub">${stateTxt()}</span>`, end: "" }).replace('<span class="tile" style="background:#8E8E93">', '<span class="tile" style="background:#34C759">'),
         ui.sheetRow({ act: "logout", lead: '<span class="tile" style="background:#FF3B30">' + ui.ICON.back + '</span>', t: '<span style="color:#FF3B30">Se déconnecter</span>', end: "" })
-      ]) + `<p class="pnote">Connecte-toi avec le même compte Google sur ton iPhone et ton Mac : ta progression te suit partout.</p>`;
+      ]);
     }
     return ui.sheetGroup("", [
-      ui.sheetRow({ act: "login", lead: `<span class="av">${G.replace(/width="18" height="18"/, 'width="30" height="30"')}</span>`, t: "Se connecter avec Google", sub: "Retrouve ta progression sur tous tes appareils", end: "" }).replace('class="prow"', 'class="prow pacct pgoogle"')
-    ]) + `<p class="pnote">Sans connexion, ta progression reste enregistrée uniquement sur cet appareil.</p>`;
+      ui.sheetRow({ act: "login", lead: `<span class="av">${G.replace(/width="18" height="18"/, 'width="30" height="30"')}</span>`, t: "Se connecter avec Google", sub: "Synchronise ta progression", end: "" }).replace('class="prow"', 'class="prow pacct pgoogle"')
+    ]);
   });
   ACT.noop = () => {};
   const origRerender = ui.rerender;
@@ -5474,7 +5475,7 @@ JBA.chapter({
 })();
 
 </script>
-<script>window.JBA_BUILD="20261103-200248";
+<script>window.JBA_BUILD="20261103-201044";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
