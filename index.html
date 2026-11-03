@@ -526,6 +526,30 @@ html{scroll-behavior:smooth}
 .rate.show{opacity:1;transform:none;pointer-events:auto}
 .rate .btn{flex-direction:column;gap:6px;padding:10px 6px;font-size:14px;min-height:64px;border-radius:16px}
 .dotc{width:10px;height:10px;border-radius:50%}
+/* ===== Demande à Holly (IA) ===== */
+.tabbar{grid-template-columns:repeat(6,1fr)}
+.ia-log{display:flex;flex-direction:column;gap:16px;min-height:120px}
+.ia-msg{display:flex;gap:10px;align-items:flex-start;min-width:0}
+.ia-msg.me{justify-content:flex-end}
+.ia-msg .av{width:40px;height:40px;flex:none;border-radius:50%;background:var(--rose2);overflow:hidden;display:grid;place-items:center}
+.ia-msg .av svg{width:48px;height:48px;margin-top:8px}
+.ia-b{border-radius:18px;padding:12px 16px;max-width:min(700px,88%);line-height:1.5;font-size:16px;overflow-wrap:anywhere;min-width:0}
+.ia-msg.me .ia-b{background:#D2335F;color:#fff;border-bottom-right-radius:6px;white-space:pre-wrap}
+.ia-msg.holly .ia-b{background:var(--surface2);border-bottom-left-radius:6px}
+.ia-b p{margin:0 0 8px}.ia-b p:last-child{margin-bottom:0}
+.ia-b ul,.ia-b ol{margin:4px 0 8px;padding-left:20px;display:flex;flex-direction:column;gap:3px}
+.ia-b li::marker{color:var(--framboise)}
+.ia-b h4{margin:10px 0 4px;font-size:16px;font-weight:700}
+.ia-b code{font-size:.9em;background:var(--surface3);padding:1px 5px;border-radius:5px}
+.ia-src{font-size:12.5px;font-style:normal;color:var(--ink2);background:var(--surface);border-radius:999px;padding:1px 8px;white-space:nowrap;display:inline-block}
+.ia-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.ia-meta a{font-size:12.5px;text-decoration:none;background:var(--surface);border-radius:999px;padding:3px 10px}
+.ia-err{color:var(--ko);font-size:14px;margin-top:6px}
+.ia-comp{display:flex;gap:10px;align-items:flex-end}
+.ia-comp textarea.input{min-height:52px;max-height:220px;resize:none;flex:1}
+.ia-typing{display:inline-flex;gap:5px;padding:4px 0}.ia-typing i{width:7px;height:7px;border-radius:50%;background:var(--ink2);animation:iadot 1.2s infinite}.ia-typing i:nth-child(2){animation-delay:.2s}.ia-typing i:nth-child(3){animation-delay:.4s}
+@keyframes iadot{0%,60%,100%{opacity:.25}30%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.ia-typing i{animation:none;opacity:.6}}
 </style>
 </head><body>
 <div id="root"></div>
@@ -4602,12 +4626,13 @@ JBA.chapter({
     lock: I('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>'),
     check: I('<path d="m5 12 5 5 9-10"/>'),
     x: I('<path d="M6 6l12 12M18 6 6 18"/>'),
-    chev: I('<path d="m9 6 6 6-6 6"/>')
+    chev: I('<path d="m9 6 6 6-6 6"/>'),
+    chat: I('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01" stroke-width="2.6"/>')
   };
 
   const NAV = [
     { h: "accueil", t: "Accueil", i: "home" }, { h: "cours", t: "Mes cours", i: "book" }, { h: "quiz", t: "Sushi Quiz", i: "quiz" }, { h: "cartes", t: "Flashcards", i: "cards" },
-    { h: "cas", t: "Cas pratiques", i: "scale" }, { h: "examen", t: "Examens blancs", i: "exam" }, { sep: 1 },
+    { h: "cas", t: "Cas pratiques", i: "scale" }, { h: "examen", t: "Examens blancs", i: "exam" }, { h: "ia", t: "Demande à Holly", i: "chat" }, { sep: 1 },
     { h: "progres", t: "Ma progression", i: "trophy" }, { h: "holly", t: "Holly University", i: "dog" }, { sep: 1 },
     { h: "reglages", t: "Réglages", i: "gear" }
   ];
@@ -4633,7 +4658,7 @@ JBA.chapter({
         <main id="main" tabindex="-1"></main>
       </div>
       <nav class="tabbar" aria-label="Navigation">
-        ${[["accueil", "Accueil", "home"], ["cours", "Cours", "book"], ["quiz", "Quiz", "quiz"], ["cartes", "Cartes", "cards"]].map(([h, t, i]) => `<a href="#${h}" data-tab="${h}">${ICON[i]}<span>${t}</span></a>`).join("")}
+        ${[["accueil", "Accueil", "home"], ["cours", "Cours", "book"], ["quiz", "Quiz", "quiz"], ["cartes", "Cartes", "cards"], ["ia", "Holly", "chat"]].map(([h, t, i]) => `<a href="#${h}" data-tab="${h}">${ICON[i]}<span>${t}</span></a>`).join("")}
         <button data-act="more">${ICON.more}<span>Plus</span></button>
       </nav>
     </div>`;
@@ -4680,7 +4705,7 @@ JBA.chapter({
   }
   /* Feuille « Plus », façon iOS : groupes arrondis, tuiles colorées, chevrons. */
   ui.sheetGroups = [];
-  const TILE = { book: "#FF9500", quiz: "#FF2D55", cards: "#5856D6", scale: "#34C759", exam: "#007AFF", trophy: "#FFCC00", dog: "#AF52DE", gear: "#8E8E93", home: "#FF3B30", moon: "#5E5CE6", focus: "#30B0C7" };
+  const TILE = { chat: "#E0406E", book: "#FF9500", quiz: "#FF2D55", cards: "#5856D6", scale: "#34C759", exam: "#007AFF", trophy: "#FFCC00", dog: "#AF52DE", gear: "#8E8E93", home: "#FF3B30", moon: "#5E5CE6", focus: "#30B0C7" };
   ui.sheetRow = (o) => `<${o.href ? `a href="${o.href}"` : `button type="button" data-act="${o.act}"`} class="prow">${o.lead || `<span class="tile" style="background:${TILE[o.i] || "#8E8E93"}">${ICON[o.i]}</span>`}<span class="pmain"><span class="pt">${o.t}</span>${o.sub ? `<span class="ps">${o.sub}</span>` : ""}</span>${o.end != null ? o.end : `<span class="pchev">${ICON.chev}</span>`}</${o.href ? "a" : "button"}>`;
   ui.sheetGroup = (label, rows) => `${label ? `<p class="plabel">${label}</p>` : ""}<div class="pgroup">${rows.join("")}</div>`;
   const toggle = on => `<span class="ptoggle ${on ? "on" : ""}" aria-hidden="true"><i></i></span>`;
@@ -4694,7 +4719,8 @@ JBA.chapter({
         ui.sheetRow({ href: "#quiz", i: "quiz", t: "Sushi Quiz" }),
         ui.sheetRow({ href: "#cartes", i: "cards", t: "Flashcards" }),
         ui.sheetRow({ href: "#cas", i: "scale", t: "Cas pratiques" }),
-        ui.sheetRow({ href: "#examen", i: "exam", t: "Examens blancs" })])}
+        ui.sheetRow({ href: "#examen", i: "exam", t: "Examens blancs" }),
+        ui.sheetRow({ href: "#ia", i: "chat", t: "Demande à Holly" })])}
       ${ui.sheetGroup("Moi", [
         ui.sheetRow({ href: "#progres", i: "trophy", t: "Ma progression" }),
         ui.sheetRow({ href: "#holly", i: "dog", t: "Holly University" })])}
@@ -4810,6 +4836,7 @@ JBA.chapter({
       const rows = [];
       if (recs[0]) rows.push(ui.sheetRow({ href: recs[0].href, i: "book", t: esc(recs[0].txt) }));
       if (errN) rows.push(ui.sheetRow({ act: "quiz-errors", i: "quiz", t: "Refaire mes erreurs", end: `<span class="pcount tnum">${errN}</span><span class="pchev">${ICON.chev}</span>` }));
+      rows.push(ui.sheetRow({ href: "#ia", i: "chat", t: "Demande à Holly", sub: "Une question sur tes cours ?" }));
       rows.push(ui.sheetRow({ href: "#cartes", i: "cards", t: "Cartes du jour", end: `<span class="pcount tnum">${J.dueCards(J.cards).length || ""}</span><span class="pchev">${ICON.chev}</span>` }));
       return `
       <section class="hero home">
@@ -4892,7 +4919,7 @@ JBA.chapter({
       </header>
       <div class="card flat row between" style="padding:12px 14px">
         <label class="row small" for="st-sel"><b>Statut</b><select id="st-sel" class="input" style="width:auto;padding:8px 12px" data-id="${id}">${Object.entries(STATUS).map(([k, t]) => `<option value="${k}" ${st.status === k ? "selected" : ""}>${t}</option>`).join("")}</select></label>
-        ${window.JBA_NOPDF ? "" : `<a class="btn ghost sm" href="${c.pdf}" target="_blank" rel="noopener">${ICON.file.replace("<svg", "<svg width=18 height=18")} Document d'origine</a>`}
+        <span class="row"><button class="btn sec sm" data-act="ia-ch" data-id="${id}">${ICON.chat.replace("<svg", "<svg width=16 height=16")} Une question sur ce chapitre ?</button>${window.JBA_NOPDF ? "" : `<a class="btn ghost sm" href="${c.pdf}" target="_blank" rel="noopener">${ICON.file.replace("<svg", "<svg width=18 height=18")} Document d'origine</a>`}</span>
       </div>
       ${c.note ? `<div class="note">${esc(c.note)}</div>` : ""}
       <div class="tabs" role="tablist">${tabs.map(([k, t]) => `<button role="tab" aria-selected="${chTab === k}" class="${chTab === k ? "on" : ""}" data-act="chtab" data-k="${k}">${t}</button>`).join("")}</div>
@@ -5384,6 +5411,251 @@ JBA.chapter({
   ACT.reset1 = () => { confirmReset = true; ui.rerender(); };
   ACT.reset0 = () => { confirmReset = false; ui.rerender(); };
   ACT.reset2 = () => { confirmReset = false; J.resetAll(); J.quiz = J.flash = J.exam = null; ui.applyTheme(); ui.toast("Progression réinitialisée. Holly a tout oublié, comme d'habitude."); ui.rerender(); };
+
+  /* ======================= DEMANDE À HOLLY (IA) ======================= */
+  /* Holly répond aux questions à partir des chapitres de l'appli : les chapitres les plus proches
+     de la question sont joints à la demande ; s'il le faut, Holly lit d'autres chapitres ou cherche
+     dans tous les cours grâce à deux outils. Fonctionne dans la version Claude du site. */
+  (function () {
+    const CHATKEY = "jojo-boss-academy-holly-chat";
+    const IA = J.ia = { msgs: [], busy: false, ctl: null, scope: "", sample: undefined, tools: false };
+    try { const m = JSON.parse(localStorage.getItem(CHATKEY) || "[]"); if (Array.isArray(m)) IA.msgs = m.filter(x => x && x.content && !x.pending).slice(-30); } catch (e) { }
+    const saveChat = () => { try { localStorage.setItem(CHATKEY, JSON.stringify(IA.msgs.filter(x => !x.pending && x.content).slice(-30))); } catch (e) { } };
+
+    /* Connexion à Claude : null hors de claude.ai (GitHub Pages, fichier ouvert en local). */
+    IA.ready = (async () => {
+      try {
+        if (!window.claude || typeof window.claude.use !== "function") return null;
+        const s = await window.claude.use("sample");
+        if (s) { try { const lim = await s.limits(); IA.tools = !!(lim && lim.tools); IA.max = lim && lim.maxPromptBytes; } catch (e) { } }
+        return s || null;
+      } catch (e) { return null; }
+    })().then(s => { IA.sample = s; if ((location.hash || "") === "#ia") ui.rerender(); return s; });
+
+    /* ---------- Texte complet d'un chapitre ---------- */
+    const SUB = id => J.SUBJECTS[J.byId[id].subject].short;
+    const label = c => `${J.SUBJECTS[c.subject].short} ${c.num} — ${c.title}`;
+    const TXT = {};
+    function chText(c) {
+      if (TXT[c.id]) return TXT[c.id];
+      const L = [];
+      L.push(`### CHAPITRE [${c.id}] ${label(c)}`, `Auteur du cours : ${c.author} · Source : ${c.source}`);
+      if (c.note) L.push(`Remarque sur le document : ${c.note}`);
+      L.push(`Résumé : ${c.summary}`, "Plan du cours :");
+      c.plan.forEach(p => { L.push(`• ${p.h} (${p.p})`); p.pts.forEach(x => L.push(`   - ${x}`)); });
+      if (c.defs.length) { L.push("Définitions :"); c.defs.forEach(d => L.push(`- ${d.t} : ${d.d} (${d.p})`)); }
+      if (c.articles.length) { L.push("Articles :"); c.articles.forEach(a => L.push(`- ${a.ref} : ${a.txt}`)); }
+      if (c.juris.length) { L.push("Jurisprudences :"); c.juris.forEach(j => L.push(`- ${j.name}, ${j.court}, ${j.date}. Faits : ${j.faits} Question : ${j.question} Solution : ${j.solution} Portée : ${j.portee}`)); }
+      if (c.dates.length) L.push("Dates : " + c.dates.map(d => `${d.d} : ${d.e}`).join(" | "));
+      if (c.authors.length) L.push("Auteurs : " + c.authors.map(a => `${a.n} (${a.i})`).join(" | "));
+      [["Conditions", c.conditions], ["Exceptions", c.exceptions], ["Exemples", c.examples], ["Pièges", c.traps], ["À retenir", c.keys]].forEach(([t, arr]) => { if (arr && arr.length) L.push(`${t} : ` + arr.join(" | ")); });
+      if (c.complements && c.complements.length) L.push("COMPLÉMENTS HORS COURS (corrections vérifiées, à signaler comme tels) : " + c.complements.join(" | "));
+      c.eli5.forEach(e => L.push(`Explication simple « ${e.notion} » : ${e.def} ${e.steps.join(" ")} Exemple : ${e.example} Côté juridique : ${e.legal} En résumé : ${e.summary}`));
+      c.cases.forEach(k => L.push(`Cas pratique « ${k.title} » : ${k.facts} Question : ${k.question} Règle : ${k.rule} Application : ${k.app} Conclusion : ${k.concl}`));
+      return (TXT[c.id] = L.join("\n"));
+    }
+    const CATALOGUE = () => J.list.map(c => `[${c.id}] ${label(c)} : ${c.summary}`).join("\n");
+
+    /* ---------- Choix des chapitres pertinents ---------- */
+    const STOP = new Set("les des une un est que qui quoi dans pour par sur avec sans aux elle elles ils lui leur leurs ses son sa mon mes ton tes notre vous nous tu je il on ce cette ces cet entre plus moins tres bien fait faire peut peux doit dois quel quelle quels quelles comment pourquoi quand ou donc car mais alors aussi tout tous toute toutes autre autres meme cela ca c'est qu'est explique expliquer explique-moi resume resumer difference definition definir cours chapitre holly jojo stp merci svp question exemple exemples".split(" "));
+    const toks = q => [...new Set(J.norm(q).replace(/[^a-z0-9]+/g, " ").split(" ").filter(t => (t.length >= 3 || /\d/.test(t)) && !STOP.has(t)))];
+    const NORM = {};
+    const normOf = c => NORM[c.id] || (NORM[c.id] = J.norm(chText(c)));
+    function rank(q, prev) {
+      const T = toks(q), P = prev ? toks(prev) : [];
+      return J.list.map(c => {
+        const n = normOf(c), title = J.norm(c.title);
+        let sc = 0;
+        T.forEach(t => { const k = n.split(t).length - 1; sc += Math.min(k, 6) + (title.includes(t) ? 6 : 0); });
+        P.forEach(t => { const k = n.split(t).length - 1; sc += Math.min(k, 3) * .4; });
+        return { c, sc };
+      }).sort((a, b) => b.sc - a.sc);
+    }
+    function pickChapters(q, prev) {
+      if (IA.scope && J.byId[IA.scope]) return [J.byId[IA.scope]];
+      const r = rank(q, prev).filter(x => x.sc > 0);
+      const out = []; let size = 0; const top = r.length ? r[0].sc : 0;
+      for (const x of r) { if (out.length >= 4 || x.sc < top * .25) break; const len = chText(x.c).length; if (size + len > 95000 && out.length) break; out.push(x.c); size += len; }
+      return out;
+    }
+
+    /* ---------- Outils mis à disposition de Holly ---------- */
+    let IDX2;
+    function searchCourses(q) {
+      if (!IDX2) {
+        IDX2 = [];
+        J.list.forEach(c => {
+          const add = (type, t, x) => IDX2.push({ ch: c.id, type, t, x, n: J.norm(t + " " + x) });
+          c.plan.forEach(p => add("Plan du cours", p.h + " (" + p.p + ")", p.pts.join(" ")));
+          c.defs.forEach(d => add("Définition", d.t, d.d + " (" + d.p + ")"));
+          c.articles.forEach(a => add("Article", a.ref, a.txt));
+          c.juris.forEach(j => add("Jurisprudence", `${j.name}, ${j.court}, ${j.date}`, j.solution + " " + j.portee));
+          c.authors.forEach(a => add("Auteur", a.n, a.i));
+          c.dates.forEach(d => add("Date", d.d, d.e));
+          (c.complements || []).forEach(x => add("Complément hors cours", "Complément", x));
+        });
+      }
+      const T = toks(q); if (!T.length) return [];
+      return IDX2.map(x => ({ x, s: T.reduce((a, t) => a + (x.n.includes(t) ? 1 : 0), 0) })).filter(r => r.s > 0).sort((a, b) => b.s - a.s).slice(0, 14)
+        .map(({ x }) => ({ chapitre: x.ch, titre_chapitre: label(J.byId[x.ch]), type: x.type, intitule: x.t, contenu: x.x.length > 400 ? x.x.slice(0, 400) + "…" : x.x }));
+    }
+    function makeTools(used, onStep) {
+      return [
+        { name: "lire_chapitre", description: "Renvoie le contenu complet d'un chapitre du cours (plan détaillé, définitions, articles, jurisprudences, dates, pièges, compléments, cas pratiques). Utilise-le quand le chapitre utile n'est pas déjà dans les extraits fournis.",
+          inputSchema: { type: "object", properties: { id: { type: "string", description: "Identifiant du chapitre, ex. dc3 ou ip7 (voir le catalogue)." } }, required: ["id"] },
+          execute(input) { const id = String(input && input.id || "").trim().toLowerCase(); const c = J.byId[id]; if (!c) throw new Error("Chapitre inconnu. Identifiants valides : " + J.list.map(x => x.id).join(", ")); if (!used.includes(id)) used.push(id); onStep(`Holly relit « ${c.title} »…`); return chText(c).slice(0, 30000); } },
+        { name: "chercher", description: "Cherche des mots-clés dans tous les cours (définitions, articles, arrêts, auteurs, dates, plan). Renvoie jusqu'à 14 passages avec leur chapitre. Utile pour trouver où une notion, un article ou un arrêt est traité.",
+          inputSchema: { type: "object", properties: { requete: { type: "string", description: "Quelques mots-clés, ex. « Clément-Bayard » ou « article 1359 »." } }, required: ["requete"] },
+          execute(input) { const q = String(input && input.requete || ""); onStep(`Holly cherche « ${q} » dans tes cours…`); const r = searchCourses(q); return r.length ? r : "Aucun passage trouvé pour ces mots-clés."; } }
+      ];
+    }
+
+    /* ---------- Consignes ---------- */
+    const RULES = `Tu es le professeur Holly, un vieux bichon crème très duveteux, un peu fatigué mais très fier de son élève, qui enseigne le droit à Jojo (surnommée « Jojo Boss »), étudiante en première année de droit. Tu réponds à ses questions sur les cours de son application de révision, Jojo Boss Academy : « Droit constitutionnel 1 » (Michel Verpeaux, UNJF, chapitres dc1 à dc9) et « Introduction au droit privé » (Patricia Vannier, chapitres ip1 à ip10).
+
+Règles :
+1. Fonde ta réponse sur le CONTENU DES COURS fourni plus bas. Si les extraits ne suffisent pas et que tu disposes des outils, utilise « chercher » ou « lire_chapitre » avant de répondre.
+2. Cite tes sources entre crochets, au format [Droit constit. 2, p. 15] ou [Intro droit privé 4, p. 52], avec les pages indiquées dans le cours.
+3. Si la question sort du cours, dis-le clairement ; tu peux alors donner une réponse générale brève, introduite par « Hors cours (à vérifier) : ». N'invente jamais d'article, d'arrêt, de date ou de chiffre.
+4. Les « compléments hors cours » sont des corrections vérifiées ou des mises à jour : mentionne-les comme tels quand ils changent la réponse.
+5. Réponds en français, en tutoyant Jojo, niveau L1 : la réponse directe d'abord, puis l'explication. Mets les notions clés en gras. Environ 80 à 250 mots, sauf si Jojo demande une fiche, un plan, un quiz ou un développement. Pour un cas pratique, suis le syllogisme : qualification, problème de droit, règle, application, conclusion.
+6. Quiz : si Jojo demande un quiz, pose les questions une par une ou toutes avec les réponses en fin de message, selon sa demande.
+7. Personnalité : au plus une petite phrase d'humour de Holly (siestes, promenades, sushis, croquettes), jamais au détriment de la précision.
+8. Format : Markdown simple uniquement (paragraphes, **gras**, listes « - » ou « 1. », titres « ### »). Pas de tableaux.`;
+
+    /* ---------- Rendu Markdown minimal et sûr ---------- */
+    function md(src) {
+      const inline = t => esc(t).replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>").replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<i>$2</i>").replace(/`([^`]+)`/g, "<code>$1</code>")
+        .replace(/\[([^\[\]]{2,90})\]/g, (m, x) => /p\.|constit|droit|ip\d|dc\d|chap/i.test(x) ? `<span class="ia-src">${x}</span>` : m);
+      const out = []; let list = null, para = [];
+      const flushP = () => { if (para.length) { out.push(`<p>${para.map(inline).join("<br>")}</p>`); para = []; } };
+      const flushL = () => { if (list) { out.push(`<${list.t}>${list.items.map(i => `<li>${inline(i)}</li>`).join("")}</${list.t}>`); list = null; } };
+      String(src || "").replace(/\r/g, "").split("\n").forEach(line => {
+        const l = line.trim();
+        let m;
+        if (!l) { flushP(); flushL(); return; }
+        if ((m = l.match(/^#{1,6}\s+(.*)$/))) { flushP(); flushL(); out.push(`<h4>${inline(m[1])}</h4>`); return; }
+        if ((m = l.match(/^[-*•]\s+(.*)$/))) { flushP(); if (!list || list.t !== "ul") { flushL(); list = { t: "ul", items: [] }; } list.items.push(m[1]); return; }
+        if ((m = l.match(/^\d+[.)]\s+(.*)$/))) { flushP(); if (!list || list.t !== "ol") { flushL(); list = { t: "ol", items: [] }; } list.items.push(m[1]); return; }
+        if (list && /^\s{2,}/.test(line)) { list.items[list.items.length - 1] += " " + l; return; }
+        flushL(); para.push(l);
+      });
+      flushP(); flushL();
+      return out.join("");
+    }
+
+    /* ---------- Vue ---------- */
+    const SUGG = ["Quelle est la différence entre déconcentration et décentralisation ?", "Explique-moi l'arrêt Clément-Bayard", "Quand faut-il un écrit pour prouver un acte juridique ?", "Résume la crise du 16 mai 1877", "Fais-moi un mini-quiz de 3 questions sur la QPC", "Curatelle ou tutelle : comment les distinguer ?"];
+    const avatar = () => `<span class="av" aria-hidden="true">${H("prof", { tilt: -4 })}</span>`;
+    function msgHTML(m, i) {
+      if (m.role === "user") return `<div class="ia-msg me"><div class="ia-b">${esc(m.content)}</div></div>`;
+      const body = m.pending && !m.content ? `<span class="ia-typing" aria-label="Holly réfléchit"><i></i><i></i><i></i></span>${m.step ? ` <span class="small muted">${esc(m.step)}</span>` : ""}` : md(m.content) + (m.pending && m.step ? `<p class="small muted">${esc(m.step)}</p>` : "");
+      const chs = (m.chs || []).filter(id => J.byId[id]);
+      const meta = !m.pending && chs.length ? `<div class="ia-meta"><span class="small muted">Chapitres consultés :</span>${chs.map(id => `<a href="#ch-${id}">${esc(SUB(id))} ${J.byId[id].num} · ${esc(J.byId[id].title)}</a>`).join("")}</div>` : "";
+      return `<div class="ia-msg holly" id="ia-m-${i}">${avatar()}<div class="ia-b"><span class="who small" style="color:var(--framboise);font-weight:600;display:block;margin-bottom:2px">Holly</span><div class="ia-body">${body}</div>${m.err ? `<p class="ia-err">${esc(m.err)}</p>` : ""}${meta}</div></div>`;
+    }
+    function updateLast() {
+      const i = IA.msgs.length - 1, el = $(`#ia-m-${i}`);
+      if (el) { const tmp = document.createElement("div"); tmp.innerHTML = msgHTML(IA.msgs[i], i); el.replaceWith(tmp.firstElementChild); }
+    }
+    const scrollEnd = () => { const log = $("#ia-log"); if (log) { const last = log.lastElementChild; if (last) last.scrollIntoView({ block: "end", behavior: "smooth" }); } };
+
+    VIEWS.ia = {
+      render() {
+        const avail = IA.sample, waiting = avail === undefined;
+        const chs = J.list;
+        const unavailable = !waiting && !avail ? `<div class="card stack tint-rose">${ui.sayHTML("perplexed", "Ici, je ne peux pas te répondre : mes réponses passent par Claude, et cette version du site n'y est pas reliée.", true, true)}<p class="small muted">Ouvre la version Claude de Jojo Boss Academy (le lien claude.ai) pour discuter avec Holly. En attendant, la recherche retrouve n'importe quelle notion, article ou arrêt dans tes cours.</p><button class="btn sec sm" data-act="search" style="align-self:flex-start">${ICON.search.replace("<svg", "<svg width=16 height=16")} Rechercher dans mes cours</button></div>` : "";
+        return `
+        <header class="row between" style="align-items:flex-end"><div class="stack"><h1>Demande à Holly</h1><p class="muted" style="max-width:60ch">Une notion, un article, un arrêt, un cas pratique : Holly répond à partir de tes cours et te dit où relire.</p></div><div style="width:96px" class="deco">${H("prof")}</div></header>
+        ${unavailable}
+        <div class="card stack" style="gap:16px">
+          <div class="ia-log" id="ia-log" aria-live="polite">${IA.msgs.length ? IA.msgs.map(msgHTML).join("") : `
+            ${ui.sayHTML("happy", "Bonjour Jojo ! Pose-moi une question sur tes cours. Je relis le chapitre, je te réponds, et je te dis où vérifier. Promis, je ne dors pas pendant ce temps.", false, true)}
+            <div class="chips">${SUGG.map(q => `<button class="chip" data-act="ia-sugg" ${avail ? "" : "disabled"}>${esc(q)}</button>`).join("")}</div>`}</div>
+          <div class="stack" style="gap:10px;border-top:.5px solid var(--line);padding-top:14px">
+            <div class="row between">
+              <label class="row small" for="ia-scope" style="gap:8px;flex-wrap:nowrap;min-width:0;flex:1 1 260px"><b style="white-space:nowrap">Chercher dans</b><select id="ia-scope" class="input" style="width:auto;min-width:0;flex:1;padding:7px 10px;font-size:14px"><option value="">Tous mes cours</option>${chs.map(c => `<option value="${c.id}" ${IA.scope === c.id ? "selected" : ""}>${esc(label(c))}</option>`).join("")}</select></label>
+              ${IA.msgs.length ? `<button class="btn ghost sm" data-act="ia-clear" ${IA.busy ? "disabled" : ""}>Nouvelle conversation</button>` : ""}
+            </div>
+            <form class="ia-comp" id="ia-form">
+              <label for="ia-q" class="sr" style="position:absolute;left:-9999px">Ta question</label>
+              <textarea id="ia-q" class="input" rows="1" placeholder="${waiting ? "Holly se réveille…" : avail ? "Ta question pour Holly…" : "Disponible dans la version Claude du site"}" ${avail ? "" : "disabled"}></textarea>
+              ${IA.busy ? `<button type="button" class="btn sec" data-act="ia-stop">Arrêter</button>` : `<button type="submit" class="btn pri" ${avail ? "" : "disabled"}>Envoyer</button>`}
+            </form>
+            <p class="small muted">Holly s'appuie sur tes fiches, mais peut se tromper : vérifie les points importants dans le chapitre indiqué. Entrée pour envoyer, Maj + Entrée pour aller à la ligne.</p>
+          </div>
+        </div>`;
+      },
+      after() {
+        const ta = $("#ia-q"), form = $("#ia-form"), sel = $("#ia-scope");
+        if (sel) sel.addEventListener("change", () => { IA.scope = sel.value; });
+        if (ta) {
+          const fit = () => { ta.style.height = "auto"; ta.style.height = Math.min(220, ta.scrollHeight) + "px"; };
+          ta.addEventListener("input", fit);
+          ta.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); form.requestSubmit(); } });
+          if (IA.draft) { ta.value = IA.draft; IA.draft = ""; fit(); }
+          if (IA.sample && !IA.busy && matchMedia("(hover:hover)").matches) ta.focus();
+        }
+        if (form) form.addEventListener("submit", e => { e.preventDefault(); const q = ta.value.trim(); if (q) ask(q); });
+        if (IA.msgs.length) setTimeout(scrollEnd, 30);
+      }
+    };
+
+    /* ---------- Envoi d'une question ---------- */
+    const ERR = {
+      not_granted: "Tu n'as pas autorisé cette page à interroger Claude. Tu peux le réactiver dans les autorisations de la page, puis reposer ta question.",
+      rate_limited: "Holly reprend son souffle : réessaie dans une minute.", queue_overflow: "Holly reprend son souffle : réessaie dans une minute.",
+      prompt_too_large: "C'est trop de cours d'un coup. Choisis un chapitre précis dans « Chercher dans », ou raccourcis ta question.",
+      session_expired: "Ta session Claude a expiré : recharge la page.",
+      refused: "Holly ne peut pas répondre à cette question.",
+      sampling_disabled: "Les réponses de Holly ne sont pas disponibles sur ce compte.", capability_disabled: "Les réponses de Holly ne sont pas disponibles ici.", capability_removed: "Les réponses de Holly ne sont pas disponibles ici.", not_declared: "Les réponses de Holly ne sont pas disponibles ici."
+    };
+    async function ask(q) {
+      if (IA.busy) return;
+      const s = IA.sample; if (!s) return;
+      const prevUser = [...IA.msgs].reverse().find(m => m.role === "user");
+      const picked = pickChapters(q, prevUser && prevUser.content);
+      const used = picked.map(c => c.id);
+      const history = IA.msgs.filter(m => m.content && !m.err).slice(-8).map(m => ({ role: m.role === "user" ? "user" : "assistant", content: m.content }));
+      IA.msgs.push({ role: "user", content: q });
+      const bot = { role: "assistant", content: "", pending: true, chs: used, step: "" };
+      IA.msgs.push(bot);
+      IA.busy = true; saveChat(); ui.rerender(); scrollEnd();
+
+      const ctx = `${RULES}
+
+CATALOGUE DES CHAPITRES (identifiant, titre, résumé) :
+${CATALOGUE()}
+
+CONTENU DES COURS — extraits les plus utiles pour la question :
+${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspond directement aux mots de la question : appuie-toi sur le catalogue" + (IA.tools ? " et utilise les outils." : ".") + ")"}`;
+      const input = [{ role: "user", content: ctx }, { role: "assistant", content: "Compris. Je réponds à partir de ces cours, en citant mes sources." }, ...history, { role: "user", content: q }];
+      const ctl = IA.ctl = new AbortController();
+      const opts = { signal: ctl.signal, cache: false, modelTier: "default", onText: ({ text }) => { bot.content = text; bot.step = ""; updateLast(); } };
+      if (IA.tools) opts.tools = makeTools(used, step => { bot.step = step; updateLast(); });
+      try {
+        const r = await s(input, opts);
+        bot.content = r.text;
+        if (r.truncated) bot.err = "Réponse coupée car trop longue : demande une partie à la fois.";
+        const d = J.day(); d.ia = (d.ia || 0) + 1;
+        if (d.ia <= 10) J.addXP(2, "Question à Holly", "ia"); else J.save();
+      } catch (e) {
+        const code = e && e.code;
+        if (e && e.text) bot.content = e.text;
+        if (code === "cancelled") { if (!bot.content) bot.content = "*(Question interrompue.)*"; }
+        else bot.err = ERR[code] || "Holly a trébuché sur une erreur. Réessaie dans un instant.";
+      } finally {
+        bot.pending = false; bot.step = ""; IA.busy = false; IA.ctl = null;
+        if (!bot.content && bot.err) { IA.msgs.pop(); IA.msgs.pop(); IA.draft = q; ui.toast(bot.err); }
+        saveChat();
+        if ((location.hash || "") === "#ia") { ui.rerender(); scrollEnd(); }
+      }
+    }
+    ACT["ia-sugg"] = b => ask(b.textContent.trim());
+    ACT["ia-stop"] = () => { if (IA.ctl) IA.ctl.abort(); };
+    ACT["ia-clear"] = () => { if (IA.busy) return; IA.msgs = []; saveChat(); ui.rerender(); };
+    ACT["ia-ch"] = b => { IA.scope = b.dataset.id; location.hash = "#ia"; };
+  })();
 
   ui.mount();
 })();
