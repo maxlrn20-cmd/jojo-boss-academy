@@ -397,6 +397,50 @@ h2{font-weight:700;letter-spacing:-.028em}
 .chcard{padding:22px}
 .pill.fav{background:var(--surface3);color:var(--ink)}
 @media (max-width:600px){.br-d{display:none}.hero.home h1{font-size:40px}}
+
+/* ===== Feuille « Plus » façon iOS ===== */
+.sheet{align-items:flex-end;animation:fadein .2s ease}
+.psheet{background:var(--bg);width:100%;max-width:560px;border-radius:14px 14px 0 0;padding:8px max(16px,env(safe-area-inset-left,0px)) calc(24px + env(safe-area-inset-bottom,0px));max-height:92vh;overflow:auto;display:flex;flex-direction:column;gap:6px;animation:sheetup .32s cubic-bezier(.2,.9,.3,1)}
+@media (min-width:600px){.sheet{align-items:center}.psheet{border-radius:16px;max-height:86vh;box-shadow:0 30px 80px rgba(0,0,0,.3)}}
+@keyframes sheetup{from{transform:translateY(40px);opacity:.4}}
+@keyframes fadein{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){.psheet,.sheet{animation:none}}
+.psheet .grab{width:36px;height:5px;border-radius:3px;background:var(--surface3);align-self:center;margin:2px 0 8px}
+.pclose{width:30px;height:30px;border-radius:50%;border:0;background:var(--surface3);color:var(--ink2);display:grid;place-items:center;cursor:pointer}
+.pclose svg{width:14px;height:14px;stroke-width:2.6}
+.plabel{font-size:13px;color:var(--ink2);text-transform:uppercase;letter-spacing:.02em;margin:14px 16px 6px}
+.pgroup{background:var(--surface);border-radius:12px;overflow:hidden}
+.prow{display:flex;align-items:center;gap:12px;width:100%;padding:0 14px 0 14px;min-height:50px;background:none;border:0;text-align:left;color:var(--ink);text-decoration:none;cursor:pointer;font-size:17px;position:relative}
+.prow:active{background:var(--surface3)}
+@media (hover:hover){.prow:hover{background:var(--surface2)}}
+.prow+.prow::before{content:"";position:absolute;top:0;right:0;left:56px;border-top:.5px solid var(--line)}
+.prow .tile{width:30px;height:30px;border-radius:7px;display:grid;place-items:center;color:#fff;flex:none}
+.prow .tile svg{width:18px;height:18px;stroke-width:2.1}
+.pmain{flex:1;min-width:0;display:flex;flex-direction:column;padding:10px 0}
+.pt{font-weight:400;letter-spacing:-.01em}
+.ps{font-size:13px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pchev{color:var(--ink2);opacity:.55;display:grid}
+.pchev svg{width:16px;height:16px;stroke-width:2.4}
+.ptoggle{width:51px;height:31px;border-radius:999px;background:var(--surface3);position:relative;flex:none;transition:background .2s}
+.ptoggle i{position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.2);transition:transform .2s}
+.ptoggle.on{background:#34C759}
+.ptoggle.on i{transform:translateX(20px)}
+.pacct{min-height:76px}
+.pacct .av{width:56px;height:56px;border-radius:50%;flex:none;object-fit:cover;background:var(--surface3);display:grid;place-items:center;overflow:hidden}
+.pacct .pt{font-size:19px;font-weight:600}
+.prow.pgoogle .pt{color:#007AFF}
+:root[data-theme="dark"] .prow.pgoogle .pt{color:#0A84FF}
+.pnote{font-size:13px;color:var(--ink2);margin:6px 16px 0;line-height:1.35}
+.desk-only{display:none}@media (min-width:960px){.desk-only{display:grid}}
+.psheet>*{flex-shrink:0}
+.sheet>.psheet{--grp:#F2F2F7;--cell:#FFFFFF;background:var(--grp);padding:8px max(16px,env(safe-area-inset-left,0px)) calc(24px + env(safe-area-inset-bottom,0px));border-radius:14px 14px 0 0}@media (min-width:600px){.sheet>.psheet{border-radius:16px}}
+.pgroup{background:var(--cell)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .psheet{--grp:#000;--cell:#1C1C1E}}
+:root[data-theme="dark"] .psheet{--grp:#000;--cell:#1C1C1E}
+:root[data-theme="dark"] .pclose,:root[data-theme="dark"] .ptoggle{background:#39393D}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pclose,:root:not([data-theme="light"]) .ptoggle{background:#39393D}}
+.ptoggle.on{background:#34C759!important}
+@media (min-width:600px){.psheet .grab{display:none}}
 </style>
 </head><body>
 <div id="root"></div>
@@ -4460,7 +4504,8 @@ JBA.chapter({
     back: I('<path d="M19 12H5M11 6l-6 6 6 6"/>'),
     lock: I('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>'),
     check: I('<path d="m5 12 5 5 9-10"/>'),
-    x: I('<path d="M6 6l12 12M18 6 6 18"/>')
+    x: I('<path d="M6 6l12 12M18 6 6 18"/>'),
+    chev: I('<path d="m9 6 6 6-6 6"/>')
   };
 
   const NAV = [
@@ -4486,6 +4531,7 @@ JBA.chapter({
           <button class="iconbtn" data-act="search" aria-label="Rechercher dans les cours">${ICON.search}</button>
           <button class="iconbtn" data-act="theme" id="themebtn" aria-label="Changer de thème"></button>
           <button class="iconbtn" data-act="focus" id="focusbtn" aria-label="Mode concentration">${ICON.focus}</button>
+          <button class="iconbtn desk-only" data-act="more" aria-label="Plus : compte et rubriques">${ICON.more}</button>
         </header>
         <main id="main" tabindex="-1"></main>
       </div>
@@ -4535,12 +4581,42 @@ JBA.chapter({
     const P = Array.from({ length: 140 }, () => ({ x: Math.random() * W, y: -20 - Math.random() * Hh * .5, vx: (Math.random() - .5) * 3, vy: 2 + Math.random() * 3, r: Math.random() * 6.28, s: 5 + Math.random() * 6, c: col[Math.floor(Math.random() * col.length)] }));
     let f = 0; (function tick() { x.clearRect(0, 0, W, Hh); P.forEach(p => { p.x += p.vx; p.y += p.vy; p.r += .1; x.save(); x.translate(p.x, p.y); x.rotate(p.r); x.fillStyle = p.c; x.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); x.restore(); }); if (++f < 170) requestAnimationFrame(tick); else c.remove(); })();
   }
-  ui.sheet = () => {
-    const ov = document.createElement("div"); ov.className = "sheet";
-    ov.innerHTML = `<div><div class="row between" style="margin-bottom:10px"><b class="disp" style="font-size:22px">Toutes les rubriques</b><button class="iconbtn" data-close aria-label="Fermer">${ICON.x}</button></div><nav class="nav">${NAV.filter(n => !n.sep).map(n => `<a href="#${n.h}">${ICON[n.i]}<span>${n.t}</span></a>`).join("")}</nav></div>`;
-    document.body.appendChild(ov);
-    ov.addEventListener("click", e => { if (e.target === ov || e.target.closest("[data-close]") || e.target.closest("a")) ov.remove(); });
+  /* Feuille « Plus », façon iOS : groupes arrondis, tuiles colorées, chevrons. */
+  ui.sheetGroups = [];
+  const TILE = { book: "#FF9500", quiz: "#FF2D55", cards: "#5856D6", scale: "#34C759", exam: "#007AFF", trophy: "#FFCC00", dog: "#AF52DE", gear: "#8E8E93", home: "#FF3B30", moon: "#5E5CE6", focus: "#30B0C7" };
+  ui.sheetRow = (o) => `<${o.href ? `a href="${o.href}"` : `button type="button" data-act="${o.act}"`} class="prow">${o.lead || `<span class="tile" style="background:${TILE[o.i] || "#8E8E93"}">${ICON[o.i]}</span>`}<span class="pmain"><span class="pt">${o.t}</span>${o.sub ? `<span class="ps">${o.sub}</span>` : ""}</span>${o.end != null ? o.end : `<span class="pchev">${ICON.chev}</span>`}</${o.href ? "a" : "button"}>`;
+  ui.sheetGroup = (label, rows) => `${label ? `<p class="plabel">${label}</p>` : ""}<div class="pgroup">${rows.join("")}</div>`;
+  const toggle = on => `<span class="ptoggle ${on ? "on" : ""}" aria-hidden="true"><i></i></span>`;
+  const sheetHTML = () => {
+    const dark = document.documentElement.dataset.theme === "dark" || (S.theme === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+    return `<div class="psheet" role="dialog" aria-modal="true" aria-label="Plus"><span class="grab" aria-hidden="true"></span>
+      <div class="row between" style="padding:2px 4px 8px"><h2 style="font-size:30px">Plus</h2><button class="pclose" data-close aria-label="Fermer">${ICON.x}</button></div>
+      ${ui.sheetGroups.map(f => f()).join("")}
+      ${ui.sheetGroup("Réviser", [
+        ui.sheetRow({ href: "#cours", i: "book", t: "Mes cours", sub: "Leçons, fiches et fiches express" }),
+        ui.sheetRow({ href: "#quiz", i: "quiz", t: "Sushi Quiz" }),
+        ui.sheetRow({ href: "#cartes", i: "cards", t: "Flashcards" }),
+        ui.sheetRow({ href: "#cas", i: "scale", t: "Cas pratiques" }),
+        ui.sheetRow({ href: "#examen", i: "exam", t: "Examens blancs" })])}
+      ${ui.sheetGroup("Toi et Holly", [
+        ui.sheetRow({ href: "#progres", i: "trophy", t: "Ma progression", sub: `Niveau ${J.level().n} · ${S.xp} XP` }),
+        ui.sheetRow({ href: "#holly", i: "dog", t: "Holly University" })])}
+      ${ui.sheetGroup("Affichage", [
+        ui.sheetRow({ act: "sheet-dark", i: "moon", t: "Mode sombre", end: toggle(dark) }),
+        ui.sheetRow({ act: "sheet-focus", i: "focus", t: "Mode concentration", end: toggle(S.focus) }),
+        ui.sheetRow({ href: "#reglages", i: "gear", t: "Réglages", sub: "Sauvegarde, export, à propos" })])}
+    </div>`;
   };
+  ui.sheet = () => {
+    let ov = document.querySelector(".sheet");
+    if (!ov) {
+      ov = document.createElement("div"); ov.className = "sheet";
+      document.body.appendChild(ov);
+      ov.addEventListener("click", e => { if (e.target === ov || e.target.closest("[data-close]") || e.target.closest("a")) ov.remove(); });
+    }
+    ov.innerHTML = sheetHTML();
+  };
+  ui.refreshSheet = () => { if (document.querySelector(".sheet")) ui.sheet(); };
 
   /* ---------- Recherche globale ---------- */
   let IDX;
@@ -4606,6 +4682,8 @@ JBA.chapter({
 
   /* ---------- Clics globaux ---------- */
   const ACT = ui.ACT = {};
+  ACT["sheet-dark"] = () => { const dark = document.documentElement.dataset.theme === "dark" || (S.theme === "system" && matchMedia("(prefers-color-scheme: dark)").matches); S.theme = dark ? "light" : "dark"; J.save(); ui.applyTheme(); ui.refreshSheet(); };
+  ACT["sheet-focus"] = () => { S.focus = !S.focus; J.save(); ui.refreshChrome(); ui.refreshSheet(); };
   function onClick(e) {
     const go = e.target.closest("[data-go]"); if (go) { location.hash = "#" + go.dataset.go; return; }
     const a = e.target.closest("[data-act]"); if (!a) return;
@@ -5324,7 +5402,7 @@ JBA.chapter({
   /* ---------- Interface ---------- */
   const G = `<svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>`;
   const stateTxt = () => C.status === "saving" ? "Synchronisation…" : C.status === "error" ? "Hors ligne : la sauvegarde reprendra dès que possible" : C.last ? "Sauvegardé en ligne à " + new Date(C.last).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : "Sauvegardé en ligne";
-  function badge() { const el = document.getElementById("cloud-state"); if (el) el.textContent = stateTxt(); }
+  function badge() { const el = document.getElementById("cloud-state"); if (el) el.textContent = stateTxt(); document.querySelectorAll(".cloud-sub").forEach(x => x.textContent = stateTxt()); }
   function card(compact) {
     if (!C.ready) return `<div class="card stack"><h3>Compte</h3><p class="small muted">Vérification de la connexion…</p></div>`;
     if (C.user) {
@@ -5338,7 +5416,25 @@ JBA.chapter({
   }
   const wrap = (name, where) => { const v = VIEWS[name]; if (!v) return; const r = v.render; v.render = function () { const h = r.apply(this, arguments); return where(h); }; };
   wrap("reglages", h => h.replace("</header>", "</header>" + card(false)));
-  wrap("accueil", h => (C.ready && !C.user) ? h.replace(/(<\/section>)/, "$1" + card(true)) : h);
+  /* Groupe « Compte » en tête de la feuille Plus */
+  ui.sheetGroups.unshift(() => {
+    if (!C.ready) return ui.sheetGroup("", [ui.sheetRow({ act: "noop", lead: `<span class="av">${G}</span>`, t: "Compte Google", sub: "Vérification…", end: "" }).replace('class="prow"', 'class="prow pacct"')]);
+    if (C.user) {
+      const u = C.user;
+      const av = u.photoURL ? `<img class="av" src="${esc(u.photoURL)}" alt="" referrerpolicy="no-referrer">` : `<span class="av">${esc((u.displayName || "?")[0])}</span>`;
+      return ui.sheetGroup("", [
+        ui.sheetRow({ act: "noop", lead: av, t: esc(u.displayName || "Connectée"), sub: esc(u.email || ""), end: "" }).replace('class="prow"', 'class="prow pacct"'),
+        ui.sheetRow({ act: "syncnow", i: "check", t: "Progression synchronisée", sub: `<span class="cloud-sub">${stateTxt()}</span>`, end: "" }).replace('<span class="tile" style="background:#8E8E93">', '<span class="tile" style="background:#34C759">'),
+        ui.sheetRow({ act: "logout", lead: '<span class="tile" style="background:#FF3B30">' + ui.ICON.back + '</span>', t: '<span style="color:#FF3B30">Se déconnecter</span>', end: "" })
+      ]) + `<p class="pnote">Connecte-toi avec le même compte Google sur ton iPhone et ton Mac : ta progression te suit partout.</p>`;
+    }
+    return ui.sheetGroup("", [
+      ui.sheetRow({ act: "login", lead: `<span class="av">${G.replace(/width="18" height="18"/, 'width="30" height="30"')}</span>`, t: "Se connecter avec Google", sub: "Retrouve ta progression sur tous tes appareils", end: "" }).replace('class="prow"', 'class="prow pacct pgoogle"')
+    ]) + `<p class="pnote">Sans connexion, ta progression reste enregistrée uniquement sur cet appareil.</p>`;
+  });
+  ACT.noop = () => {};
+  const origRerender = ui.rerender;
+  ui.rerender = () => { origRerender(); ui.refreshSheet && ui.refreshSheet(); };
   ui.rerender();
 })();
 
