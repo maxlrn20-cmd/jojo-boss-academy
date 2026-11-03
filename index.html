@@ -5476,7 +5476,7 @@ JBA.chapter({
         let r;
         try { r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GMODEL}:streamGenerateContent?alt=sse`, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: JSON.stringify(body), signal: o.signal }); }
         catch (e) { throw { code: e && e.name === "AbortError" ? "cancelled" : "network", message: String(e) }; }
-        if (!r.ok) { const c = r.status === 429 ? "rate_limited" : r.status === 400 || r.status === 403 ? "bad_key" : "server"; throw { code: c, message: "HTTP " + r.status }; }
+        if (!r.ok) { let det = ""; try { const j = await r.json(); det = ((j.error && j.error.status) || "") + ""; } catch (e) { } const c = r.status === 429 ? "rate_limited" : [400, 401, 403].includes(r.status) ? "bad_key" : "server"; throw { code: c, message: `code ${r.status}${det ? " " + det : ""}` }; }
         const rd = r.body.getReader(), dec = new TextDecoder(); let buf = "", text = "", fin = "";
         try {
           for (;;) {
@@ -5705,7 +5705,7 @@ Règles :
       prompt_too_large: "C'est trop de cours d'un coup. Ouvre le chapitre concerné et utilise « Une question sur ce chapitre ? », ou raccourcis ta question.",
       session_expired: "Ta session Claude a expiré : recharge la page.",
       refused: "Holly ne peut pas répondre à cette question.",
-      bad_key: "La clé Gemini ne fonctionne pas : vérifie-la dans les Réglages.", network: "Pas de connexion : vérifie Internet puis réessaie.", server: "Le serveur de Holly a un souci : réessaie dans un instant.",
+      bad_key: "Google refuse cette clé. Crée plutôt une clé qui commence par AIza (voir Réglages).", network: "Pas de connexion : vérifie Internet puis réessaie.", server: "Le serveur de Holly a un souci : réessaie dans un instant.",
       sampling_disabled: "Les réponses de Holly ne sont pas disponibles sur ce compte.", capability_disabled: "Les réponses de Holly ne sont pas disponibles ici.", capability_removed: "Les réponses de Holly ne sont pas disponibles ici.", not_declared: "Les réponses de Holly ne sont pas disponibles ici."
     };
     async function ask(q) {
@@ -5742,7 +5742,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
         const code = e && e.code;
         if (e && e.text) bot.content = e.text;
         if (code === "cancelled") { if (!bot.content) bot.content = "*(Question interrompue.)*"; }
-        else bot.err = ERR[code] || "Holly a trébuché sur une erreur. Réessaie dans un instant.";
+        else bot.err = (ERR[code] || "Holly a trébuché sur une erreur. Réessaie dans un instant.") + (IA.engine === "gemini" && e && e.message ? ` (${e.message})` : "");
       } finally {
         bot.pending = false; bot.step = ""; IA.busy = false; IA.ctl = null;
         if (!bot.content && bot.err) { IA.msgs.pop(); IA.msgs.pop(); IA.draft = q; ui.toast(bot.err); }
@@ -5884,7 +5884,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
 })();
 
 </script>
-<script>window.JBA_BUILD="20261103-210300";
+<script>window.JBA_BUILD="20261103-210700";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
