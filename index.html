@@ -527,7 +527,7 @@ html{scroll-behavior:smooth}
 .rate .btn{flex-direction:column;gap:6px;padding:10px 6px;font-size:14px;min-height:64px;border-radius:16px}
 .dotc{width:10px;height:10px;border-radius:50%}
 /* ===== Demande à Holly (IA) ===== */
-.tabbar{grid-template-columns:repeat(6,1fr)}
+.tabbar.six{grid-template-columns:repeat(6,1fr)}
 .ia-log{display:flex;flex-direction:column;gap:16px;min-height:120px}
 .ia-msg{display:flex;gap:10px;align-items:flex-start;min-width:0}
 .ia-msg.me{justify-content:flex-end}
@@ -4632,7 +4632,7 @@ JBA.chapter({
 
   const NAV = [
     { h: "accueil", t: "Accueil", i: "home" }, { h: "cours", t: "Mes cours", i: "book" }, { h: "quiz", t: "Sushi Quiz", i: "quiz" }, { h: "cartes", t: "Flashcards", i: "cards" },
-    { h: "cas", t: "Cas pratiques", i: "scale" }, { h: "examen", t: "Examens blancs", i: "exam" }, { h: "ia", t: "Demande à Holly", i: "chat" }, { sep: 1 },
+    { h: "cas", t: "Cas pratiques", i: "scale" }, { h: "examen", t: "Examens blancs", i: "exam" }, ...(window.JBA_NOIA ? [] : [{ h: "ia", t: "Demande à Holly", i: "chat" }]), { sep: 1 },
     { h: "progres", t: "Ma progression", i: "trophy" }, { h: "holly", t: "Holly University", i: "dog" }, { sep: 1 },
     { h: "reglages", t: "Réglages", i: "gear" }
   ];
@@ -4657,8 +4657,8 @@ JBA.chapter({
         </header>
         <main id="main" tabindex="-1"></main>
       </div>
-      <nav class="tabbar" aria-label="Navigation">
-        ${[["accueil", "Accueil", "home"], ["cours", "Cours", "book"], ["quiz", "Quiz", "quiz"], ["cartes", "Cartes", "cards"], ["ia", "Holly", "chat"]].map(([h, t, i]) => `<a href="#${h}" data-tab="${h}">${ICON[i]}<span>${t}</span></a>`).join("")}
+      <nav class="tabbar ${window.JBA_NOIA ? "" : "six"}" aria-label="Navigation">
+        ${[["accueil", "Accueil", "home"], ["cours", "Cours", "book"], ["quiz", "Quiz", "quiz"], ["cartes", "Cartes", "cards"], ...(window.JBA_NOIA ? [] : [["ia", "Holly", "chat"]])].map(([h, t, i]) => `<a href="#${h}" data-tab="${h}">${ICON[i]}<span>${t}</span></a>`).join("")}
         <button data-act="more">${ICON.more}<span>Plus</span></button>
       </nav>
     </div>`;
@@ -4720,7 +4720,7 @@ JBA.chapter({
         ui.sheetRow({ href: "#cartes", i: "cards", t: "Flashcards" }),
         ui.sheetRow({ href: "#cas", i: "scale", t: "Cas pratiques" }),
         ui.sheetRow({ href: "#examen", i: "exam", t: "Examens blancs" }),
-        ui.sheetRow({ href: "#ia", i: "chat", t: "Demande à Holly" })])}
+        ...(window.JBA_NOIA ? [] : [ui.sheetRow({ href: "#ia", i: "chat", t: "Demande à Holly" })])])}
       ${ui.sheetGroup("Moi", [
         ui.sheetRow({ href: "#progres", i: "trophy", t: "Ma progression" }),
         ui.sheetRow({ href: "#holly", i: "dog", t: "Holly University" })])}
@@ -4836,7 +4836,7 @@ JBA.chapter({
       const rows = [];
       if (recs[0]) rows.push(ui.sheetRow({ href: recs[0].href, i: "book", t: esc(recs[0].txt) }));
       if (errN) rows.push(ui.sheetRow({ act: "quiz-errors", i: "quiz", t: "Refaire mes erreurs", end: `<span class="pcount tnum">${errN}</span><span class="pchev">${ICON.chev}</span>` }));
-      rows.push(ui.sheetRow({ href: "#ia", i: "chat", t: "Demande à Holly", sub: "Une question sur tes cours ?" }));
+      if (!window.JBA_NOIA) rows.push(ui.sheetRow({ href: "#ia", i: "chat", t: "Demande à Holly", sub: "Une question sur tes cours ?" }));
       rows.push(ui.sheetRow({ href: "#cartes", i: "cards", t: "Cartes du jour", end: `<span class="pcount tnum">${J.dueCards(J.cards).length || ""}</span><span class="pchev">${ICON.chev}</span>` }));
       return `
       <section class="hero home">
@@ -4919,7 +4919,7 @@ JBA.chapter({
       </header>
       <div class="card flat row between" style="padding:12px 14px">
         <label class="row small" for="st-sel"><b>Statut</b><select id="st-sel" class="input" style="width:auto;padding:8px 12px" data-id="${id}">${Object.entries(STATUS).map(([k, t]) => `<option value="${k}" ${st.status === k ? "selected" : ""}>${t}</option>`).join("")}</select></label>
-        <span class="row"><button class="btn sec sm" data-act="ia-ch" data-id="${id}">${ICON.chat.replace("<svg", "<svg width=16 height=16")} Une question sur ce chapitre ?</button>${window.JBA_NOPDF ? "" : `<a class="btn ghost sm" href="${c.pdf}" target="_blank" rel="noopener">${ICON.file.replace("<svg", "<svg width=18 height=18")} Document d'origine</a>`}</span>
+        <span class="row">${window.JBA_NOIA ? "" : `<button class="btn sec sm" data-act="ia-ch" data-id="${id}">${ICON.chat.replace("<svg", "<svg width=16 height=16")} Une question sur ce chapitre ?</button>`}${window.JBA_NOPDF ? "" : `<a class="btn ghost sm" href="${c.pdf}" target="_blank" rel="noopener">${ICON.file.replace("<svg", "<svg width=18 height=18")} Document d'origine</a>`}</span>
       </div>
       ${c.note ? `<div class="note">${esc(c.note)}</div>` : ""}
       <div class="tabs" role="tablist">${tabs.map(([k, t]) => `<button role="tab" aria-selected="${chTab === k}" class="${chTab === k ? "on" : ""}" data-act="chtab" data-k="${k}">${t}</button>`).join("")}</div>
@@ -5782,7 +5782,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
 })();
 
 </script>
-<script>window.JBA_BUILD="20261103-203001";
+<script>window.JBA_BUILD="20261103-204025";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
