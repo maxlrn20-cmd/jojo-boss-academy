@@ -5434,7 +5434,7 @@ JBA.chapter({
       <div class="card stack"><h3>Apparence</h3><div class="seg">${[["system", "Comme l'appareil"], ["light", "Clair"], ["dark", "Sombre"]].map(([k, t]) => `<button class="${S.theme === k ? "on" : ""}" data-act="settheme" data-k="${k}">${t}</button>`).join("")}</div>
         <label class="row" style="gap:10px"><input type="checkbox" id="set-focus" ${S.focus ? "checked" : ""}> <span><b>Mode concentration</b><br><span class="small muted">Masque les illustrations et les bulles de Holly pendant la lecture (les corrections restent visibles).</span></span></label></div>
       <div class="card stack"><h3>Holly, l'IA de droit</h3><p class="small muted">Holly répond gratuitement grâce à Gemini (Google). Crée une clé sur <b>aistudio.google.com</b> → « Get API key », puis colle-la ici. Elle reste enregistrée sur cet appareil.</p>${J.ia && J.ia.engine === "claude" ? `<p class="small" style="color:var(--ok);font-weight:600">Ici, Holly passe déjà par Claude : pas besoin de clé.</p>` : ""}
-        <input class="input" id="gem-key" type="password" autocomplete="off" placeholder="AIza…" value="${esc(J.geminiKey ? J.geminiKey() : "")}"><div class="row"><button class="btn pri sm" data-act="gemsave">Enregistrer la clé</button>${J.geminiKey && J.geminiKey() ? `<button class="btn ghost sm" data-act="gemdel">Retirer</button><a class="btn sec sm" href="#ia">Parler à Holly</a>` : ""}</div></div>
+        <input class="input" id="gem-key" type="password" autocomplete="off" placeholder="Colle ta clé ici (AIza… ou AQ.…)" value="${esc(J.geminiKey ? J.geminiKey() : "")}"><div class="row"><button class="btn pri sm" data-act="gemsave">Enregistrer la clé</button>${J.geminiKey && J.geminiKey() ? `<button class="btn ghost sm" data-act="gemdel">Retirer</button><a class="btn sec sm" href="#ia">Parler à Holly</a>` : ""}</div></div>
       <div class="card stack"><h3>Sauvegarde de la progression</h3><p class="small muted">Ta progression est enregistrée automatiquement dans ce navigateur. Pour la transférer sur un autre appareil, copie le code ci-dessous et colle-le dans « Importer » de l'autre côté.</p>
         <textarea class="input" id="exp" readonly style="min-height:90px;font-size:12px">${esc(J.exportData())}</textarea><button class="btn sec sm" data-act="copyexp" style="align-self:flex-start">Copier le code</button>
         <label for="imp" class="small"><b>Importer une progression</b></label><textarea class="input" id="imp" style="min-height:90px;font-size:12px" placeholder="Colle ici un code de sauvegarde"></textarea><button class="btn sec sm" data-act="imp" style="align-self:flex-start">Importer</button>
@@ -5443,7 +5443,7 @@ JBA.chapter({
     },
     after() { const f = $("#set-focus"); if (f) f.addEventListener("change", () => { S.focus = f.checked; J.save(); ui.refreshChrome(); }); }
   };
-  ACT.gemsave = () => { const v = ($("#gem-key").value || "").trim(); if (!/^AIza[\w-]{20,}$/.test(v)) { ui.toast("Cette clé ne ressemble pas à une clé Gemini (elle commence par AIza)."); return; } J.setGeminiKey(v); ui.toast("Clé enregistrée : Holly est réveillé !"); ui.rerender(); };
+  ACT.gemsave = () => { const v = ($("#gem-key").value || "").trim(); if (!/^[\w.\-]{20,}$/.test(v)) { ui.toast("Cette clé ne ressemble pas à une clé Gemini : recopie-la en entier."); return; } J.setGeminiKey(v); ui.toast("Clé enregistrée : Holly est réveillé !"); ui.rerender(); };
   ACT.gemdel = () => { J.setGeminiKey(""); ui.toast("Clé retirée."); ui.rerender(); };
   ACT.settheme = b => { S.theme = b.dataset.k; J.save(); ui.applyTheme(); ui.rerender(); };
   ACT.copyexp = () => { const t = $("#exp"); try { navigator.clipboard.writeText(t.value).then(() => ui.toast("Code copié."), () => { t.select(); ui.toast("Sélectionné : copie-le avec Ctrl+C ou un appui long."); }); } catch (e) { t.select(); ui.toast("Sélectionné : copie-le avec Ctrl+C ou un appui long."); } };
@@ -5474,7 +5474,7 @@ JBA.chapter({
         const body = { contents: rest.map(m => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] })), generationConfig: { temperature: 0.4, maxOutputTokens: 2048 } };
         if (sys) body.systemInstruction = { parts: [{ text: sys }] };
         let r;
-        try { r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GMODEL}:streamGenerateContent?alt=sse&key=${encodeURIComponent(key)}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: o.signal }); }
+        try { r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GMODEL}:streamGenerateContent?alt=sse`, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: JSON.stringify(body), signal: o.signal }); }
         catch (e) { throw { code: e && e.name === "AbortError" ? "cancelled" : "network", message: String(e) }; }
         if (!r.ok) { const c = r.status === 429 ? "rate_limited" : r.status === 400 || r.status === 403 ? "bad_key" : "server"; throw { code: c, message: "HTTP " + r.status }; }
         const rd = r.body.getReader(), dec = new TextDecoder(); let buf = "", text = "", fin = "";
@@ -5884,7 +5884,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
 })();
 
 </script>
-<script>window.JBA_BUILD="20261103-205500";
+<script>window.JBA_BUILD="20261103-210300";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
