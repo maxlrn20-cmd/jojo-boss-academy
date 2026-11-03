@@ -441,6 +441,39 @@ h2{font-weight:700;letter-spacing:-.028em}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pclose,:root:not([data-theme="light"]) .ptoggle{background:#39393D}}
 .ptoggle.on{background:#34C759!important}
 @media (min-width:600px){.psheet .grab{display:none}}
+
+/* ===== Animations douces ===== */
+:root{--ease:cubic-bezier(.22,.8,.25,1);--spring:cubic-bezier(.34,1.4,.5,1)}
+html{scroll-behavior:smooth}
+.wrap.enter>*{animation:rise .42s var(--ease) both}
+.wrap.enter>*:nth-child(2){animation-delay:.04s}.wrap.enter>*:nth-child(3){animation-delay:.08s}.wrap.enter>*:nth-child(4){animation-delay:.12s}.wrap.enter>*:nth-child(n+5){animation-delay:.15s}
+.wrap.swap .card,.wrap.swap .flip{animation:swapin .34s var(--ease) both}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+@keyframes swapin{from{opacity:0;transform:translateX(14px)}}
+.btn,.chip,.q-opt,.level-card,.prow,.iconbtn,.seg button,.tabs button,.chcard,.env,.tabbar a,.tabbar button,.nav a{transition:transform .18s var(--ease),background-color .2s,box-shadow .2s,color .2s,opacity .2s,filter .2s}
+.btn:active,.chip:active,.iconbtn:active,.level-card:active,.chcard:active,.seg button:active{transform:scale(.96)}
+.q-opt:active:not([disabled]){transform:scale(.985)}
+.tabbar a:active svg,.tabbar button:active svg{transform:scale(.88)}
+.tabbar svg{transition:transform .18s var(--spring)}
+.tabbar .on svg{animation:tabpop .35s var(--spring)}
+@keyframes tabpop{40%{transform:scale(1.14)}}
+.q-opt.good{animation:pop .4s var(--spring)}
+.q-opt.bad{animation:nudge .38s var(--ease)}
+@keyframes pop{45%{transform:scale(1.02)}}
+@keyframes nudge{20%{transform:translateX(-5px)}45%{transform:translateX(4px)}70%{transform:translateX(-2px)}}
+.fb{animation:rise .32s var(--ease) both}
+.q-opt .box{transition:background-color .18s,border-color .18s,transform .2s var(--spring)}
+.q-opt.sel .box{transform:scale(1.08)}
+.flip .inner{transition:transform .6s var(--spring)}
+.bar>i{transition:width .7s var(--ease)}
+.toast{opacity:0;transform:translate(-50%,12px) scale(.97);transition:opacity .25s var(--ease),transform .3s var(--spring)}
+.toast.show{opacity:1;transform:translate(-50%,0) scale(1)}
+.celebrate{animation:fadein .2s ease}
+.celebrate .card{animation:popin .45s var(--spring)}
+@keyframes popin{from{opacity:0;transform:scale(.92) translateY(8px)}}
+.search-ov{animation:fadein .18s ease}.search-ov>div{animation:popin .3s var(--ease)}
+.ptoggle,.ptoggle i{transition:background-color .25s,transform .3s var(--spring)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head><body>
 <div id="root"></div>
@@ -4565,7 +4598,7 @@ JBA.chapter({
 
   /* ---------- Superpositions ---------- */
   let toastT;
-  ui.toast = (msg) => { let t = $(".toast"); if (!t) { t = document.createElement("div"); t.className = "toast"; t.setAttribute("role", "status"); document.body.appendChild(t); } t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 3600); };
+  ui.toast = (msg) => { let t = $(".toast"); if (!t) { t = document.createElement("div"); t.className = "toast"; t.setAttribute("role", "status"); document.body.appendChild(t); } t.textContent = msg; t.hidden = false; requestAnimationFrame(() => t.classList.add("show")); clearTimeout(toastT); toastT = setTimeout(() => { t.classList.remove("show"); setTimeout(() => { if (!t.classList.contains("show")) t.hidden = true; }, 300); }, 3600); };
   ui.celebrate = (eyebrow, title, text, preset = "celebrate") => {
     const ov = document.createElement("div"); ov.className = "celebrate"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-modal", "true");
     ov.innerHTML = `<div class="card"><div class="holly-wrap bob">${H(preset)}</div><span class="eyebrow">${esc(eyebrow)}</span><h2>${esc(title)}</h2><p class="muted">${esc(text)}</p><button class="btn pri" data-close>Merci Holly</button></div>`;
@@ -4668,7 +4701,9 @@ JBA.chapter({
     if (!VIEWS[name]) name = "accueil";
     if (J.timer && name !== "examen") { clearInterval(J.timer); J.timer = null; }
     const main = $("#main");
-    main.innerHTML = `<div class="wrap">${VIEWS[name].render(arg)}</div>`;
+    const fx = ui._lastHash !== location.hash ? "enter" : ui.animNext ? "swap" : "";
+    ui._lastHash = location.hash; ui.animNext = false;
+    main.innerHTML = `<div class="wrap ${fx}">${VIEWS[name].render(arg)}</div>`;
     VIEWS[name].after && VIEWS[name].after(arg);
     const key = name === "chapitre" ? "cours" : name === "casdetail" ? "cas" : name;
     $$("[data-nav]").forEach(a => a.classList.toggle("on", a.dataset.nav === key));
@@ -5008,7 +5043,7 @@ JBA.chapter({
     const s = S.q[q.id] = S.q[q.id] || { seen: 0, ok: 0, ko: 0 }; s.seen++; ok ? s.ok++ : s.ko++; s.last = ok ? "ok" : "ko";
     J.day().q++; J.save(); ui.rerender();
   };
-  ACT.qnext = () => { const Q = J.quiz; if (Q.i + 1 < Q.items.length) { Q.i++; Q.sel = []; Q.answered = false; ui.rerender(); } else finishQuiz(); };
+  ACT.qnext = () => { const Q = J.quiz; if (Q.i + 1 < Q.items.length) { Q.i++; Q.sel = []; Q.answered = false; ui.animNext = true; ui.rerender(); } else finishQuiz(); };
   ACT.qquit = () => { J.quiz = null; ui.rerender(); };
   function finishQuiz() {
     const Q = J.quiz; Q.finished = true;
@@ -5099,7 +5134,7 @@ JBA.chapter({
     const F = J.flash, id = F.queue[F.i], r = +b.dataset.r;
     J.rateCard(id, r); F.stats[r]++;
     if (r === 0 && !F.again[id]) { F.again[id] = 1; F.queue.splice(Math.min(F.queue.length, F.i + 4), 0, id); }
-    F.i++; F.flipped = false;
+    F.i++; F.flipped = false; ui.animNext = true;
     if (F.i >= F.queue.length) { F.finished = true; const xp = Math.min(30, F.i); J.addXP(xp, `Flashcards : ${F.i} cartes révisées`, "cards"); F.xp = xp; J.checkBadges(); }
     ui.rerender();
   };
@@ -5439,7 +5474,7 @@ JBA.chapter({
 })();
 
 </script>
-<script>window.JBA_BUILD="20261103-195804";
+<script>window.JBA_BUILD="20261103-200248";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
