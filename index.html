@@ -528,25 +528,61 @@ html{scroll-behavior:smooth}
 .dotc{width:10px;height:10px;border-radius:50%}
 /* ===== Demande à Holly (IA) ===== */
 .tabbar.six{grid-template-columns:repeat(6,1fr)}
-.ia-log{display:flex;flex-direction:column;gap:16px;min-height:120px}
-.ia-msg{display:flex;gap:10px;align-items:flex-start;min-width:0}
+.ia-log{display:flex;flex-direction:column;gap:26px;padding:8px 0 20px}
+body.ia-on main{padding-top:0!important;padding-bottom:0!important}
+body.ia-on .wrap{max-width:780px}
+.ia-page{display:flex;flex-direction:column;min-height:calc(100dvh - var(--ia-top,60px) - var(--ia-bot,0px));gap:0!important}
+.ia-head{display:flex;align-items:center;gap:10px;padding:12px 0;position:sticky;top:var(--ia-top,60px);z-index:5;background:var(--bg)}
+.ia-head .av{width:34px;height:34px;flex:none;border-radius:50%;background:var(--rose2);overflow:hidden;display:grid;place-items:center}
+.ia-head .av svg{width:42px;height:42px;margin-top:7px}
+.ia-head b{font-size:17px;font-weight:600;letter-spacing:-.01em}
+.ia-head .sub{font-size:12.5px;color:var(--ink2);display:block;line-height:1.2}
+.ia-head .grow{flex:1;min-width:0}
+.ia-new{border:0;background:none;width:38px;height:38px;border-radius:10px;display:grid;place-items:center;cursor:pointer;color:var(--ink)}
+.ia-new:hover{background:var(--surface2)}.ia-new svg{width:21px;height:21px}
+.ia-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;padding:24px 0 28px}
+.ia-empty .big{width:92px;height:92px;border-radius:50%;background:var(--rose2);overflow:hidden;display:grid;place-items:center}
+.ia-empty .big svg{width:112px;height:112px;margin-top:18px}
+.ia-empty h2{font-size:clamp(24px,5.4vw,30px);font-weight:600;letter-spacing:-.02em;margin:0}
+.ia-empty p{margin:0;color:var(--ink2);max-width:42ch}
+.ia-sugg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;margin-top:10px}
+.ia-sugg button{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:12px 14px;font:inherit;font-size:14px;line-height:1.35;color:var(--ink);cursor:pointer;min-width:0}
+.ia-sugg button b{display:block;font-weight:600;margin-bottom:2px}
+.ia-sugg button span{color:var(--ink2)}
+.ia-sugg button:hover{background:var(--surface2)}
+@media (max-width:520px){.ia-sugg{grid-template-columns:1fr}.ia-sugg button:nth-child(n+4){display:none}}
+.ia-msg{display:flex;gap:12px;align-items:flex-start;min-width:0}
 .ia-msg.me{justify-content:flex-end}
-.ia-msg .av{width:40px;height:40px;flex:none;border-radius:50%;background:var(--rose2);overflow:hidden;display:grid;place-items:center}
-.ia-msg .av svg{width:48px;height:48px;margin-top:8px}
-.ia-b{border-radius:18px;padding:12px 16px;max-width:min(700px,88%);line-height:1.5;font-size:16px;overflow-wrap:anywhere;min-width:0}
-.ia-msg.me .ia-b{background:#D2335F;color:#fff;border-bottom-right-radius:6px;white-space:pre-wrap}
-.ia-msg.holly .ia-b{background:var(--surface2);border-bottom-left-radius:6px}
-.ia-b p{margin:0 0 8px}.ia-b p:last-child{margin-bottom:0}
-.ia-b ul,.ia-b ol{margin:4px 0 8px;padding-left:20px;display:flex;flex-direction:column;gap:3px}
-.ia-b li::marker{color:var(--framboise)}
-.ia-b h4{margin:10px 0 4px;font-size:16px;font-weight:700}
+.ia-msg .av{width:30px;height:30px;flex:none;border-radius:50%;background:var(--rose2);overflow:hidden;display:grid;place-items:center;margin-top:2px}
+.ia-msg .av svg{width:38px;height:38px;margin-top:6px}
+.ia-b{line-height:1.62;font-size:16px;overflow-wrap:anywhere;min-width:0}
+.ia-msg.me .ia-b{background:var(--surface3);color:var(--ink);border-radius:22px;padding:10px 16px;max-width:82%;white-space:pre-wrap}
+.ia-msg.holly .ia-b{flex:1;padding-top:4px}
+.ia-b p{margin:0 0 12px}.ia-b p:last-child{margin-bottom:0}
+.ia-b ul,.ia-b ol{margin:4px 0 12px;padding-left:22px;display:flex;flex-direction:column;gap:5px}
+.ia-b li::marker{color:var(--ink2)}
+.ia-b h4{margin:16px 0 6px;font-size:17px;font-weight:600}
+.ia-b h4:first-child{margin-top:0}
 .ia-b code{font-size:.9em;background:var(--surface3);padding:1px 5px;border-radius:5px}
-.ia-src{font-size:12.5px;font-style:normal;color:var(--ink2);background:var(--surface);border-radius:999px;padding:1px 8px;white-space:nowrap;display:inline-block}
+.ia-src{font-size:12.5px;font-style:normal;color:var(--ink2);background:var(--surface2);border-radius:999px;padding:1px 8px;white-space:nowrap;display:inline-block}
 .ia-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center}
-.ia-meta a{font-size:12.5px;text-decoration:none;background:var(--surface);border-radius:999px;padding:3px 10px}
+.ia-meta a{font-size:12.5px;text-decoration:none;background:var(--surface2);color:var(--ink);border-radius:999px;padding:3px 10px}
+.ia-acts{display:flex;gap:2px;margin-top:6px;margin-left:-6px}
+.ia-acts button{border:0;background:none;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;color:var(--ink2);cursor:pointer}
+.ia-acts button:hover{background:var(--surface2);color:var(--ink)}.ia-acts svg{width:17px;height:17px}
 .ia-err{color:var(--ko);font-size:14px;margin-top:6px}
-.ia-comp{display:flex;gap:10px;align-items:flex-end}
-.ia-comp textarea.input{min-height:52px;max-height:220px;resize:none;flex:1}
+.ia-step{font-size:13.5px;color:var(--ink2)}
+.ia-foot{position:sticky;bottom:var(--ia-bot,0px);z-index:5;padding:10px 0 12px;background:linear-gradient(to bottom,transparent,var(--bg) 22px)}
+.ia-box{display:flex;align-items:flex-end;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:8px 8px 8px 18px;box-shadow:0 6px 24px rgba(0,0,0,.07)}
+.ia-box:focus-within{border-color:color-mix(in srgb,var(--ink2) 45%,transparent)}
+.ia-box textarea{flex:1;border:0;outline:0;background:none;resize:none;font:inherit;font-size:16px;line-height:1.45;color:var(--ink);padding:7px 0;max-height:200px;min-height:24px}
+.ia-box textarea::placeholder{color:var(--ink2)}
+.ia-send{width:38px;height:38px;flex:none;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;background:var(--ink);color:var(--bg);transition:opacity .15s}
+.ia-send:disabled{opacity:.25;cursor:default}.ia-send svg{width:19px;height:19px}
+.ia-scope{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;background:var(--rose2);color:var(--framboise2);border-radius:999px;padding:4px 6px 4px 12px;margin:0 0 8px 6px;max-width:100%}
+.ia-scope span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.ia-scope button{border:0;background:none;color:inherit;cursor:pointer;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:15px;line-height:1}
+.ia-note{font-size:12px;color:var(--ink2);text-align:center;margin:8px 0 0}
 .ia-typing{display:inline-flex;gap:5px;padding:4px 0}.ia-typing i{width:7px;height:7px;border-radius:50%;background:var(--ink2);animation:iadot 1.2s infinite}.ia-typing i:nth-child(2){animation-delay:.2s}.ia-typing i:nth-child(3){animation-delay:.4s}
 @keyframes iadot{0%,60%,100%{opacity:.25}30%{opacity:1}}
 @media (prefers-reduced-motion:reduce){.ia-typing i{animation:none;opacity:.6}}
@@ -5511,17 +5547,20 @@ JBA.chapter({
     }
 
     /* ---------- Consignes ---------- */
-    const RULES = `Tu es le professeur Holly, un vieux bichon crème très duveteux, un peu fatigué mais très fier de son élève, qui enseigne le droit à Jojo (surnommée « Jojo Boss »), étudiante en première année de droit. Tu réponds à ses questions sur les cours de son application de révision, Jojo Boss Academy : « Droit constitutionnel 1 » (Michel Verpeaux, UNJF, chapitres dc1 à dc9) et « Introduction au droit privé » (Patricia Vannier, chapitres ip1 à ip10).
+    const RULES = `Tu es Holly, l'intelligence artificielle de Jojo Boss Academy, spécialisée en droit français. Ton personnage : un vieux bichon crème très duveteux, professeur de droit, un peu fatigué mais très fier de son élève. Tu discutes avec Jojo (surnommée « Jojo Boss »), étudiante en première année de licence de droit. Son application contient deux cours : « Droit constitutionnel 1 » (Michel Verpeaux, UNJF, chapitres dc1 à dc9) et « Introduction au droit privé » (Patricia Vannier, chapitres ip1 à ip10).
+
+Ta mission : être l'assistant juridique de Jojo, comme un excellent chargé de TD disponible à toute heure. Tu réponds à toutes ses questions de droit (notions, articles, arrêts, méthodologie de la dissertation, du commentaire d'arrêt, de la fiche d'arrêt et du cas pratique, préparation des partiels, orientation dans les études de droit), et tu l'aides à réviser (explications, plans, quiz, corrections).
 
 Règles :
-1. Fonde ta réponse sur le CONTENU DES COURS fourni plus bas. Si les extraits ne suffisent pas et que tu disposes des outils, utilise « chercher » ou « lire_chapitre » avant de répondre.
-2. Cite tes sources entre crochets, au format [Droit constit. 2, p. 15] ou [Intro droit privé 4, p. 52], avec les pages indiquées dans le cours.
-3. Si la question sort du cours, dis-le clairement ; tu peux alors donner une réponse générale brève, introduite par « Hors cours (à vérifier) : ». N'invente jamais d'article, d'arrêt, de date ou de chiffre.
-4. Les « compléments hors cours » sont des corrections vérifiées ou des mises à jour : mentionne-les comme tels quand ils changent la réponse.
-5. Réponds en français, en tutoyant Jojo, niveau L1 : la réponse directe d'abord, puis l'explication. Mets les notions clés en gras. Environ 80 à 250 mots, sauf si Jojo demande une fiche, un plan, un quiz ou un développement. Pour un cas pratique, suis le syllogisme : qualification, problème de droit, règle, application, conclusion.
-6. Quiz : si Jojo demande un quiz, pose les questions une par une ou toutes avec les réponses en fin de message, selon sa demande.
-7. Personnalité : au plus une petite phrase d'humour de Holly (siestes, promenades, sushis, croquettes), jamais au détriment de la précision.
-8. Format : Markdown simple uniquement (paragraphes, **gras**, listes « - » ou « 1. », titres « ### »). Pas de tableaux.`;
+1. Quand la question touche à ses cours, appuie-toi d'abord sur le CONTENU DES COURS fourni plus bas (si les extraits ne suffisent pas et que tu disposes des outils, utilise « chercher » ou « lire_chapitre »), et cite tes sources entre crochets : [Droit constit. 2, p. 15] ou [Intro droit privé 4, p. 52].
+2. Quand la question dépasse ses cours, réponds quand même, avec la rigueur d'un juriste, puis ajoute une courte ligne « *Ce point n'est pas dans tes cours : vérifie-le dans ton manuel ou tes TD.* ». Si une notion est liée à un chapitre de l'application, signale-le.
+3. N'invente jamais d'article, d'arrêt, de date ou de chiffre. Si tu n'es pas sûr d'une référence, dis-le. Le droit évolue : pour une réforme récente, invite à vérifier sur Légifrance.
+4. Les « compléments hors cours » des fiches sont des corrections vérifiées ou des mises à jour : mentionne-les quand ils changent la réponse.
+5. Réponds en français, en tutoyant Jojo, au niveau L1 : la réponse directe d'abord, puis l'explication. Mets les notions clés en gras. Sois concis (80 à 250 mots) sauf si Jojo demande une fiche, un plan, un quiz ou un développement. Pour un cas pratique, suis le syllogisme : qualification, problème de droit, règle, application, conclusion.
+6. Quiz : si Jojo demande un quiz, pose les questions une par une et corrige ses réponses, sauf si elle veut tout d'un coup.
+7. Conversation : tu peux répondre naturellement à un bonjour ou à un message personnel, brièvement et gentiment. Pour une demande sans rapport avec le droit ou les études, réponds en une ou deux phrases puis ramène doucement vers les révisions.
+8. Personnalité : au plus une petite touche d'humour de Holly (siestes, promenades, sushis, croquettes) par réponse, jamais au détriment de la précision. Ne commence pas tes réponses par « En tant qu'IA ».
+9. Format : Markdown simple uniquement (paragraphes, **gras**, listes « - » ou « 1. », titres « ### »). Pas de tableaux.`;
 
     /* ---------- Rendu Markdown minimal et sûr ---------- */
     function md(src) {
@@ -5545,59 +5584,74 @@ Règles :
     }
 
     /* ---------- Vue ---------- */
-    const SUGG = ["Quelle est la différence entre déconcentration et décentralisation ?", "Explique-moi l'arrêt Clément-Bayard", "Quand faut-il un écrit pour prouver un acte juridique ?", "Résume la crise du 16 mai 1877", "Fais-moi un mini-quiz de 3 questions sur la QPC", "Curatelle ou tutelle : comment les distinguer ?"];
+    const SUGG = [["Explique-moi", "la différence entre déconcentration et décentralisation", "Explique-moi la différence entre déconcentration et décentralisation"], ["Fais-moi", "un mini-quiz sur la QPC", "Fais-moi un mini-quiz de 3 questions sur la QPC, une question à la fois"], ["Aide-moi", "à faire la fiche de l'arrêt Clément-Bayard", "Aide-moi à faire la fiche d'arrêt de Clément-Bayard"], ["Comment", "réussir un cas pratique en droit ?", "Comment réussir un cas pratique en droit ? Donne-moi la méthode"]];
+    const IC = {
+      up: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg>`,
+      stop: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor"/></svg>`,
+      copy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5V6.5a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2"/></svg>`,
+      redo: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5"/></svg>`,
+      neu: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h8M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`
+    };
     const avatar = () => `<span class="av" aria-hidden="true">${H("prof", { tilt: -4 })}</span>`;
     function msgHTML(m, i) {
-      if (m.role === "user") return `<div class="ia-msg me"><div class="ia-b">${esc(m.content)}</div></div>`;
-      const body = m.pending && !m.content ? `<span class="ia-typing" aria-label="Holly réfléchit"><i></i><i></i><i></i></span>${m.step ? ` <span class="small muted">${esc(m.step)}</span>` : ""}` : md(m.content) + (m.pending && m.step ? `<p class="small muted">${esc(m.step)}</p>` : "");
+      if (m.role === "user") return `<div class="ia-msg me" id="ia-m-${i}"><div class="ia-b">${esc(m.content)}</div></div>`;
+      const body = m.pending && !m.content ? `<span class="ia-typing" aria-label="Holly réfléchit"><i></i><i></i><i></i></span>${m.step ? ` <span class="ia-step">${esc(m.step)}</span>` : ""}` : md(m.content) + (m.pending && m.step ? `<p class="ia-step">${esc(m.step)}</p>` : "");
       const chs = (m.chs || []).filter(id => J.byId[id]);
-      const meta = !m.pending && chs.length ? `<div class="ia-meta"><span class="small muted">Chapitres consultés :</span>${chs.map(id => `<a href="#ch-${id}">${esc(SUB(id))} ${J.byId[id].num} · ${esc(J.byId[id].title)}</a>`).join("")}</div>` : "";
-      return `<div class="ia-msg holly" id="ia-m-${i}">${avatar()}<div class="ia-b"><span class="who small" style="color:var(--framboise);font-weight:600;display:block;margin-bottom:2px">Holly</span><div class="ia-body">${body}</div>${m.err ? `<p class="ia-err">${esc(m.err)}</p>` : ""}${meta}</div></div>`;
+      const meta = !m.pending && chs.length ? `<div class="ia-meta"><span class="ia-step">Relire :</span>${chs.map(id => `<a href="#ch-${id}" title="${esc(J.byId[id].title)}">${esc(SUB(id))} ${J.byId[id].num}</a>`).join("")}</div>` : "";
+      const last = i === IA.msgs.length - 1;
+      const acts = !m.pending && m.content ? `<div class="ia-acts"><button data-act="ia-copy" data-i="${i}" aria-label="Copier la réponse" title="Copier">${IC.copy}</button>${last && !IA.busy ? `<button data-act="ia-redo" aria-label="Régénérer la réponse" title="Régénérer">${IC.redo}</button>` : ""}</div>` : "";
+      return `<div class="ia-msg holly" id="ia-m-${i}">${avatar()}<div class="ia-b"><div class="ia-body">${body}</div>${m.err ? `<p class="ia-err">${esc(m.err)}</p>` : ""}${meta}${acts}</div></div>`;
     }
+    const nearEnd = () => innerHeight + scrollY >= document.documentElement.scrollHeight - 160;
+    const scrollEnd = (smooth = true) => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: smooth ? "smooth" : "auto" });
     function updateLast() {
-      const i = IA.msgs.length - 1, el = $(`#ia-m-${i}`);
-      if (el) { const tmp = document.createElement("div"); tmp.innerHTML = msgHTML(IA.msgs[i], i); el.replaceWith(tmp.firstElementChild); }
+      const i = IA.msgs.length - 1, el = $(`#ia-m-${i}`); if (!el) return;
+      const stick = nearEnd();
+      const tmp = document.createElement("div"); tmp.innerHTML = msgHTML(IA.msgs[i], i); el.replaceWith(tmp.firstElementChild);
+      if (stick) scrollEnd(false);
     }
-    const scrollEnd = () => { const log = $("#ia-log"); if (log) { const last = log.lastElementChild; if (last) last.scrollIntoView({ block: "end", behavior: "smooth" }); } };
+    /* Hauteur de la barre du haut et de la barre d'onglets, pour que le chat occupe tout l'écran. */
+    const measure = () => { const t = $(".top"), b = $(".tabbar"); const r = document.documentElement.style; r.setProperty("--ia-top", (t ? t.offsetHeight : 0) + "px"); r.setProperty("--ia-bot", (b && getComputedStyle(b).display !== "none" ? b.offsetHeight : 0) + "px"); };
+    const syncMode = () => { const on = (location.hash || "") === "#ia"; document.body.classList.toggle("ia-on", on); if (on) measure(); };
+    addEventListener("hashchange", syncMode); addEventListener("resize", () => { if (document.body.classList.contains("ia-on")) measure(); });
 
     VIEWS.ia = {
       render() {
-        const avail = IA.sample, waiting = avail === undefined;
-        const chs = J.list;
-        const unavailable = !waiting && !avail ? `<div class="card stack tint-rose">${ui.sayHTML("perplexed", "Ici, je ne peux pas te répondre : mes réponses passent par Claude, et cette version du site n'y est pas reliée.", true, true)}<p class="small muted">Ouvre la version Claude de Jojo Boss Academy (le lien claude.ai) pour discuter avec Holly. En attendant, la recherche retrouve n'importe quelle notion, article ou arrêt dans tes cours.</p><button class="btn sec sm" data-act="search" style="align-self:flex-start">${ICON.search.replace("<svg", "<svg width=16 height=16")} Rechercher dans mes cours</button></div>` : "";
-        return `
-        <header class="row between" style="align-items:flex-end"><div class="stack"><h1>Demande à Holly</h1><p class="muted" style="max-width:60ch">Une notion, un article, un arrêt, un cas pratique : Holly répond à partir de tes cours et te dit où relire.</p></div><div style="width:96px" class="deco">${H("prof")}</div></header>
-        ${unavailable}
-        <div class="card stack" style="gap:16px">
-          <div class="ia-log" id="ia-log" aria-live="polite">${IA.msgs.length ? IA.msgs.map(msgHTML).join("") : `
-            ${ui.sayHTML("happy", "Bonjour Jojo ! Pose-moi une question sur tes cours. Je relis le chapitre, je te réponds, et je te dis où vérifier. Promis, je ne dors pas pendant ce temps.", false, true)}
-            <div class="chips">${SUGG.map(q => `<button class="chip" data-act="ia-sugg" ${avail ? "" : "disabled"}>${esc(q)}</button>`).join("")}</div>`}</div>
-          <div class="stack" style="gap:10px;border-top:.5px solid var(--line);padding-top:14px">
-            <div class="row between">
-              <label class="row small" for="ia-scope" style="gap:8px;flex-wrap:nowrap;min-width:0;flex:1 1 260px"><b style="white-space:nowrap">Chercher dans</b><select id="ia-scope" class="input" style="width:auto;min-width:0;flex:1;padding:7px 10px;font-size:14px"><option value="">Tous mes cours</option>${chs.map(c => `<option value="${c.id}" ${IA.scope === c.id ? "selected" : ""}>${esc(label(c))}</option>`).join("")}</select></label>
-              ${IA.msgs.length ? `<button class="btn ghost sm" data-act="ia-clear" ${IA.busy ? "disabled" : ""}>Nouvelle conversation</button>` : ""}
-            </div>
-            <form class="ia-comp" id="ia-form">
-              <label for="ia-q" class="sr" style="position:absolute;left:-9999px">Ta question</label>
-              <textarea id="ia-q" class="input" rows="1" placeholder="${waiting ? "Holly se réveille…" : avail ? "Ta question pour Holly…" : "Disponible dans la version Claude du site"}" ${avail ? "" : "disabled"}></textarea>
-              ${IA.busy ? `<button type="button" class="btn sec" data-act="ia-stop">Arrêter</button>` : `<button type="submit" class="btn pri" ${avail ? "" : "disabled"}>Envoyer</button>`}
+        const avail = IA.sample, waiting = avail === undefined, has = IA.msgs.length > 0;
+        const sc = IA.scope && J.byId[IA.scope];
+        const empty = `<div class="ia-empty">
+            <div class="big" aria-hidden="true">${H("prof")}</div>
+            ${!waiting && !avail ? `<h2>Holly dort ici</h2><p>Holly répond grâce à Claude, et cette version du site n'y est pas reliée. Ouvre la version Claude de Jojo Boss Academy (le lien claude.ai) pour discuter avec lui.</p><button class="btn sec sm" data-act="search">Rechercher dans mes cours</button>`
+            : `<h2>On révise quoi, Jojo ?</h2><p>Pose-moi n'importe quelle question de droit. Je m'appuie sur tes cours et je te dis où relire.</p>
+            <div class="ia-sugg">${SUGG.map(([a, b2, q], k) => `<button data-act="ia-sugg" data-k="${k}" ${avail ? "" : "disabled"}><b>${esc(a)}</b><span>${esc(b2)}</span></button>`).join("")}</div>`}
+          </div>`;
+        return `<div class="ia-page">
+          <div class="ia-head">${avatar()}<div class="grow"><b>Holly</b><span class="sub">IA de droit · tes cours de L1</span></div>${has ? `<button class="ia-new" data-act="ia-clear" ${IA.busy ? "disabled" : ""} aria-label="Nouvelle conversation" title="Nouvelle conversation">${IC.neu}</button>` : ""}</div>
+          ${has ? `<div class="ia-log" id="ia-log" aria-live="polite">${IA.msgs.map(msgHTML).join("")}</div><div style="flex:1"></div>` : empty}
+          <div class="ia-foot">
+            ${sc ? `<div class="ia-scope"><span>Sur : ${esc(label(sc))}</span><button data-act="ia-unscope" aria-label="Ne plus limiter à ce chapitre">×</button></div>` : ""}
+            <form class="ia-box" id="ia-form">
+              <label for="ia-q" style="position:absolute;left:-9999px">Ta question</label>
+              <textarea id="ia-q" rows="1" placeholder="${waiting ? "Holly se réveille…" : avail ? "Écris à Holly…" : "Disponible dans la version Claude"}" ${avail ? "" : "disabled"} enterkeyhint="send"></textarea>
+              ${IA.busy ? `<button type="button" class="ia-send" data-act="ia-stop" aria-label="Arrêter">${IC.stop}</button>` : `<button type="submit" class="ia-send" id="ia-send" disabled aria-label="Envoyer">${IC.up}</button>`}
             </form>
-            <p class="small muted">Holly s'appuie sur tes fiches, mais peut se tromper : vérifie les points importants dans le chapitre indiqué. Entrée pour envoyer, Maj + Entrée pour aller à la ligne.</p>
+            <p class="ia-note">Holly peut se tromper. Vérifie les points importants dans tes cours.</p>
           </div>
         </div>`;
       },
       after() {
-        const ta = $("#ia-q"), form = $("#ia-form"), sel = $("#ia-scope");
-        if (sel) sel.addEventListener("change", () => { IA.scope = sel.value; });
+        syncMode();
+        const ta = $("#ia-q"), form = $("#ia-form"), send = $("#ia-send");
         if (ta) {
-          const fit = () => { ta.style.height = "auto"; ta.style.height = Math.min(220, ta.scrollHeight) + "px"; };
+          const fit = () => { ta.style.height = "auto"; ta.style.height = Math.min(200, ta.scrollHeight) + "px"; if (send) send.disabled = !IA.sample || !ta.value.trim(); };
           ta.addEventListener("input", fit);
-          ta.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); form.requestSubmit(); } });
-          if (IA.draft) { ta.value = IA.draft; IA.draft = ""; fit(); }
+          ta.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing && matchMedia("(hover:hover)").matches) { e.preventDefault(); form.requestSubmit(); } });
+          if (IA.draft) { ta.value = IA.draft; IA.draft = ""; }
+          fit();
           if (IA.sample && !IA.busy && matchMedia("(hover:hover)").matches) ta.focus();
         }
         if (form) form.addEventListener("submit", e => { e.preventDefault(); const q = ta.value.trim(); if (q) ask(q); });
-        if (IA.msgs.length) setTimeout(scrollEnd, 30);
+        if (IA.msgs.length) requestAnimationFrame(() => scrollEnd(false));
       }
     };
 
@@ -5605,7 +5659,7 @@ Règles :
     const ERR = {
       not_granted: "Tu n'as pas autorisé cette page à interroger Claude. Tu peux le réactiver dans les autorisations de la page, puis reposer ta question.",
       rate_limited: "Holly reprend son souffle : réessaie dans une minute.", queue_overflow: "Holly reprend son souffle : réessaie dans une minute.",
-      prompt_too_large: "C'est trop de cours d'un coup. Choisis un chapitre précis dans « Chercher dans », ou raccourcis ta question.",
+      prompt_too_large: "C'est trop de cours d'un coup. Ouvre le chapitre concerné et utilise « Une question sur ce chapitre ? », ou raccourcis ta question.",
       session_expired: "Ta session Claude a expiré : recharge la page.",
       refused: "Holly ne peut pas répondre à cette question.",
       sampling_disabled: "Les réponses de Holly ne sont pas disponibles sur ce compte.", capability_disabled: "Les réponses de Holly ne sont pas disponibles ici.", capability_removed: "Les réponses de Holly ne sont pas disponibles ici.", not_declared: "Les réponses de Holly ne sont pas disponibles ici."
@@ -5620,7 +5674,7 @@ Règles :
       IA.msgs.push({ role: "user", content: q });
       const bot = { role: "assistant", content: "", pending: true, chs: used, step: "" };
       IA.msgs.push(bot);
-      IA.busy = true; saveChat(); ui.rerender(); scrollEnd();
+      IA.busy = true; saveChat(); ui.rerender(); scrollEnd(false);
 
       const ctx = `${RULES}
 
@@ -5628,8 +5682,8 @@ CATALOGUE DES CHAPITRES (identifiant, titre, résumé) :
 ${CATALOGUE()}
 
 CONTENU DES COURS — extraits les plus utiles pour la question :
-${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspond directement aux mots de la question : appuie-toi sur le catalogue" + (IA.tools ? " et utilise les outils." : ".") + ")"}`;
-      const input = [{ role: "user", content: ctx }, { role: "assistant", content: "Compris. Je réponds à partir de ces cours, en citant mes sources." }, ...history, { role: "user", content: q }];
+${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspond directement aux mots de la question. Si elle touche quand même aux cours, appuie-toi sur le catalogue" + (IA.tools ? " et utilise les outils" : "") + " ; sinon, réponds comme juriste selon la règle 2.)"}`;
+      const input = [{ role: "user", content: ctx }, { role: "assistant", content: "Compris. Je suis Holly, je réponds à Jojo en m'appuyant sur ses cours quand c'est possible, et je cite mes sources." }, ...history, { role: "user", content: q }];
       const ctl = IA.ctl = new AbortController();
       const opts = { signal: ctl.signal, cache: false, modelTier: "default", onText: ({ text }) => { bot.content = text; bot.step = ""; updateLast(); } };
       if (IA.tools) opts.tools = makeTools(used, step => { bot.step = step; updateLast(); });
@@ -5648,10 +5702,13 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
         bot.pending = false; bot.step = ""; IA.busy = false; IA.ctl = null;
         if (!bot.content && bot.err) { IA.msgs.pop(); IA.msgs.pop(); IA.draft = q; ui.toast(bot.err); }
         saveChat();
-        if ((location.hash || "") === "#ia") { ui.rerender(); scrollEnd(); }
+        if ((location.hash || "") === "#ia") { const st = nearEnd(); ui.rerender(); if (st) scrollEnd(false); }
       }
     }
-    ACT["ia-sugg"] = b => ask(b.textContent.trim());
+    ACT["ia-sugg"] = b => ask(SUGG[+b.dataset.k][2]);
+    ACT["ia-unscope"] = () => { IA.scope = ""; ui.rerender(); };
+    ACT["ia-copy"] = b => { const m = IA.msgs[+b.dataset.i]; if (!m) return; const t = m.content; try { navigator.clipboard.writeText(t).then(() => ui.toast("Réponse copiée."), () => ui.toast("Copie impossible ici.")); } catch (e) { ui.toast("Copie impossible ici."); } };
+    ACT["ia-redo"] = () => { if (IA.busy) return; const u = [...IA.msgs].reverse().find(m => m.role === "user"); if (!u) return; const q = u.content; while (IA.msgs.length && IA.msgs[IA.msgs.length - 1] !== u) IA.msgs.pop(); IA.msgs.pop(); ask(q); };
     ACT["ia-stop"] = () => { if (IA.ctl) IA.ctl.abort(); };
     ACT["ia-clear"] = () => { if (IA.busy) return; IA.msgs = []; saveChat(); ui.rerender(); };
     ACT["ia-ch"] = b => { IA.scope = b.dataset.id; location.hash = "#ia"; };
@@ -5782,7 +5839,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
 })();
 
 </script>
-<script>window.JBA_BUILD="20261103-204025";
+<script>window.JBA_BUILD="20261103-204500";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
