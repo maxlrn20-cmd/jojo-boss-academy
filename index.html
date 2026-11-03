@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Jojo Boss"><meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="icon" type="image/png" href="icon-512.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="manifest" href="manifest.webmanifest">
@@ -5436,6 +5436,31 @@ JBA.chapter({
   const origRerender = ui.rerender;
   ui.rerender = () => { origRerender(); ui.refreshSheet && ui.refreshSheet(); };
   ui.rerender();
+})();
+
+</script>
+<script>window.JBA_BUILD="20261103-195804";
+/* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
+(function () {
+  const B = window.JBA_BUILD; if (!B || !window.fetch) return;
+  let busy = false;
+  const check = async () => {
+    if (busy) return; busy = true;
+    try {
+      const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
+      const v = (await r.json()).build;
+      let last = null; try { last = sessionStorage.getItem("jba-reload"); } catch (e) { }
+      if (v && v !== B && last !== v) {
+        try { sessionStorage.setItem("jba-reload", v); } catch (e) { }
+        location.replace(location.pathname + "?v=" + v + location.hash);
+      }
+    } catch (e) { }
+    busy = false;
+  };
+  check();
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") check(); });
+  const ui = window.JBA && window.JBA.ui, V = ui && ui.VIEWS && ui.VIEWS.reglages;
+  if (V) { const r = V.render; V.render = function () { return r.apply(this, arguments).replace("Raccourci clavier", `Version ${B}. Raccourci clavier`); }; }
 })();
 
 </script>
