@@ -400,6 +400,7 @@ h2{font-weight:700;letter-spacing:-.028em}
 </style>
 </head><body>
 <div id="root"></div>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>window.JBA_NOPDF=true;window.JBA={list:[],chapter(c){this.list.push(c)}};</script>
 <script>
 JBA.chapter({
@@ -5236,6 +5237,109 @@ JBA.chapter({
   ACT.reset2 = () => { confirmReset = false; J.resetAll(); J.quiz = J.flash = J.exam = null; ui.applyTheme(); ui.toast("Progression réinitialisée. Holly a tout oublié, comme d'habitude."); ui.rerender(); };
 
   ui.mount();
+})();
+
+</script>
+<script>
+/* Jojo Boss Academy — connexion Google et sauvegarde en ligne de la progression (Firebase). Uniquement sur la version GitHub Pages. */
+(function () {
+  const J = window.JBA, S = J.S, ui = J.ui, ACT = ui.ACT, VIEWS = ui.VIEWS, esc = J.esc;
+  if (!window.firebase) return;
+  const cfg = {
+    apiKey: "AIzaSyDVcKyj-L645ADs8Rdoqe9XJZ_zLpMy9j4",
+    authDomain: "jojo-boss-academy.firebaseapp.com",
+    projectId: "jojo-boss-academy",
+    storageBucket: "jojo-boss-academy.firebasestorage.app",
+    messagingSenderId: "103718353075",
+    appId: "1:103718353075:web:af0b24f52439eeef48d8c6"
+  };
+  let auth, db;
+  try { firebase.initializeApp(cfg); auth = firebase.auth(); db = firebase.firestore(); } catch (e) { return; }
+  auth.useDeviceLanguage();
+  const C = J.cloud = { user: null, status: "idle", last: null, ready: false };
+
+  /* ---------- Envoi (débounce) ---------- */
+  let pushT = null, applying = false;
+  const push = async () => {
+    if (!C.user) return;
+    C.status = "saving"; badge();
+    try {
+      const data = Object.assign({}, S); delete data.theme;
+      await db.collection("progress").doc(C.user.uid).set({ data: JSON.stringify(data), xp: S.xp, t: Date.now(), name: C.user.displayName || "" });
+      C.status = "ok"; C.last = Date.now();
+    } catch (e) { C.status = "error"; }
+    badge();
+  };
+  const schedule = () => { if (!C.user || applying) return; clearTimeout(pushT); pushT = setTimeout(push, 1500); };
+  const origSave = J.save;
+  J.save = () => { origSave(); schedule(); };
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && C.user && pushT) { clearTimeout(pushT); push(); } });
+
+  /* ---------- Récupération à la connexion ---------- */
+  const fresh = s => !s.xp && !(s.history || []).length && !Object.keys(s.q || {}).length && !Object.keys(s.cards || {}).length;
+  async function pull() {
+    C.status = "saving"; badge();
+    try {
+      const snap = await db.collection("progress").doc(C.user.uid).get();
+      if (snap.exists) {
+        const remote = JSON.parse(snap.data().data || "{}");
+        const useRemote = fresh(S) || (remote.xp || 0) > (S.xp || 0);
+        if (useRemote) {
+          const theme = S.theme; applying = true;
+          J.importData(JSON.stringify(Object.assign({}, remote, { v: 1, theme })));
+          applying = false;
+          ui.applyTheme && ui.applyTheme();
+          ui.toast("Progression retrouvée : " + S.xp + " XP.");
+        } else { await push(); }
+      } else { await push(); }
+      C.status = "ok"; C.last = Date.now();
+    } catch (e) { applying = false; C.status = "error"; }
+    C.ready = true; badge(); ui.rerender();
+  }
+
+  auth.onAuthStateChanged(u => {
+    C.user = u || null;
+    if (u) pull(); else { C.status = "idle"; C.ready = true; badge(); ui.rerender(); }
+  });
+  auth.getRedirectResult().catch(e => { if (e && e.code !== "auth/no-auth-event") ui.toast(errMsg(e)); });
+
+  /* ---------- Connexion / déconnexion ---------- */
+  const errMsg = e => ({
+    "auth/popup-closed-by-user": "Connexion annulée.",
+    "auth/cancelled-popup-request": "Connexion annulée.",
+    "auth/network-request-failed": "Pas de connexion Internet.",
+    "auth/unauthorized-domain": "Ce site n'est pas autorisé pour la connexion Google."
+  })[e && e.code] || "La connexion n'a pas abouti. Réessaie dans un instant.";
+  ACT.login = async () => {
+    const p = new firebase.auth.GoogleAuthProvider(); p.setCustomParameters({ prompt: "select_account" });
+    try { await auth.signInWithPopup(p); }
+    catch (e) {
+      if (e && (e.code === "auth/popup-blocked" || e.code === "auth/operation-not-supported-in-this-environment")) { try { await auth.signInWithRedirect(p); return; } catch (e2) { ui.toast(errMsg(e2)); return; } }
+      if (e && e.code !== "auth/popup-closed-by-user" && e.code !== "auth/cancelled-popup-request") ui.toast(errMsg(e));
+    }
+  };
+  ACT.logout = async () => { if (pushT) { clearTimeout(pushT); await push(); } await auth.signOut(); ui.toast("Déconnectée. Ta progression reste sauvegardée en ligne."); };
+  ACT.syncnow = async () => { await push(); ui.toast(C.status === "ok" ? "Progression sauvegardée en ligne." : "Sauvegarde impossible pour l'instant."); ui.rerender(); };
+
+  /* ---------- Interface ---------- */
+  const G = `<svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>`;
+  const stateTxt = () => C.status === "saving" ? "Synchronisation…" : C.status === "error" ? "Hors ligne : la sauvegarde reprendra dès que possible" : C.last ? "Sauvegardé en ligne à " + new Date(C.last).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : "Sauvegardé en ligne";
+  function badge() { const el = document.getElementById("cloud-state"); if (el) el.textContent = stateTxt(); }
+  function card(compact) {
+    if (!C.ready) return `<div class="card stack"><h3>Compte</h3><p class="small muted">Vérification de la connexion…</p></div>`;
+    if (C.user) {
+      const u = C.user;
+      return `<div class="card stack"><h3>Compte</h3><div class="row" style="gap:12px">${u.photoURL ? `<img src="${esc(u.photoURL)}" alt="" width="40" height="40" style="border-radius:50%" referrerpolicy="no-referrer">` : ""}<div class="stack" style="gap:2px"><b>${esc(u.displayName || "Connectée")}</b><span class="small muted">${esc(u.email || "")}</span></div></div>
+        <p class="small"><span style="color:var(--ok);font-weight:700">●</span> <span id="cloud-state">${stateTxt()}</span></p>
+        <p class="small muted">Ta progression est enregistrée sur ton compte Google : connecte-toi avec le même compte sur ton iPhone ou ton Mac pour la retrouver.</p>
+        <div class="row"><button class="btn sec sm" data-act="syncnow">Sauvegarder maintenant</button><button class="btn ghost sm" data-act="logout">Se déconnecter</button></div></div>`;
+    }
+    return `<div class="card stack"><h3>${compact ? "Retrouve ta progression partout" : "Compte"}</h3><p class="small muted">Connecte-toi avec Google pour sauvegarder ta progression en ligne et la retrouver sur l'iPhone, le Mac ou n'importe quel appareil. Sans connexion, elle reste enregistrée seulement sur cet appareil.</p><button class="btn sec" data-act="login" style="align-self:flex-start">${G} Se connecter avec Google</button></div>`;
+  }
+  const wrap = (name, where) => { const v = VIEWS[name]; if (!v) return; const r = v.render; v.render = function () { const h = r.apply(this, arguments); return where(h); }; };
+  wrap("reglages", h => h.replace("</header>", "</header>" + card(false)));
+  wrap("accueil", h => (C.ready && !C.user) ? h.replace(/(<\/section>)/, "$1" + card(true)) : h);
+  ui.rerender();
 })();
 
 </script>
