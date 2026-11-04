@@ -640,6 +640,45 @@ body.ia-on .toast{bottom:calc(var(--ia-bot,0px) + 118px)}
 .ia-photo-cta b{display:block;font-size:14.5px;font-weight:600}
 .ia-photo-cta span span{font-size:13px;color:var(--ink2)}
 .ia-att:not(:empty){background:var(--bg);border-radius:16px;padding:6px;margin:0 0 6px}
+
+/* ===== Apple : progression, Holly, réglages ===== */
+.grings2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px}
+.minis{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--ink2)}
+.minis b{color:var(--ink);font-weight:600}
+.ddays{display:grid;grid-template-columns:repeat(14,1fr);gap:5px}
+.dday{aspect-ratio:1;border-radius:5px;background:var(--surface3)}
+.dday.on{background:#34C759}
+.prow.dim{opacity:.5}
+.prow.kv{align-items:flex-start;gap:16px;padding-top:12px;padding-bottom:12px}
+.prow.kv .k{flex:none;width:110px;color:var(--ink2);font-size:15px}
+.prow.kv .v{flex:1;font-size:15px;line-height:1.4}
+.prow.kv+.prow.kv::before{left:14px}
+.bmedal{width:30px;height:30px;border-radius:50%;background:var(--gold2);display:grid;place-items:center;flex:none;overflow:hidden}
+.bmedal>*{max-width:26px;max-height:26px}
+.hgal{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+.hgal figure{margin:0;background:var(--surface);border-radius:16px;padding:8px 6px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:var(--shadow)}
+.hgal .hh{width:72%}.hgal .hh.solo{width:78%}
+.hgal .hsc{position:relative;width:100%}.hgal .hsc .scene{position:absolute;inset:0;border-radius:10px;opacity:.85}.hgal .hsc .hh{position:relative;margin:0 auto}
+.hgal figcaption{font-size:12px;text-align:center;color:var(--ink2);line-height:1.25}
+.prow .pval{color:var(--ink2);font-size:15px;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prow.danger .pt{color:#FF3B30}
+.setbox{padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px;border-top:.5px solid var(--line)}
+.pdet>summary{list-style:none}.pdet>summary::-webkit-details-marker{display:none}
+.pdet[open]>summary .pchev{transform:rotate(90deg)}.pdet .pchev{transition:transform .2s}
+.pdet+.prow::before,.prow+.pdet>summary::before,.pdet+.pdet>summary::before{content:"";position:absolute;top:0;right:0;left:56px;border-top:.5px solid var(--line)}
+.pdet>summary{position:relative}
+.wrap .pgroup .pnote{margin:0}
+.backlink{display:inline-flex;gap:4px;align-items:center;text-decoration:none;font-size:16px;color:var(--framboise);margin-bottom:-12px}
+.chtools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.chipbtn{display:inline-flex;align-items:center;gap:6px;border:0;background:var(--surface3);color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;font-weight:500;cursor:pointer}
+.chipbtn svg{color:var(--framboise)}
+.chtabs{display:flex;gap:2px;overflow-x:auto;background:var(--surface3);border-radius:10px;padding:2px;scrollbar-width:none;-webkit-overflow-scrolling:touch;position:sticky;top:calc(var(--ia-top,60px) + 6px);z-index:6}
+.chtabs::-webkit-scrollbar{display:none}
+.chtabs button{flex:1 0 auto;border:0;background:transparent;border-radius:8px;padding:7px 12px;font:inherit;font-size:14px;font-weight:500;color:var(--ink);cursor:pointer;white-space:nowrap}
+.chtabs button.on{background:var(--surface);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+:root[data-theme="dark"] .chtabs button.on{background:#636366}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chtabs button.on{background:#636366}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg button.on,:root:not([data-theme="light"]) .tabs button.on{background:#636366}}
 </style>
 </head><body>
 <div id="root"></div>
@@ -5034,20 +5073,22 @@ JBA.chapter({
       if (J._lastCh !== id) { chTab = "cours"; J._lastCh = id; const st = J.chs(id); st.opened++; if (st.status === "decouvrir") st.status = "encours"; J.save(); }
       if (ui.pendingTab) { chTab = ui.pendingTab; ui.pendingTab = null; }
       const st = J.chs(id), sub = J.SUBJECTS[c.subject];
-      const tabs = [["cours", "Cours"], ["fiche", "Fiche de révision"], ["express", "Fiche express"], ["juris", `Jurisprudences${c.juris.length ? " (" + c.juris.length + ")" : ""}`], ["holly", "Holly, je n'ai rien compris !"], ["entrainement", "S'entraîner"]];
+      const tabs = [["cours", "Cours"], ["fiche", "Fiche"], ["express", "Express"], ["juris", `Arrêts${c.juris.length ? " " + c.juris.length : ""}`], ["holly", "Holly explique"], ["entrainement", "S'entraîner"]];
       return `
-      <a href="#cours" class="small" style="display:inline-flex;gap:6px;align-items:center;text-decoration:none">${ICON.back.replace("<svg", "<svg width=16 height=16")} Mes cours · ${sub.name}</a>
-      <header class="grid" style="grid-template-columns:1fr auto;gap:16px;align-items:start">
-        <div class="stack" style="gap:10px"><span class="eyebrow">${sub.short} · chapitre ${c.num} · ${esc(c.author)}</span><h1 style="font-size:clamp(28px,5vw,42px)">${esc(c.title)}</h1>
-          <div class="row"><span class="pill ${st.status}">${STATUS[st.status]}</span>${st.read ? `<span class="pill maitrisee">Leçon lue</span>` : ""}${st.fiche ? `<span class="pill maitrisee">Fiche terminée</span>` : ""}${st.best != null ? `<span class="pill encours">Meilleur quiz ${st.best} %</span>` : ""}</div></div>
-        <button class="iconbtn" data-act="fav" data-id="${id}" aria-pressed="${st.fav}" aria-label="${st.fav ? "Retirer des favoris" : "Ajouter aux favoris"}" style="color:${st.fav ? "var(--framboise)" : "inherit"}">${st.fav ? ICON.starFill : ICON.star}</button>
+      <a href="#cours" class="backlink">${ICON.back.replace("<svg", "<svg width=17 height=17")} Mes cours</a>
+      <header class="stack" style="gap:6px">
+        <span class="eyebrow">${sub.short} · Chapitre ${c.num}</span>
+        <h1 style="font-size:clamp(30px,6vw,44px)">${esc(c.title)}</h1>
+        <span class="small muted">${esc(c.author)}${st.read ? " · leçon lue" : ""}${st.fiche ? " · fiche faite" : ""}${st.best != null ? ` · meilleur quiz ${st.best} %` : ""}</span>
       </header>
-      <div class="card flat row between" style="padding:12px 14px">
-        <label class="row small" for="st-sel"><b>Statut</b><select id="st-sel" class="input" style="width:auto;padding:8px 12px" data-id="${id}">${Object.entries(STATUS).map(([k, t]) => `<option value="${k}" ${st.status === k ? "selected" : ""}>${t}</option>`).join("")}</select></label>
-        <span class="row">${window.JBA_NOIA ? "" : `<button class="btn sec sm" data-act="ia-ch" data-id="${id}">${ICON.chat.replace("<svg", "<svg width=16 height=16")} Une question sur ce chapitre ?</button>`}${window.JBA_NOPDF ? "" : `<a class="btn ghost sm" href="${c.pdf}" target="_blank" rel="noopener">${ICON.file.replace("<svg", "<svg width=18 height=18")} Document d'origine</a>`}</span>
+      <div class="chtools">
+        <label class="selpill"><span class="sr">Statut</span><select id="st-sel" data-id="${id}">${Object.entries(STATUS).map(([k, t]) => `<option value="${k}" ${st.status === k ? "selected" : ""}>${t}</option>`).join("")}</select></label>
+        <button class="iconbtn" data-act="fav" data-id="${id}" aria-pressed="${st.fav}" aria-label="${st.fav ? "Retirer des favoris" : "Ajouter aux favoris"}" style="color:${st.fav ? "#FF9500" : "inherit"}">${st.fav ? ICON.starFill : ICON.star}</button>
+        ${window.JBA_NOIA ? "" : `<button class="chipbtn" data-act="ia-ch" data-id="${id}">${ICON.chat.replace("<svg", "<svg width=16 height=16")} Demander à Holly</button>`}
+        ${window.JBA_NOPDF ? "" : `<a class="iconbtn" href="${c.pdf}" target="_blank" rel="noopener" aria-label="Document d'origine" title="Document d'origine">${ICON.file}</a>`}
       </div>
       ${c.note ? `<div class="note">${esc(c.note)}</div>` : ""}
-      <div class="tabs" role="tablist">${tabs.map(([k, t]) => `<button role="tab" aria-selected="${chTab === k}" class="${chTab === k ? "on" : ""}" data-act="chtab" data-k="${k}">${t}</button>`).join("")}</div>
+      <div class="chtabs" role="tablist">${tabs.map(([k, t]) => `<button role="tab" aria-selected="${chTab === k}" class="${chTab === k ? "on" : ""}" data-act="chtab" data-k="${k}">${t}</button>`).join("")}</div>
       <section class="stack" id="chbody">${tabBody(c, chTab)}</section>`;
     },
     after(id) { const s = $("#st-sel"); if (s) s.addEventListener("change", () => { J.chs(id).status = s.value; J.save(); ui.toast(`Statut : ${STATUS[s.value]}`); ui.rerender(); }); }
@@ -5342,10 +5383,13 @@ JBA.chapter({
   VIEWS.cas = {
     render() {
       const cs = allCases();
+      const done = cs.filter(x => (S.cases[x.id] || {}).done).length;
+      const dot = l => ["", "#34C759", "#FF9500", "#FF3B30"][l];
+      const row = x => { const st = S.cases[x.id] || {}; const c = J.byId[x.ch]; return `<a class="prow" href="#cas-${x.id}"><span class="tile" style="background:${dot(x.k.level)}">${ICON.scale}</span><span class="pmain"><span class="pt">${esc(x.k.title)}</span><span class="ps">${esc(J.SUBJECTS[c.subject].short)} ${c.num} · ${["", "Facile", "Moyen", "Difficile"][x.k.level]}</span></span>${st.done ? `<span class="pcount tnum">${st.score}/5</span>` : st.text ? `<span class="pcount">Brouillon</span>` : ""}<span class="pchev">${ICON.chev}</span></a>`; };
       return `
-      <header class="row between" style="align-items:flex-end"><div class="stack"><span class="eyebrow">Méthode</span><h1>Cas pratiques</h1><p class="muted" style="max-width:60ch">Rédige, puis compare avec la correction.</p></div><div style="width:150px" class="deco">${H("avocat")}</div></header>
-      <div class="card tint-turq stack"><h3>Le syllogisme juridique en cinq temps</h3><ol class="list"><li><b>Qualification juridique des faits</b> : traduire l'histoire en catégories du droit.</li><li><b>Problème de droit</b> : la question juridique, formulée de manière générale.</li><li><b>Règle de droit</b> : textes, principes, jurisprudences applicables (la majeure).</li><li><b>Application aux faits</b> : confronter la règle aux faits de l'espèce (la mineure).</li><li><b>Conclusion</b> : la réponse claire à la question posée.</li></ol></div>
-      <div class="grid g2">${cs.map(x => { const s = S.cases[x.id] || {}; return `<a class="chcard" href="#cas-${x.id}"><div class="row between"><span class="eyebrow">${esc(J.SUBJECTS[J.byId[x.ch].subject].short)} ${J.byId[x.ch].num}</span><span class="diff">${"⚖".repeat(x.k.level)}<span class="muted">${"·".repeat(3 - x.k.level)}</span> ${["", "Facile", "Moyen", "Difficile"][x.k.level]}</span></div><h3>${esc(x.k.title)}</h3><p class="small muted" style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${esc(x.k.facts)}</p><div class="row">${s.done ? `<span class="pill maitrisee">Fait · ${s.score}/5</span>` : s.text ? `<span class="pill encours">Brouillon enregistré</span>` : `<span class="pill decouvrir">À faire</span>`}</div></a>`; }).join("")}</div>`;
+      <header class="row between" style="align-items:flex-end"><div class="stack"><h1>Cas pratiques</h1><p class="muted">${done}/${cs.length} faits</p></div><div style="width:84px" class="deco">${H("avocat")}</div></header>
+      <details class="pdetails"><summary>La méthode en 5 étapes <span class="muted">Syllogisme</span></summary><ol class="list" style="margin-top:10px"><li><b>Qualification juridique des faits</b> : traduire l'histoire en catégories du droit.</li><li><b>Problème de droit</b> : la question juridique, formulée de manière générale.</li><li><b>Règle de droit</b> : textes, principes, jurisprudences applicables (la majeure).</li><li><b>Application aux faits</b> : confronter la règle aux faits de l'espèce (la mineure).</li><li><b>Conclusion</b> : la réponse claire à la question posée.</li></ol></details>
+      ${["dc", "ip"].map(sb => { const list = cs.filter(x => J.byId[x.ch].subject === sb); return list.length ? `<section class="stack" style="gap:0"><p class="plabel">${J.SUBJECTS[sb].name}</p><div class="pgroup">${list.map(row).join("")}</div></section>` : ""; }).join("")}`;
     }
   };
   VIEWS.casdetail = {
@@ -5380,22 +5424,28 @@ JBA.chapter({
 
   /* ======================= EXAMENS BLANCS ======================= */
   const EX = { scope: "ch:dc1" };
+  EX.k = EX.k || "ch";
   VIEWS.examen = {
     render() {
       if (J.exam && !J.exam.finished) return examItem();
       if (J.exam && J.exam.finished) return examCorrection();
+      const k = EX.k, info = { ch: ["Un chapitre", "20 min · 8 QCM, 3 définitions, réflexion, cas pratique"], s: ["Une matière", "45 min · 14 QCM, 4 définitions, réflexion, cas pratique"], all: ["Les deux matières", "60 min · 18 QCM, 5 définitions, réflexion, cas pratique"] }[k];
       return `
-      <header class="row between" style="align-items:flex-end"><div class="stack"><span class="eyebrow">Conditions réelles</span><h1>Examens blancs</h1><p class="muted" style="max-width:60ch">En conditions réelles, sous chronomètre.</p></div><div style="width:150px" class="deco">${H("robe")}</div></header>
-      <div class="grid g3">
-        <div class="card stack"><span class="eyebrow">Par chapitre · 20 min</span><h3>Un chapitre</h3><select id="ex-ch" class="input">${J.list.map(c => `<option value="${c.id}">${esc(chLabel(c.id))}</option>`).join("")}</select><button class="btn pri" data-act="exgo" data-k="ch">Commencer</button></div>
-        <div class="card stack"><span class="eyebrow">Par matière · 45 min</span><h3>Une matière entière</h3><select id="ex-s" class="input"><option value="dc">Droit constitutionnel</option><option value="ip">Introduction au droit privé</option></select><button class="btn pri" data-act="exgo" data-k="s">Commencer</button></div>
-        <div class="card stack"><span class="eyebrow">Transversal · 60 min</span><h3>Les deux matières</h3><p class="small muted">Le grand oral de Holly, en version écrite.</p><button class="btn pri" data-act="exgo" data-k="all">Commencer</button></div>
-      </div>
-      ${S.exams.length ? `<div class="card stack"><h3>Examens passés</h3><ul class="hist">${S.exams.slice().reverse().slice(0, 8).map(e => `<li><span>${esc(e.label)}</span><span class="tnum"><b>${e.note}/20</b> <span class="small muted">· ${J.fmtDate(e.t)}</span></span></li>`).join("")}</ul></div>` : ""}`;
-    }
+      <header class="row between" style="align-items:flex-end"><div class="stack"><h1>Examens blancs</h1><p class="muted">Sous chronomètre, comme le jour J.</p></div><div style="width:84px" class="deco">${H("robe")}</div></header>
+      <section class="stack" style="gap:0"><p class="plabel">Sujet</p><div class="seg wide">${[["ch", "Chapitre"], ["s", "Matière"], ["all", "Les deux"]].map(([v, t]) => `<button class="${k === v ? "on" : ""}" data-act="exk" data-k="${v}">${t}</button>`).join("")}</div></section>
+      <section class="card stack" style="gap:14px">
+        <div class="stack" style="gap:2px"><h3>${info[0]}</h3><span class="small muted">${info[1]}</span></div>
+        ${k === "ch" ? `<select id="ex-ch" class="input" aria-label="Chapitre">${J.list.map(c => `<option value="${c.id}" ${EX.ch === c.id ? "selected" : ""}>${esc(chLabel(c.id))}</option>`).join("")}</select>` : k === "s" ? `<div class="seg wide">${[["dc", "Droit constit."], ["ip", "Droit privé"]].map(([v, t]) => `<button class="${(EX.s || "dc") === v ? "on" : ""}" data-act="exs" data-k="${v}">${t}</button>`).join("")}</div>` : ""}
+        <button class="btn pri block" data-act="exgo" data-k="${k}">Commencer l'examen</button>
+      </section>
+      ${S.exams.length ? `<section class="stack" style="gap:0"><p class="plabel">Examens passés</p><div class="pgroup">${S.exams.slice().reverse().slice(0, 8).map(e => `<div class="prow"><span class="tile" style="background:${e.note >= 14 ? "#34C759" : e.note >= 10 ? "#FF9500" : "#FF3B30"}">${ICON.exam}</span><span class="pmain"><span class="pt">${esc(e.label.replace(/^Examen · /, ""))}</span><span class="ps">${J.fmtDate(e.t)}</span></span><span class="pcount tnum"><b>${e.note}</b>/20</span></div>`).join("")}</div></section>` : ""}`;
+    },
+    after() { const c = $("#ex-ch"); if (c) c.addEventListener("change", () => { EX.ch = c.value; }); }
   };
+  ACT.exk = b => { EX.k = b.dataset.k; ui.rerender(); };
+  ACT.exs = b => { EX.s = b.dataset.k; ui.rerender(); };
   ACT.startexam = b => { EX.scope = b.dataset.scope; buildExam(EX.scope); location.hash = "#examen"; };
-  ACT.exgo = b => { const k = b.dataset.k; const scope = k === "ch" ? "ch:" + $("#ex-ch").value : k === "s" ? "s:" + $("#ex-s").value : "all"; buildExam(scope); ui.rerender(); };
+  ACT.exgo = b => { const k = b.dataset.k; const scope = k === "ch" ? "ch:" + $("#ex-ch").value : k === "s" ? "s:" + (EX.s || "dc") : "all"; buildExam(scope); ui.rerender(); };
   function buildExam(scope) {
     let chs, label, mins, nq, nd;
     if (scope.startsWith("ch:")) { chs = [scope.slice(3)]; label = "Examen · " + chLabel(chs[0]); mins = 20; nq = 8; nd = 3; }
@@ -5474,19 +5524,18 @@ JBA.chapter({
   const sceneBg = { plage: "coco", bosphore: "istanbul" };
   VIEWS.holly = {
     render() {
+      const facts = [["Nom", "Holly"], ["Espèce", "Chien, bichon crème très duveteux"], ["Âge", "« Un certain âge », dit-il en bâillant"], ["Spécialités", "Droit constitutionnel, siestes, promenades à Coco Plage"], ["Péché mignon", "Regarder Jojo manger ses Franui. Il n'y a pas droit : le chocolat est dangereux pour les chiens."]];
       return `
-      <section class="hero"><div class="stack" style="gap:14px"><span class="eyebrow">Holly University</span><h1>Le professeur Holly</h1><p style="font-size:18px;max-width:50ch">Professeur officiel de Jojo Boss, convaincu d'être excellent, souvent fatigué, parfois perdu, toujours fier d'elle.</p>
-        <div class="dl card flat" style="padding:6px 16px"><div><dt>Nom</dt><dd>Holly</dd></div><div><dt>Espèce</dt><dd>Chien, bichon crème très duveteux.</dd></div><div><dt>Âge</dt><dd>« Un certain âge », dit-il en bâillant.</dd></div><div><dt>Spécialités</dt><dd>Droit constitutionnel, siestes, promenades à Coco Plage.</dd></div><div><dt>Péché mignon</dt><dd>Regarder Jojo manger ses Franui (framboises au chocolat). Il n'y a pas droit : le chocolat est dangereux pour les chiens, et il le sait.</dd></div></div></div>
+      <section class="hero home" style="padding-bottom:24px"><div class="stack" style="gap:10px"><span class="eyebrow">Holly University</span><h1 style="font-size:clamp(34px,6vw,56px)">Le professeur Holly</h1><p>Convaincu d'être excellent, souvent fatigué, parfois perdu, toujours fier de toi.</p>
+        <div class="row" style="margin-top:6px"><a class="btn pri" href="#ia">Poser une question</a><button class="btn link" data-act="pause">Pause de 5 min ›</button></div></div>
         <div class="art"><div class="bob">${H("prof")}</div></div></section>
-      <div class="card stack"><h2>Sa personnalité</h2><div class="chips">${["Un peu âgé", "Très attachant", "Drôle", "Parfois maladroit", "Souvent fatigué", "Un peu ronchon", "Très expressif", "Persuadé d'être un grand professeur"].map(t => `<span class="pill fav">${t}</span>`).join("")}</div><p class="muted">Imagine un vieux professeur qui enseigne le droit avec beaucoup d'assurance… et qui demande parfois qu'on lui réexplique le cours.</p></div>
-      <div class="stack"><h2>Les quinze visages de Holly</h2><div class="grid g4">${GALLERY.map(([p, t]) => `<figure class="card flat" style="margin:0;padding:10px;display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center">${sceneBg[p] ? `<div style="position:relative;width:100%"><div class="scene" style="position:absolute;inset:0;opacity:.85">${A.scene[sceneBg[p]]()}</div><div style="position:relative;width:78%;margin:0 auto">${H(p)}</div></div>` : `<div style="width:80%">${H(p)}</div>`}<figcaption class="small" style="font-weight:700">${t}</figcaption></figure>`).join("")}</div></div>
-      <div class="grid g2">
-        <div class="card stack"><h2>Ses conseils de méthode</h2><ul class="list">${J.LINES.conseil.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>
-        <div class="card stack tint-rose"><h2>Ses répliques</h2><div id="holly-line">${ui.sayHTML("happy", J.line("motivation"), false, true)}</div><button class="btn sec sm" data-act="hline" style="align-self:flex-start">Une autre réplique</button></div>
-      </div>
-      <div class="card stack tint-turq" style="align-items:flex-start"><h2>Pause Holly</h2><p class="muted" style="max-width:60ch">Cinq minutes loin des cours. Holly dort, tu respires, et tu reviens plus efficace.</p><button class="btn turq" data-act="pause">Lancer une pause de 5 minutes</button></div>`;
+      <section class="stack" style="gap:0"><p class="plabel">Fiche d'identité</p><div class="pgroup">${facts.map(([k, v]) => `<div class="prow kv"><span class="pt k">${k}</span><span class="v">${esc(v)}</span></div>`).join("")}</div></section>
+      <section class="stack" style="gap:0"><p class="plabel">Ses répliques</p><div class="card stack" style="gap:12px"><div id="holly-line">${ui.sayHTML("happy", J.line("motivation"), true, true)}</div><button class="btn sec sm" data-act="hline" style="align-self:flex-start">Une autre réplique</button></div></section>
+      <section class="stack" style="gap:0"><p class="plabel">Les quinze visages de Holly</p><div class="hgal">${GALLERY.map(([p, t]) => `<figure>${sceneBg[p] ? `<div class="hsc"><div class="scene">${A.scene[sceneBg[p]]()}</div><div class="hh">${H(p)}</div></div>` : `<div class="hh solo">${H(p)}</div>`}<figcaption>${t.replace(/^Holly /, "")}</figcaption></figure>`).join("")}</div></section>
+      <details class="pdetails"><summary>Ses conseils de méthode <span class="muted">${J.LINES.conseil.length}</span></summary><ul class="list" style="margin-top:10px">${J.LINES.conseil.map(x => `<li>${esc(x)}</li>`).join("")}</ul></details>`;
     }
   };
+
   ACT.hline = () => { const keys = ["accueil", "bon", "mauvais", "motivation", "pause", "longue", "cas", "parfait"]; const k = keys[Math.floor(Math.random() * keys.length)]; const moods = { bon: "celebrate", mauvais: "perplexed", pause: "plage", longue: "sleepy", cas: "avocat", parfait: "friandise" }; $("#holly-line").innerHTML = ui.sayHTML(moods[k] || "happy", J.line(k), false, true); };
   ACT.pause = () => {
     const ov = document.createElement("div"); ov.className = "celebrate"; const end = Date.now() + 5 * 60e3;
@@ -5500,45 +5549,69 @@ JBA.chapter({
   VIEWS.progres = {
     render() {
       const L = J.level();
-      const subjStats = s => { const chs = J.chaptersOf(s); const cards = J.cards.filter(c => J.byId[c.ch].subject === s); const qs = S.quizzes.filter(x => x.subj === s); return { read: chs.filter(c => J.chs(c.id).read).length, fiche: chs.filter(c => J.chs(c.id).fiche).length, n: chs.length, avg: qs.length ? Math.round(qs.reduce((a, x) => a + x.pct, 0) / qs.length) : null, m: J.mastered(cards), cards: cards.length, prog: Math.round(chs.reduce((a, c) => a + J.chapterProgress(c), 0) / chs.length) }; };
+      const subjStats = s => { const chs = J.chaptersOf(s); const cards = J.cards.filter(c => J.byId[c.ch].subject === s); const qs = S.quizzes.filter(x => x.subj === s); return { read: chs.filter(c => J.chs(c.id).read).length, n: chs.length, avg: qs.length ? Math.round(qs.reduce((a, x) => a + x.pct, 0) / qs.length) : null, m: J.mastered(cards), cards: cards.length, prog: Math.round(chs.reduce((a, c) => a + J.chapterProgress(c), 0) / chs.length) }; };
+      const dot = { decouvrir: "var(--surface3)", encours: "#0A84FF", revoir: "#FF9500", maitrisee: "#34C759" };
+      const got = J.BADGES.filter(b => S.badges[b.id]).length;
+      const medal = b => b.id === "franui" ? A.choco(26) : b.id === "fier" || b.id === "sieste" ? `<span style="width:40px">${H(b.id === "sieste" ? "sleepy" : "encourage")}</span>` : b.id === "jurispr" || b.id === "syllo" ? A.scale(22, "var(--gold)") : A.maki(24);
+      const days = Array.from({ length: 28 }, (_, i) => { const d = new Date(); d.setDate(d.getDate() - 27 + i); const k = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); return `<span title="${k}" class="dday ${S.days.includes(k) ? "on" : ""}"></span>`; }).join("");
       return `
-      <header class="stack"><span class="eyebrow">Statistiques</span><h1>Ma progression</h1></header>
-      <div class="card stack"><div class="row between"><h2>Niveau ${L.n} · ${esc(L.name)}</h2><span class="tnum muted">${S.xp} XP</span></div><div class="bar"><i style="width:${L.pct}%"></i></div>
-        <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px">${J.LEVELS.map(l => `<div class="card flat" style="padding:10px;${l.n === L.n ? "border-color:var(--framboise);background:var(--rose2)" : S.xp >= l.xp ? "" : "opacity:.55"}"><span class="eyebrow">Niveau ${l.n}</span><b style="display:block">${esc(l.name)}</b><span class="small muted tnum">${l.xp} XP</span></div>`).join("")}</div>
-        <p class="small muted">Barème : leçon lue +10 · fiche terminée +15 · quiz terminé +20 (+15 si sans-faute) · cas pratique +30 · examen blanc +50 · flashcards +1 par carte · pause Holly +5.</p></div>
-      <div class="grid g2">${["dc", "ip"].map(s => { const x = subjStats(s); return `<div class="card stack"><span class="eyebrow">${J.SUBJECTS[s].name}</span><h3>${x.prog} % du programme</h3><div class="bar"><i style="width:${x.prog}%"></i></div><div class="grid g4"><div class="stat"><b class="tnum">${x.read}/${x.n}</b><span>leçons lues</span></div><div class="stat"><b class="tnum">${x.fiche}/${x.n}</b><span>fiches</span></div><div class="stat"><b class="tnum">${x.avg == null ? "—" : x.avg + " %"}</b><span>moyenne quiz</span></div><div class="stat"><b class="tnum">${x.m}/${x.cards}</b><span>cartes maîtrisées</span></div></div></div>`; }).join("")}</div>
-      <div class="card stack"><h2>Par chapitre</h2><div class="scroll-x"><table class="tbl"><thead><tr><th>Chapitre</th><th>Statut</th><th>Progression</th><th>Meilleur quiz</th><th>Cartes</th></tr></thead><tbody>${J.list.map(c => { const st = J.chs(c.id), cards = J.cards.filter(x => x.ch === c.id); return `<tr><td><a href="#ch-${c.id}">${esc(J.SUBJECTS[c.subject].short)} ${c.num} · ${esc(c.title)}</a></td><td><span class="pill ${st.status}">${ui.STATUS[st.status]}</span></td><td class="tnum">${J.chapterProgress(c)} %</td><td class="tnum">${st.best == null ? "—" : st.best + " %"}</td><td class="tnum">${J.mastered(cards)}/${cards.length}</td></tr>`; }).join("")}</tbody></table></div></div>
-      <div class="card stack"><h2>Badges</h2><div class="grid g4">${J.BADGES.map(b => `<div class="badge ${S.badges[b.id] ? "" : "off"}"><span class="medal">${b.id === "franui" ? A.choco(34) : b.id === "fier" || b.id === "sieste" ? `<span style="width:52px">${H(b.id === "sieste" ? "sleepy" : "encourage")}</span>` : b.id === "jurispr" || b.id === "syllo" ? A.scale(28, "var(--gold)") : A.maki(30)}</span><b>${esc(b.name)}</b><span class="small muted">${esc(b.desc)}</span>${S.badges[b.id] ? `<span class="small" style="color:var(--ok);font-weight:700">Obtenu le ${esc(S.badges[b.id])}</span>` : ""}</div>`).join("")}</div></div>
-      <div class="grid g2"><div class="card stack"><h3>Historique</h3>${S.history.length ? `<ul class="hist">${S.history.slice(0, 15).map(h => `<li><span>${esc(h.label)}</span><span class="small muted tnum">+${h.xp} · ${J.fmtDate(h.t)}</span></li>`).join("")}</ul>` : `<p class="muted">Rien pour l'instant.</p>`}</div>
-        <div class="card stack"><h3>Jours de révision</h3><p class="tnum"><b>${S.days.length}</b> jour${S.days.length > 1 ? "s" : ""} au total · série actuelle : <b>${J.streak()}</b></p><div class="row" style="gap:4px">${Array.from({ length: 28 }, (_, i) => { const d = new Date(); d.setDate(d.getDate() - 27 + i); const k = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); return `<span title="${k}" style="width:18px;height:18px;border-radius:5px;background:${S.days.includes(k) ? "var(--framboise)" : "var(--surface3)"}"></span>`; }).join("")}</div><p class="small muted">Les 28 derniers jours.</p></div></div>`;
+      <header class="stack"><h1>Ma progression</h1></header>
+      <section class="card stack" style="align-items:center;text-align:center;gap:8px">
+        <span class="eyebrow">Niveau ${L.n} sur ${J.LEVELS.length}</span>
+        <h2>${esc(L.name)}</h2>
+        <b class="bignum tnum" style="font-size:52px">${S.xp}<span style="font-size:22px;color:var(--ink2);font-weight:600"> XP</span></b>
+        <div class="bar" style="width:100%"><i style="width:${L.pct}%"></i></div>
+        <span class="small muted">${L.next ? `${L.next.xp - S.xp} XP avant ${esc(L.next.name)}` : "Niveau maximum. Holly s'incline."}</span>
+      </section>
+      <section class="grings2">${["dc", "ip"].map(sb => { const x = subjStats(sb); return `<div class="card stack" style="gap:10px"><span class="eyebrow">${J.SUBJECTS[sb].short}</span><b class="bignum tnum" style="font-size:40px">${x.prog}<span style="font-size:18px;color:var(--ink2)"> %</span></b><div class="bar"><i style="width:${x.prog}%"></i></div><div class="minis"><span><b class="tnum">${x.read}/${x.n}</b> leçons</span><span><b class="tnum">${x.avg == null ? "—" : x.avg + " %"}</b> aux quiz</span><span><b class="tnum">${x.m}</b> cartes sues</span></div></div>`; }).join("")}</section>
+      <section class="card stack"><div class="row between"><h3>Régularité</h3><span class="small muted tnum">${J.streak()} jour${J.streak() > 1 ? "s" : ""} d'affilée · ${S.days.length} au total</span></div><div class="ddays">${days}</div></section>
+      ${["dc", "ip"].map(sb => `<section class="stack" style="gap:0"><p class="plabel">${J.SUBJECTS[sb].name}</p><div class="pgroup">${J.chaptersOf(sb).map(c => { const st = J.chs(c.id), p = J.chapterProgress(c); return `<a class="prow" href="#ch-${c.id}"><span class="tile num-tile">${c.num}</span><span class="pmain"><span class="pt">${esc(c.title)}</span><span class="ps">${ui.STATUS[st.status]}${st.best != null ? ` · meilleur quiz ${st.best} %` : ""}</span></span><span class="mini-ring" style="--p:${p};--c:${dot[st.status]}"></span><span class="pchev">${ICON.chev}</span></a>`; }).join("")}</div></section>`).join("")}
+      <section class="stack" style="gap:0"><p class="plabel">Badges · ${got}/${J.BADGES.length}</p><div class="pgroup">${J.BADGES.map(b => `<div class="prow ${S.badges[b.id] ? "" : "dim"}"><span class="bmedal">${medal(b)}</span><span class="pmain"><span class="pt">${esc(b.name)}</span><span class="ps">${S.badges[b.id] ? "Obtenu le " + esc(S.badges[b.id]) : esc(b.desc)}</span></span>${S.badges[b.id] ? `<span class="pcount" style="color:#34C759">${ICON.check}</span>` : ""}</div>`).join("")}</div></section>
+      <section class="stack" style="gap:0"><p class="plabel">Niveaux</p><div class="pgroup">${J.LEVELS.map(l => `<div class="prow ${S.xp >= l.xp ? "" : "dim"}"><span class="tile num-tile">${l.n}</span><span class="pmain"><span class="pt">${esc(l.name)}</span></span><span class="pcount tnum">${l.xp} XP</span>${l.n === L.n ? `<span class="pill fav">Toi</span>` : ""}</div>`).join("")}</div>
+        <p class="pnote">Leçon lue +10 · fiche +15 · quiz +20 (+15 si sans-faute) · cas pratique +30 · examen +50 · carte +1 · question à Holly +2.</p></section>
+      ${S.history.length ? `<section class="stack" style="gap:0"><p class="plabel">Activité récente</p><div class="pgroup">${S.history.slice(0, 12).map(h => `<div class="prow"><span class="pmain"><span class="pt">${esc(h.label)}</span><span class="ps">${J.fmtDate(h.t)}</span></span><span class="pcount tnum">+${h.xp}</span></div>`).join("")}</div></section>` : ""}`;
     }
   };
+
 
   /* ======================= RÉGLAGES ======================= */
   let confirmReset = false;
   VIEWS.reglages = {
     render() {
+      const hasKey = J.geminiKey && J.geminiKey(), claudeHere = J.ia && J.ia.engine === "claude";
       return `
-      <header class="stack"><span class="eyebrow">Préférences</span><h1>Réglages</h1></header>
-      <div class="card stack"><h3>Prénom</h3><div class="row between"><span>Bienvenue chez toi, <b>${esc(J.name())} Boss</b>.</span><button class="btn sec sm" data-act="askname">Modifier</button></div></div>
-      <div class="card stack"><h3>Apparence</h3><div class="seg">${[["system", "Comme l'appareil"], ["light", "Clair"], ["dark", "Sombre"]].map(([k, t]) => `<button class="${S.theme === k ? "on" : ""}" data-act="settheme" data-k="${k}">${t}</button>`).join("")}</div>
-</div>
-      <div class="card stack"><h3>Holly, l'IA de droit</h3><p class="small muted">Holly répond gratuitement grâce à Gemini (Google). Crée une clé sur <b>aistudio.google.com</b> → « Get API key », puis colle-la ici. Elle reste enregistrée sur cet appareil.</p>${J.ia && J.ia.engine === "claude" ? `<p class="small" style="color:var(--ok);font-weight:600">Ici, Holly passe déjà par Claude : pas besoin de clé.</p>` : ""}
-        <input class="input" id="gem-key" type="password" autocomplete="off" placeholder="Colle ta clé ici (AIza… ou AQ.…)" value="${esc(J.geminiKey ? J.geminiKey() : "")}"><div class="row"><button class="btn pri sm" data-act="gemsave">Enregistrer la clé</button>${J.geminiKey && J.geminiKey() ? `<button class="btn ghost sm" data-act="gemdel">Retirer</button><a class="btn sec sm" href="#ia">Parler à Holly</a>` : ""}</div></div>
-      <div class="card stack"><h3>Sauvegarde de la progression</h3><p class="small muted">Ta progression est enregistrée automatiquement dans ce navigateur. Pour la transférer sur un autre appareil, copie le code ci-dessous et colle-le dans « Importer » de l'autre côté.</p>
-        <textarea class="input" id="exp" readonly style="min-height:90px;font-size:12px">${esc(J.exportData())}</textarea><button class="btn sec sm" data-act="copyexp" style="align-self:flex-start">Copier le code</button>
-        <label for="imp" class="small"><b>Importer une progression</b></label><textarea class="input" id="imp" style="min-height:90px;font-size:12px" placeholder="Colle ici un code de sauvegarde"></textarea><button class="btn sec sm" data-act="imp" style="align-self:flex-start">Importer</button>
-        <div class="row" style="margin-top:6px">${confirmReset ? `<span class="small" style="color:var(--ko);font-weight:700">Tout effacer ? Cette action est définitive.</span><button class="btn sm" style="background:var(--ko);color:#fff" data-act="reset2">Oui, tout effacer</button><button class="btn ghost sm" data-act="reset0">Annuler</button>` : `<button class="btn ghost sm" data-act="reset1">Réinitialiser ma progression</button>`}</div></div>
-      <div class="card stack"><h3>À propos de Jojo Boss Academy</h3><p class="small">Contenus pédagogiques construits uniquement à partir des cours fournis (Droit constitutionnel 1, M. Verpeaux, UNJF ; Introduction au droit privé, P. Vannier). Chaque fiche indique sa source et ses pages. Les quelques compléments extérieurs (réformes postérieures, coquilles du polycopié) sont toujours séparés et signalés « hors cours ».</p><p class="small">Illustrations : Holly, les lieux et les motifs sont des dessins originaux réalisés pour ce site (aucune image externe). Police : celle du système (San Francisco sur Mac et iPhone). <a href="ASSETS.md" target="_blank" rel="noopener">Détail des sources et licences</a>.</p><p class="small muted">Raccourci clavier : <span class="kbd">/</span> pour rechercher.</p></div>`;
+      <header class="stack"><h1>Réglages</h1></header>
+      <section class="stack" style="gap:0"><p class="plabel">Profil</p><div class="pgroup">
+        ${ui.sheetRow({ act: "askname", i: "home", t: "Prénom", end: `<span class="pval">${esc(J.name())} Boss</span><span class="pchev">${ICON.chev}</span>` })}
+        <div class="prow"><span class="tile" style="background:#5E5CE6">${ICON.moon}</span><span class="pmain"><span class="pt">Apparence</span></span></div>
+        <div class="setbox" style="border-top:0;padding-top:0"><div class="seg wide">${[["system", "Auto"], ["light", "Clair"], ["dark", "Sombre"]].map(([k, t]) => `<button class="${S.theme === k ? "on" : ""}" data-act="settheme" data-k="${k}">${t}</button>`).join("")}</div></div>
+      </div></section>
+      <section class="stack" style="gap:0"><p class="plabel">Holly, l'IA de droit</p><div class="pgroup">
+        <details class="pdet" ${hasKey || claudeHere ? "" : "open"}><summary class="prow"><span class="tile" style="background:#E0406E">${ICON.chat}</span><span class="pmain"><span class="pt">Clé Gemini</span></span><span class="pval">${claudeHere ? "Inutile ici" : hasKey ? "Ajoutée" : "Aucune"}</span><span class="pchev">${ICON.chev}</span></summary>
+          <div class="setbox"><p class="small muted">Sur iPhone, Holly répond grâce à Gemini, gratuit. Crée une clé sur <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> puis colle-la ici. Elle reste sur cet appareil.</p>
+            <input class="input" id="gem-key" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Colle ta clé (AIza… ou AQ.…)" value="${esc(hasKey || "")}">
+            <div class="row"><button class="btn pri sm" data-act="gemsave">Enregistrer</button>${hasKey ? `<button class="btn ghost sm" data-act="gemdel">Retirer la clé</button>` : ""}</div></div></details>
+        ${ui.sheetRow({ href: "#ia", i: "chat", t: "Parler à Holly" })}
+      </div></section>
+      <section class="stack" style="gap:0"><p class="plabel">Sauvegarde</p><div class="pgroup">
+        ${ui.sheetRow({ act: "copyexp", i: "file", t: "Copier mon code de sauvegarde", end: "" })}
+        <details class="pdet"><summary class="prow"><span class="tile" style="background:#0A84FF">${ICON.back}</span><span class="pmain"><span class="pt">Importer une sauvegarde</span></span><span class="pchev">${ICON.chev}</span></summary>
+          <div class="setbox"><textarea class="input" id="imp" style="min-height:90px;font-size:12px" placeholder="Colle ici un code de sauvegarde"></textarea><button class="btn sec sm" data-act="imp" style="align-self:flex-start">Importer</button></div></details>
+        ${confirmReset ? `<div class="setbox" style="border-top:.5px solid var(--line)"><span class="small" style="color:var(--ko);font-weight:600">Tout effacer ? Ta progression sur cet appareil sera perdue.</span><div class="row"><button class="btn sm" style="background:#FF3B30;color:#fff" data-act="reset2">Oui, tout effacer</button><button class="btn ghost sm" data-act="reset0">Annuler</button></div></div>` : `<button type="button" class="prow danger" data-act="reset1"><span class="tile" style="background:#FF3B30">${ICON.x}</span><span class="pmain"><span class="pt">Réinitialiser ma progression</span></span></button>`}
+      </div><p class="pnote">La progression s'enregistre toute seule sur cet appareil. Le code sert à la transférer sur un autre appareil si tu n'utilises pas la connexion Google.</p></section>
+      <section class="stack" style="gap:0"><p class="plabel">À propos</p><div class="pgroup">
+        <details class="pdet"><summary class="prow"><span class="tile" style="background:#8E8E93">${ICON.book}</span><span class="pmain"><span class="pt">Jojo Boss Academy</span></span><span class="pchev">${ICON.chev}</span></summary><div class="setbox"><p class="small">Contenus pédagogiques construits uniquement à partir des cours fournis (Droit constitutionnel 1, M. Verpeaux, UNJF ; Introduction au droit privé, P. Vannier). Chaque fiche indique sa source et ses pages. Les quelques compléments extérieurs (réformes postérieures, coquilles du polycopié) sont toujours séparés et signalés « hors cours ».</p><p class="small">Illustrations : Holly, les lieux et les motifs sont des dessins originaux réalisés pour ce site (aucune image externe). Police : celle du système (San Francisco sur Mac et iPhone). <a href="ASSETS.md" target="_blank" rel="noopener">Détail des sources et licences</a>.</p><p class="small muted">Raccourci clavier : <span class="kbd">/</span> pour rechercher.</p></div></details>
+      </div></section>`;
     },
-    after() {
-    }
+    after() { }
   };
+
   ACT.gemsave = () => { const v = ($("#gem-key").value || "").trim(); if (!/^[\w.\-]{20,}$/.test(v)) { ui.toast("Cette clé ne ressemble pas à une clé Gemini : recopie-la en entier."); return; } J.setGeminiKey(v); ui.toast("Clé enregistrée : Holly est réveillé !"); ui.rerender(); };
   ACT.gemdel = () => { J.setGeminiKey(""); ui.toast("Clé retirée."); ui.rerender(); };
   ACT.askname = () => ui.askName(false);
   ACT.settheme = b => { S.theme = b.dataset.k; J.save(); ui.applyTheme(); ui.rerender(); };
-  ACT.copyexp = () => { const t = $("#exp"); try { navigator.clipboard.writeText(t.value).then(() => ui.toast("Code copié."), () => { t.select(); ui.toast("Sélectionné : copie-le avec Ctrl+C ou un appui long."); }); } catch (e) { t.select(); ui.toast("Sélectionné : copie-le avec Ctrl+C ou un appui long."); } };
+  ACT.copyexp = () => { const v = J.exportData(); try { navigator.clipboard.writeText(v).then(() => ui.toast("Code de sauvegarde copié."), () => ui.toast("Copie impossible ici.")); } catch (e) { ui.toast("Copie impossible ici."); } };
+  ACT.copyexpOld = () => { const t = $("#exp"); try { navigator.clipboard.writeText(t.value).then(() => ui.toast("Code copié."), () => { t.select(); ui.toast("Sélectionné : copie-le avec Ctrl+C ou un appui long."); }); } catch (e) { t.select(); ui.toast("Sélectionné : copie-le avec Ctrl+C ou un appui long."); } };
   ACT.imp = () => { try { J.importData($("#imp").value.trim()); ui.applyTheme(); ui.toast("Progression importée."); ui.rerender(); } catch (e) { ui.toast("Ce code ne ressemble pas à une sauvegarde Jojo Boss Academy."); } };
   ACT.reset1 = () => { confirmReset = true; ui.rerender(); };
   ACT.reset0 = () => { confirmReset = false; ui.rerender(); };
@@ -6067,6 +6140,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
 })();
 
 </script>
+<script>if("serviceWorker" in navigator && /^https?:/.test(location.protocol)){addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{});});}</script>
 <script>
 /* Jojo Boss Academy — connexion Google et sauvegarde en ligne de la progression (Firebase). Uniquement sur la version GitHub Pages. */
 (function () {
@@ -6164,7 +6238,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
     return `<div class="card stack"><h3>${compact ? "Retrouve ta progression partout" : "Compte"}</h3><p class="small muted">Connecte-toi avec Google pour sauvegarder ta progression en ligne et la retrouver sur l'iPhone, le Mac ou n'importe quel appareil. Sans connexion, elle reste enregistrée seulement sur cet appareil.</p><button class="btn sec" data-act="login" style="align-self:flex-start">${G} Se connecter avec Google</button></div>`;
   }
   const wrap = (name, where) => { const v = VIEWS[name]; if (!v) return; const r = v.render; v.render = function () { const h = r.apply(this, arguments); return where(h); }; };
-  wrap("reglages", h => h.replace("</header>", "</header>" + card(false)));
+  wrap("reglages", h => h.replace("</header>", "</header>" + `<section class="stack" style="gap:0"><p class="plabel">Compte</p>${ui.sheetGroups[0] ? ui.sheetGroups[0]() : card(false)}</section>`));
   /* Groupe « Compte » en tête de la feuille Plus */
   ui.sheetGroups.unshift(() => {
     if (!C.ready) return ui.sheetGroup("", [ui.sheetRow({ act: "noop", lead: `<span class="av">${G}</span>`, t: "Compte Google", sub: "Vérification…", end: "" }).replace('class="prow"', 'class="prow pacct"')]);
@@ -6188,7 +6262,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
 })();
 
 </script>
-<script>window.JBA_BUILD="20261104-094956";
+<script>window.JBA_BUILD="20261104-100505";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
