@@ -593,6 +593,32 @@ body.ia-on .wrap{max-width:780px}
 .sw:checked{background:#34C759}.sw:checked::after{transform:translateX(20px)}
 :root[data-theme="dark"] .sw:not(:checked){background:#39393D}
 .pdetails summary .muted{white-space:nowrap;padding-left:10px}
+
+/* ===== Holly IA : fluidité ===== */
+.ia-main{flex:1;display:flex;flex-direction:column;min-height:0}
+.ia-main>.ia-empty{flex:1}
+.ia-msg{animation:iain .28s var(--ease) both}
+.ia-msg.live{animation:none}
+@keyframes iain{from{opacity:0;transform:translateY(6px)}}
+.ia-caret{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ink);margin-left:4px;vertical-align:middle;animation:iapulse 1s ease-in-out infinite}
+@keyframes iapulse{50%{opacity:.25;transform:scale(.8)}}
+.ia-b p:has(+.ia-caret){display:inline}
+.ia-b blockquote{margin:6px 0 12px;padding:6px 12px;border-left:3px solid var(--rose);color:var(--ink2);background:var(--surface2);border-radius:0 10px 10px 0}
+.ia-b hr{border:0;border-top:.5px solid var(--line);margin:14px 0}
+.ia-err{display:flex;flex-wrap:wrap;align-items:center;gap:8px;color:var(--ko);font-size:14px;margin-top:8px;background:var(--ko2);padding:8px 12px;border-radius:12px}
+.ia-retry{border:0;background:var(--surface);color:var(--ink);font:inherit;font-size:13px;font-weight:600;border-radius:999px;padding:4px 12px;cursor:pointer}
+.ia-jump{position:absolute;left:50%;top:-44px;transform:translateX(-50%);width:36px;height:36px;border-radius:50%;border:.5px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.12);cursor:pointer}
+.ia-jump svg{width:18px;height:18px}
+.ia-foot{position:sticky}
+.ia-steps{text-align:left;margin:4px auto 6px;padding-left:22px;display:flex;flex-direction:column;gap:4px;font-size:14.5px;max-width:42ch}
+.ia-keyform{display:flex;gap:8px;width:100%;max-width:440px;flex-wrap:wrap;justify-content:center}
+.ia-keyform .input{flex:1 1 220px}
+body.ia-kb .tabbar{display:none}
+body.ia-kb .ia-note{display:none}
+@media (prefers-reduced-motion:reduce){.ia-caret{animation:none}}
+.ia-page [hidden]{display:none!important}
+.ia-foot.off{display:none}
+body.ia-on .toast{bottom:calc(var(--ia-bot,0px) + 118px)}
 </style>
 </head><body>
 <div id="root"></div>
@@ -5498,49 +5524,99 @@ JBA.chapter({
   ACT.reset2 = () => { confirmReset = false; J.resetAll(); J.quiz = J.flash = J.exam = null; ui.applyTheme(); ui.toast("Progression réinitialisée. Holly a tout oublié, comme d'habitude."); ui.rerender(); };
 
   /* ======================= DEMANDE À HOLLY (IA) ======================= */
-  /* Holly répond aux questions à partir des chapitres de l'appli : les chapitres les plus proches
-     de la question sont joints à la demande ; s'il le faut, Holly lit d'autres chapitres ou cherche
-     dans tous les cours grâce à deux outils. Fonctionne dans la version Claude du site. */
+  /* Holly, l'IA de droit : répond à toutes les questions de droit en s'appuyant d'abord sur les cours de l'appli.
+     Moteur : Claude dans la version claude.ai, sinon Gemini (clé gratuite enregistrée sur l'appareil).
+     L'interface est mise à jour morceau par morceau (jamais de re-rendu complet pendant une conversation),
+     pour garder le clavier ouvert, le texte en cours de saisie et une défilement fluide. */
   (function () {
     const CHATKEY = "jojo-boss-academy-holly-chat";
-    const IA = J.ia = { msgs: [], busy: false, ctl: null, scope: "", sample: undefined, tools: false };
-    try { const m = JSON.parse(localStorage.getItem(CHATKEY) || "[]"); if (Array.isArray(m)) IA.msgs = m.filter(x => x && x.content && !x.pending).slice(-30); } catch (e) { }
-    const saveChat = () => { try { localStorage.setItem(CHATKEY, JSON.stringify(IA.msgs.filter(x => !x.pending && x.content).slice(-30))); } catch (e) { } };
+    const IA = J.ia = { msgs: [], busy: false, ctl: null, scope: "", sample: undefined, tools: false, engine: "" };
+    try { const m = JSON.parse(localStorage.getItem(CHATKEY) || "[]"); if (Array.isArray(m)) IA.msgs = m.filter(x => x && (x.content || x.err) && !x.pending).map(x => ({ role: x.role, content: x.content || "", chs: x.chs, err: x.err })).slice(-40); } catch (e) { }
+    const saveChat = () => { try { localStorage.setItem(CHATKEY, JSON.stringify(IA.msgs.filter(x => !x.pending && (x.content || x.err)).slice(-40).map(x => ({ role: x.role, content: x.content, chs: x.chs, err: x.err })))); } catch (e) { } };
 
-    /* Connexion à Claude : null hors de claude.ai (GitHub Pages, fichier ouvert en local). */
-    /* ---------- Gemini (gratuit) : utilisé quand Claude n'est pas là (GitHub Pages, téléphone…) ---------- */
-    const GKEY = "jojo-boss-academy-gemini-key", GMODEL = "gemini-3.5-flash-lite";
+    /* ---------- Conversation : rôles alternés (exigé par Gemini, plus propre pour Claude) ---------- */
+    function alternate(list) {
+      const out = [];
+      list.forEach(m => {
+        const role = m.role === "assistant" ? "assistant" : "user", content = String(m.content || "").trim();
+        if (!content) return;
+        if (out.length && out[out.length - 1].role === role) out[out.length - 1].content += "\n\n" + content;
+        else out.push({ role, content });
+      });
+      while (out.length && out[0].role !== "user") out.shift();
+      return out;
+    }
+
+    /* ---------- Gemini (gratuit) : quand Claude n'est pas là (GitHub Pages, iPhone…) ---------- */
+    const GKEY = "jojo-boss-academy-gemini-key", GMKEY = "jojo-boss-academy-gemini-model";
+    const MODELS = ["gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-flash-latest"];
     const gKey = () => { try { return (localStorage.getItem(GKEY) || "").trim(); } catch (e) { return ""; } };
+    const gModelSaved = () => { try { return localStorage.getItem(GMKEY) || ""; } catch (e) { return ""; } };
+    const gModelSave = m => { try { localStorage.setItem(GMKEY, m); } catch (e) { } };
+    async function geminiCall(model, key, body, o) {
+      let r;
+      try { r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse`, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: JSON.stringify(body), signal: o.signal }); }
+      catch (e) { throw { code: e && e.name === "AbortError" ? "cancelled" : "network", message: "" }; }
+      if (!r.ok) {
+        let st = "", msg = "";
+        try { const j = await r.json(); st = (j.error && j.error.status) || ""; msg = (j.error && j.error.message) || ""; } catch (e) { }
+        const keyBad = /api key|API_KEY|credential|unregistered callers/i.test(msg) || r.status === 401;
+        const code = keyBad ? "bad_key" : r.status === 404 || /not found|not supported|is not available/i.test(msg) ? "no_model"
+          : r.status === 429 || st === "RESOURCE_EXHAUSTED" ? "rate_limited" : r.status === 403 ? "forbidden" : r.status === 400 ? "bad_request" : "server";
+        throw { code, message: msg ? msg.slice(0, 180) : `code ${r.status}`, status: r.status };
+      }
+      const rd = r.body.getReader(), dec = new TextDecoder(); let buf = "", text = "", fin = "";
+      const handle = line => {
+        line = line.trim(); if (!line.startsWith("data:")) return;
+        try {
+          const j = JSON.parse(line.slice(5)); const c = j.candidates && j.candidates[0];
+          if (c) { const t = (c.content && c.content.parts || []).filter(x => !x.thought).map(x => x.text || "").join(""); if (t) { text += t; o.onText && o.onText({ text, delta: t }); } if (c.finishReason) fin = c.finishReason; }
+          else if (j.promptFeedback && j.promptFeedback.blockReason) fin = "SAFETY";
+        } catch (e) { }
+      };
+      try {
+        for (;;) {
+          const { done, value } = await rd.read(); if (done) break;
+          buf += dec.decode(value, { stream: true });
+          let i; while ((i = buf.indexOf("\n")) >= 0) { handle(buf.slice(0, i)); buf = buf.slice(i + 1); }
+        }
+        if (buf) handle(buf);
+      } catch (e) { if (e && e.name === "AbortError") throw { code: "cancelled", message: "", text }; throw { code: "network", message: "", text }; }
+      if (!text && (fin === "SAFETY" || fin === "PROHIBITED_CONTENT" || fin === "RECITATION")) throw { code: "refused", message: "" };
+      if (!text) throw { code: "empty", message: fin ? "fin : " + fin : "" };
+      return { text, truncated: fin === "MAX_TOKENS" };
+    }
     function gemini(key) {
       const fn = async (input, o = {}) => {
-        const msgs = typeof input === "string" ? [{ role: "user", content: input }] : input;
-        const sys = msgs[0] && msgs[0].role === "user" && msgs[1] && msgs[1].role === "assistant" ? msgs[0].content : "";
-        const rest = sys ? msgs.slice(2) : msgs;
-        const body = { contents: rest.map(m => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] })), generationConfig: { temperature: 0.4, maxOutputTokens: 2048 } };
-        if (sys) body.systemInstruction = { parts: [{ text: sys }] };
-        let r;
-        try { r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GMODEL}:streamGenerateContent?alt=sse`, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: JSON.stringify(body), signal: o.signal }); }
-        catch (e) { throw { code: e && e.name === "AbortError" ? "cancelled" : "network", message: String(e) }; }
-        if (!r.ok) { let det = ""; try { const j = await r.json(); det = ((j.error && j.error.status) || "") + ""; } catch (e) { } const c = r.status === 429 ? "rate_limited" : [400, 401, 403].includes(r.status) ? "bad_key" : "server"; throw { code: c, message: `code ${r.status}${det ? " " + det : ""}` }; }
-        const rd = r.body.getReader(), dec = new TextDecoder(); let buf = "", text = "", fin = "";
-        try {
-          for (;;) {
-            const { done, value } = await rd.read(); if (done) break;
-            buf += dec.decode(value, { stream: true });
-            let i; while ((i = buf.indexOf("\n")) >= 0) {
-              const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
-              if (!line.startsWith("data:")) continue;
-              try { const j = JSON.parse(line.slice(5)); const c = j.candidates && j.candidates[0]; if (c) { const t = (c.content && c.content.parts || []).filter(x => !x.thought).map(x => x.text || "").join(""); if (t) { text += t; o.onText && o.onText({ text, delta: t }); } if (c.finishReason) fin = c.finishReason; } } catch (e) { }
-            }
+        const msgs = alternate(typeof input === "string" ? [{ role: "user", content: input }] : input);
+        const sys = o.system || "";
+        const contents = msgs.map(m => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] }));
+        const saved = gModelSaved();
+        const order = saved && MODELS.includes(saved) ? [saved, ...MODELS.filter(m => m !== saved)] : MODELS.slice();
+        let last;
+        for (const model of order) {
+          const gc = { temperature: 0.35, maxOutputTokens: 16384 };
+          if (/^gemini-3/.test(model)) gc.thinkingConfig = { thinkingLevel: "low" };
+          const body = { contents, generationConfig: gc };
+          if (sys) body.systemInstruction = { parts: [{ text: sys }] };
+          try {
+            const r = await geminiCall(model, key, body, { signal: o.signal, onText: o.onText });
+            gModelSave(model); IA.model = model; return r;
+          } catch (e) {
+            last = e;
+            /* On essaie le modèle suivant seulement si celui-ci n'existe pas, n'est pas autorisé, est saturé
+               ou refuse un paramètre — et seulement si rien n'a encore été affiché. */
+            if (e && e.text) throw e;
+            if (!["no_model", "forbidden", "rate_limited", "bad_request", "server"].includes(e && e.code)) throw e;
           }
-        } catch (e) { if (e && e.name === "AbortError") throw { code: "cancelled", message: "", text }; throw { code: "network", message: String(e), text }; }
-        if (!text && fin === "SAFETY") throw { code: "refused", message: "" };
-        return { text, truncated: fin === "MAX_TOKENS" };
+        }
+        throw last || { code: "server", message: "" };
       };
-      fn.limits = async () => ({ maxPromptBytes: 900000 });
+      fn.engine = "gemini";
       return fn;
     }
-    IA.engine = "";
+
+    /* ---------- Choix du moteur ---------- */
     IA.hasClaude = !!(window.claude && typeof window.claude.use === "function");
     const within = (p, ms) => Promise.race([p, new Promise(r => setTimeout(() => r(undefined), ms))]);
     IA.ready = (async () => {
@@ -5552,8 +5628,8 @@ JBA.chapter({
       } catch (e) { }
       const k = gKey(); if (k) { IA.engine = "gemini"; return gemini(k); }
       return null;
-    })().then(s => { IA.sample = s; if ((location.hash || "") === "#ia" && !IA.busy) { const t = document.getElementById("ia-q"); if (t && t.value) IA.draft = t.value; ui.rerender(); } return s; });
-    J.setGeminiKey = k => { try { k ? localStorage.setItem(GKEY, k) : localStorage.removeItem(GKEY); } catch (e) { } if (IA.engine !== "claude") { IA.engine = k ? "gemini" : ""; IA.sample = k ? gemini(k) : null; IA.tools = false; } };
+    })().then(s => { IA.sample = s; if (onPage()) refreshAll(); return s; });
+    J.setGeminiKey = k => { try { k ? localStorage.setItem(GKEY, k) : localStorage.removeItem(GKEY); localStorage.removeItem(GMKEY); } catch (e) { } if (IA.engine !== "claude") { IA.engine = k ? "gemini" : ""; IA.sample = k ? gemini(k) : null; IA.tools = false; } };
     J.geminiKey = gKey;
 
     /* ---------- Texte complet d'un chapitre ---------- */
@@ -5578,10 +5654,10 @@ JBA.chapter({
       c.cases.forEach(k => L.push(`Cas pratique « ${k.title} » : ${k.facts} Question : ${k.question} Règle : ${k.rule} Application : ${k.app} Conclusion : ${k.concl}`));
       return (TXT[c.id] = L.join("\n"));
     }
-    const CATALOGUE = () => J.list.map(c => `[${c.id}] ${label(c)} : ${c.summary}`).join("\n");
+    const CATALOGUE = () => J.list.map(c => `[${c.id}] ${label(c)} : ${c.summary.slice(0, 260)}`).join("\n");
 
     /* ---------- Choix des chapitres pertinents ---------- */
-    const STOP = new Set("les des une un est que qui quoi dans pour par sur avec sans aux elle elles ils lui leur leurs ses son sa mon mes ton tes notre vous nous tu je il on ce cette ces cet entre plus moins tres bien fait faire peut peux doit dois quel quelle quels quelles comment pourquoi quand ou donc car mais alors aussi tout tous toute toutes autre autres meme cela ca c'est qu'est explique expliquer explique-moi resume resumer difference definition definir cours chapitre holly jojo stp merci svp question exemple exemples".split(" "));
+    const STOP = new Set("les des une un est que qui quoi dans pour par sur avec sans aux elle elles ils lui leur leurs ses son sa mon mes ton tes notre vous nous tu je il on ce cette ces cet entre plus moins tres bien fait faire peut peux doit dois quel quelle quels quelles comment pourquoi quand ou donc car mais alors aussi tout tous toute toutes autre autres meme cela ca c'est qu'est explique expliquer explique-moi resume resumer difference definition definir cours chapitre holly jojo stp merci svp question exemple exemples droit est-ce avoir etre sont etait quoi aide aider moi toi".split(" "));
     const toks = q => [...new Set(J.norm(q).replace(/[^a-z0-9]+/g, " ").split(" ").filter(t => (t.length >= 3 || /\d/.test(t)) && !STOP.has(t)))];
     const NORM = {};
     const normOf = c => NORM[c.id] || (NORM[c.id] = J.norm(chText(c)));
@@ -5597,13 +5673,14 @@ JBA.chapter({
     }
     function pickChapters(q, prev) {
       if (IA.scope && J.byId[IA.scope]) return [J.byId[IA.scope]];
-      const r = rank(q, prev).filter(x => x.sc > 0);
+      const r = rank(q, prev).filter(x => x.sc >= 3);
       const out = []; let size = 0; const top = r.length ? r[0].sc : 0;
-      for (const x of r) { if (out.length >= 4 || x.sc < top * .25) break; const len = chText(x.c).length; if (size + len > 95000 && out.length) break; out.push(x.c); size += len; }
+      const budget = IA.engine === "claude" ? 90000 : 55000;
+      for (const x of r) { if (out.length >= 3 || x.sc < top * .3) break; const len = chText(x.c).length; if (size + len > budget && out.length) break; out.push(x.c); size += len; }
       return out;
     }
 
-    /* ---------- Outils mis à disposition de Holly ---------- */
+    /* ---------- Outils (version Claude) ---------- */
     let IDX2;
     function searchCourses(q) {
       if (!IDX2) {
@@ -5628,31 +5705,33 @@ JBA.chapter({
         { name: "lire_chapitre", description: "Renvoie le contenu complet d'un chapitre du cours (plan détaillé, définitions, articles, jurisprudences, dates, pièges, compléments, cas pratiques). Utilise-le quand le chapitre utile n'est pas déjà dans les extraits fournis.",
           inputSchema: { type: "object", properties: { id: { type: "string", description: "Identifiant du chapitre, ex. dc3 ou ip7 (voir le catalogue)." } }, required: ["id"] },
           execute(input) { const id = String(input && input.id || "").trim().toLowerCase(); const c = J.byId[id]; if (!c) throw new Error("Chapitre inconnu. Identifiants valides : " + J.list.map(x => x.id).join(", ")); if (!used.includes(id)) used.push(id); onStep(`Holly relit « ${c.title} »…`); return chText(c).slice(0, 30000); } },
-        { name: "chercher", description: "Cherche des mots-clés dans tous les cours (définitions, articles, arrêts, auteurs, dates, plan). Renvoie jusqu'à 14 passages avec leur chapitre. Utile pour trouver où une notion, un article ou un arrêt est traité.",
+        { name: "chercher", description: "Cherche des mots-clés dans tous les cours (définitions, articles, arrêts, auteurs, dates, plan). Renvoie jusqu'à 14 passages avec leur chapitre.",
           inputSchema: { type: "object", properties: { requete: { type: "string", description: "Quelques mots-clés, ex. « Clément-Bayard » ou « article 1359 »." } }, required: ["requete"] },
           execute(input) { const q = String(input && input.requete || ""); onStep(`Holly cherche « ${q} » dans tes cours…`); const r = searchCourses(q); return r.length ? r : "Aucun passage trouvé pour ces mots-clés."; } }
       ];
     }
 
     /* ---------- Consignes ---------- */
-    const RULES = `Tu es Holly, l'intelligence artificielle de Jojo Boss Academy, spécialisée en droit français. Ton personnage : un vieux bichon crème très duveteux, professeur de droit, un peu fatigué mais très fier de son élève. Tu discutes avec Jojo (surnommée « Jojo Boss »), étudiante en première année de licence de droit. Son application contient deux cours : « Droit constitutionnel 1 » (Michel Verpeaux, UNJF, chapitres dc1 à dc9) et « Introduction au droit privé » (Patricia Vannier, chapitres ip1 à ip10).
+    const RULES = `Tu es Holly, l'intelligence artificielle juridique de Jojo Boss Academy. Ton personnage : un vieux bichon crème très duveteux, professeur de droit, un peu fatigué mais très fier de son élève. Tu parles avec Jojo (surnommée « Jojo Boss »), étudiante en première année de licence de droit en France. Son application contient deux cours : « Droit constitutionnel 1 » (Michel Verpeaux, UNJF, chapitres dc1 à dc9) et « Introduction au droit privé » (Patricia Vannier, chapitres ip1 à ip10).
 
-Ta mission : être l'assistant juridique de Jojo, comme un excellent chargé de TD disponible à toute heure. Tu réponds à toutes ses questions de droit (notions, articles, arrêts, méthodologie de la dissertation, du commentaire d'arrêt, de la fiche d'arrêt et du cas pratique, préparation des partiels, orientation dans les études de droit), et tu l'aides à réviser (explications, plans, quiz, corrections).
+Ta mission : être une vraie IA de droit, comme un excellent chargé de TD disponible à toute heure. Tu réponds à TOUTES les questions de droit, dans ses cours ou non : droit constitutionnel, civil, pénal, administratif, européen, procédure, histoire du droit, notions, articles, arrêts, méthodologie (dissertation, commentaire d'arrêt, fiche d'arrêt, cas pratique, note de synthèse, grand oral), préparation des partiels, vocabulaire juridique, orientation dans les études de droit. Tu l'aides aussi à réviser (explications, plans, fiches, quiz, corrections de copies).
 
 Règles :
-1. Quand la question touche à ses cours, appuie-toi d'abord sur le CONTENU DES COURS fourni plus bas (si les extraits ne suffisent pas et que tu disposes des outils, utilise « chercher » ou « lire_chapitre »), et cite tes sources entre crochets : [Droit constit. 2, p. 15] ou [Intro droit privé 4, p. 52].
-2. Quand la question dépasse ses cours, réponds quand même, avec la rigueur d'un juriste, puis ajoute une courte ligne « *Ce point n'est pas dans tes cours : vérifie-le dans ton manuel ou tes TD.* ». Si une notion est liée à un chapitre de l'application, signale-le.
-3. N'invente jamais d'article, d'arrêt, de date ou de chiffre. Si tu n'es pas sûr d'une référence, dis-le. Le droit évolue : pour une réforme récente, invite à vérifier sur Légifrance.
-4. Les « compléments hors cours » des fiches sont des corrections vérifiées ou des mises à jour : mentionne-les quand ils changent la réponse.
-5. Réponds en français, en tutoyant Jojo, au niveau L1 : la réponse directe d'abord, puis l'explication. Mets les notions clés en gras. Sois concis (80 à 250 mots) sauf si Jojo demande une fiche, un plan, un quiz ou un développement. Pour un cas pratique, suis le syllogisme : qualification, problème de droit, règle, application, conclusion.
-6. Quiz : si Jojo demande un quiz, pose les questions une par une et corrige ses réponses, sauf si elle veut tout d'un coup.
-7. Conversation : tu peux répondre naturellement à un bonjour ou à un message personnel, brièvement et gentiment. Pour une demande sans rapport avec le droit ou les études, réponds en une ou deux phrases puis ramène doucement vers les révisions.
-8. Personnalité : au plus une petite touche d'humour de Holly (siestes, promenades, sushis, croquettes) par réponse, jamais au détriment de la précision. Ne commence pas tes réponses par « En tant qu'IA ».
-9. Format : Markdown simple uniquement (paragraphes, **gras**, listes « - » ou « 1. », titres « ### »). Pas de tableaux.`;
+1. Réponds toujours à la question posée. Ne refuse jamais une question de droit au motif qu'elle sort des cours.
+2. Si la question touche ses cours, appuie-toi d'abord sur le CONTENU DES COURS fourni (utilise les outils « chercher » ou « lire_chapitre » si tu en disposes et que les extraits ne suffisent pas) et cite tes sources entre crochets, ex. [Droit constit. 2, p. 15] ou [Intro droit privé 4, p. 52].
+3. Si la question dépasse ses cours, réponds avec la rigueur d'un juriste à partir de tes connaissances du droit français, puis termine par une courte ligne en italique : *Hors de tes cours : vérifie dans ton manuel ou sur Légifrance.*
+4. N'invente jamais d'article, d'arrêt, de date ou de chiffre. Si tu as un doute sur une référence précise, dis-le clairement. Pour une réforme récente, signale que le droit a pu évoluer.
+5. Les « compléments hors cours » des fiches sont des corrections vérifiées ou des mises à jour : mentionne-les quand ils changent la réponse.
+6. Réponds en français, en tutoyant Jojo, au niveau L1 : la réponse directe d'abord, puis l'explication, avec un exemple concret quand c'est utile. Mets les notions clés en **gras**. Sois clair et concis (environ 80 à 250 mots) sauf si Jojo demande une fiche, un plan, un quiz, une correction ou un développement.
+7. Cas pratique : suis le syllogisme (qualification des faits, problème de droit, règle, application, conclusion). Commentaire ou dissertation : propose une problématique et un plan en deux parties et deux sous-parties.
+8. Quiz : si Jojo demande un quiz, pose les questions une par une et corrige chaque réponse avant la suivante, sauf si elle veut tout d'un coup.
+9. Conversation : réponds naturellement et brièvement à un bonjour, un merci ou un message personnel. Pour une demande sans rapport avec le droit ou les études, réponds en une ou deux phrases puis propose de revenir aux révisions.
+10. Personnalité : au plus une petite touche d'humour de Holly (siestes, promenades, sushis, croquettes) par réponse, jamais au détriment de la précision. Ne commence jamais par « En tant qu'IA » et ne te présente pas à chaque réponse.
+11. Format : Markdown simple uniquement (paragraphes courts, **gras**, listes « - » ou « 1. », titres « ### »). Pas de tableaux.`;
 
-    /* ---------- Rendu Markdown minimal et sûr ---------- */
+    /* ---------- Markdown minimal et sûr ---------- */
     function md(src) {
-      const inline = t => esc(t).replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>").replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<i>$2</i>").replace(/`([^`]+)`/g, "<code>$1</code>")
+      const inline = t => esc((t.match(/\*\*/g) || []).length % 2 ? t.replace(/\*\*(?!.*\*\*)/, "") : t).replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>").replace(/__([^_]+)__/g, "<b>$1</b>").replace(/(^|[^*\w])\*([^*\n]+)\*(?!\w)/g, "$1<i>$2</i>").replace(/`([^`]+)`/g, "<code>$1</code>")
         .replace(/\[([^\[\]]{2,90})\]/g, (m, x) => /p\.|constit|droit|ip\d|dc\d|chap/i.test(x) ? `<span class="ia-src">${x}</span>` : m);
       const out = []; let list = null, para = [];
       const flushP = () => { if (para.length) { out.push(`<p>${para.map(inline).join("<br>")}</p>`); para = []; } };
@@ -5661,146 +5740,250 @@ Règles :
         const l = line.trim();
         let m;
         if (!l) { flushP(); flushL(); return; }
-        if ((m = l.match(/^#{1,6}\s+(.*)$/))) { flushP(); flushL(); out.push(`<h4>${inline(m[1])}</h4>`); return; }
+        if (/^(-{3,}|\*{3,}|_{3,})$/.test(l)) { flushP(); flushL(); out.push("<hr>"); return; }
+        if ((m = l.match(/^#{1,6}\s+(.*)$/))) { flushP(); flushL(); out.push(`<h4>${inline(m[1].replace(/\*\*/g, ""))}</h4>`); return; }
+        if ((m = l.match(/^>\s?(.*)$/))) { flushP(); flushL(); out.push(`<blockquote>${inline(m[1])}</blockquote>`); return; }
         if ((m = l.match(/^[-*•]\s+(.*)$/))) { flushP(); if (!list || list.t !== "ul") { flushL(); list = { t: "ul", items: [] }; } list.items.push(m[1]); return; }
         if ((m = l.match(/^\d+[.)]\s+(.*)$/))) { flushP(); if (!list || list.t !== "ol") { flushL(); list = { t: "ol", items: [] }; } list.items.push(m[1]); return; }
         if (list && /^\s{2,}/.test(line)) { list.items[list.items.length - 1] += " " + l; return; }
+        if (/^\|.*\|$/.test(l)) { if (/^\|[\s:|-]+\|$/.test(l)) return; flushL(); para.push(l.slice(1, -1).split("|").map(x => x.trim()).join(" · ")); return; }
         flushL(); para.push(l);
       });
       flushP(); flushL();
       return out.join("");
     }
 
-    /* ---------- Vue ---------- */
+    /* ---------- Rendu ---------- */
     const SUGG = [["Explique-moi", "la différence entre déconcentration et décentralisation", "Explique-moi la différence entre déconcentration et décentralisation"], ["Fais-moi", "un mini-quiz sur la QPC", "Fais-moi un mini-quiz de 3 questions sur la QPC, une question à la fois"], ["Aide-moi", "à faire la fiche de l'arrêt Clément-Bayard", "Aide-moi à faire la fiche d'arrêt de Clément-Bayard"], ["Comment", "réussir un cas pratique en droit ?", "Comment réussir un cas pratique en droit ? Donne-moi la méthode"]];
     const IC = {
       up: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg>`,
       stop: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor"/></svg>`,
       copy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5V6.5a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2"/></svg>`,
       redo: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5"/></svg>`,
-      neu: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h8M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`
+      neu: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h8M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`,
+      down: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5.5 12.5 12 19l6.5-6.5"/></svg>`
     };
+    const onPage = () => (location.hash || "") === "#ia";
     const avatar = () => `<span class="av" aria-hidden="true">${H("prof", { tilt: -4 })}</span>`;
     function msgHTML(m, i) {
       if (m.role === "user") return `<div class="ia-msg me" id="ia-m-${i}"><div class="ia-b">${esc(m.content)}</div></div>`;
-      const body = m.pending && !m.content ? `<span class="ia-typing" aria-label="Holly réfléchit"><i></i><i></i><i></i></span>${m.step ? ` <span class="ia-step">${esc(m.step)}</span>` : ""}` : md(m.content) + (m.pending && m.step ? `<p class="ia-step">${esc(m.step)}</p>` : "");
+      const thinking = m.pending && !m.content;
+      const body = thinking ? `<span class="ia-typing" aria-label="Holly réfléchit"><i></i><i></i><i></i></span>${m.step ? ` <span class="ia-step">${esc(m.step)}</span>` : ""}` : md(m.content) + (m.pending ? `<span class="ia-caret" aria-hidden="true"></span>` : "");
       const chs = (m.chs || []).filter(id => J.byId[id]);
-      const meta = !m.pending && chs.length ? `<div class="ia-meta"><span class="ia-step">Relire :</span>${chs.map(id => `<a href="#ch-${id}" title="${esc(J.byId[id].title)}">${esc(SUB(id))} ${J.byId[id].num}</a>`).join("")}</div>` : "";
+      const meta = !m.pending && m.content && chs.length ? `<div class="ia-meta"><span class="ia-step">Relire :</span>${chs.map(id => `<a href="#ch-${id}" title="${esc(J.byId[id].title)}">${esc(SUB(id))} ${J.byId[id].num}</a>`).join("")}</div>` : "";
       const last = i === IA.msgs.length - 1;
+      const err = m.err ? `<div class="ia-err">${esc(m.err)}${last && !IA.busy ? ` <button class="ia-retry" data-act="ia-redo">Réessayer</button>` : ""}</div>` : "";
       const acts = !m.pending && m.content ? `<div class="ia-acts"><button data-act="ia-copy" data-i="${i}" aria-label="Copier la réponse" title="Copier">${IC.copy}</button>${last && !IA.busy ? `<button data-act="ia-redo" aria-label="Régénérer la réponse" title="Régénérer">${IC.redo}</button>` : ""}</div>` : "";
-      return `<div class="ia-msg holly" id="ia-m-${i}">${avatar()}<div class="ia-b"><div class="ia-body">${body}</div>${m.err ? `<p class="ia-err">${esc(m.err)}</p>` : ""}${meta}${acts}</div></div>`;
+      return `<div class="ia-msg holly${m.pending ? " live" : ""}" id="ia-m-${i}">${avatar()}<div class="ia-b"><div class="ia-body">${body}</div>${err}${meta}${acts}</div></div>`;
     }
-    const nearEnd = () => innerHeight + scrollY >= document.documentElement.scrollHeight - 160;
+    function emptyHTML() {
+      const off = IA.sample === null, waiting = IA.sample === undefined;
+      if (off) return `<div class="ia-empty">
+          <div class="big" aria-hidden="true">${H("sleepy")}</div>
+          <h2>Réveille Holly</h2>
+          <p>Ici, Holly répond grâce à Gemini, l'IA gratuite de Google. Il suffit de coller une fois ta clé : elle reste sur cet appareil.</p>
+          <ol class="ia-steps"><li>Ouvre <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> et connecte-toi avec Google.</li><li>Touche « Create API key », puis copie la clé.</li><li>Colle-la ci-dessous.</li></ol>
+          <form class="ia-keyform" id="ia-keyform"><input class="input" id="ia-key" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Colle ta clé (AIza… ou AQ.…)"><button class="btn pri" type="submit">Réveiller Holly</button></form>
+        </div>`;
+      return `<div class="ia-empty">
+          <div class="big" aria-hidden="true">${H("prof")}</div>
+          <h2>On révise quoi, Jojo ?</h2><p>Pose-moi n'importe quelle question de droit. Je m'appuie sur tes cours et je te dis où relire.</p>
+          <div class="ia-sugg">${SUGG.map(([a, b2], k) => `<button data-act="ia-sugg" data-k="${k}" ${waiting ? "disabled" : ""}><b>${esc(a)}</b><span>${esc(b2)}</span></button>`).join("")}</div>
+        </div>`;
+    }
+    const mainHTML = () => IA.msgs.length ? `<div class="ia-log" id="ia-log">${IA.msgs.map(msgHTML).join("")}</div>` : emptyHTML();
+    const sendBtnHTML = () => IA.busy ? `<button type="button" class="ia-send" id="ia-send" data-act="ia-stop" aria-label="Arrêter">${IC.stop}</button>` : `<button type="submit" class="ia-send" id="ia-send" disabled aria-label="Envoyer">${IC.up}</button>`;
+    const scopeHTML = () => { const sc = IA.scope && J.byId[IA.scope]; return sc ? `<div class="ia-scope"><span>Sur : ${esc(label(sc))}</span><button type="button" data-act="ia-unscope" aria-label="Ne plus limiter à ce chapitre">×</button></div>` : ""; };
+    const headSub = () => IA.engine === "claude" ? "IA de droit · avec Claude" : IA.engine === "gemini" ? "IA de droit · avec Gemini" : "IA de droit · tes cours de L1";
+
+    /* Mises à jour ciblées */
+    const $m = () => document.getElementById("ia-main");
+    function refreshMain() { const el = $m(); if (!el) return; el.innerHTML = mainHTML(); bindKeyForm(); }
+    function refreshFoot() {
+      const b = document.getElementById("ia-send"); if (b) { const t = document.createElement("div"); t.innerHTML = sendBtnHTML(); b.replaceWith(t.firstElementChild); }
+      const sc = document.getElementById("ia-scopebox"); if (sc) sc.innerHTML = scopeHTML();
+      const ta = document.getElementById("ia-q"); if (ta) { ta.disabled = IA.sample === null; ta.placeholder = IA.sample === null ? "Ajoute d'abord ta clé ci-dessus" : "Écris à Holly…"; fitInput(); }
+      const nw = document.getElementById("ia-new"); if (nw) { nw.hidden = !IA.msgs.length; nw.disabled = IA.busy; }
+      const hs = document.getElementById("ia-sub"); if (hs) hs.textContent = headSub();
+      const ft = document.getElementById("ia-foot"); if (ft) ft.classList.toggle("off", IA.sample === null);
+    }
+    function refreshAll() { refreshMain(); refreshFoot(); }
+    function fitInput() {
+      const ta = document.getElementById("ia-q"), send = document.getElementById("ia-send"); if (!ta) return;
+      ta.style.height = "auto"; ta.style.height = Math.min(200, ta.scrollHeight) + "px";
+      if (onPage()) measure();
+      if (send && !IA.busy) send.disabled = IA.sample === null || !ta.value.trim();
+    }
+    let raf = 0;
+    function paintMsg(i) {
+      const el = document.getElementById("ia-m-" + i); if (!el || !IA.msgs[i]) return;
+      const t = document.createElement("div"); t.innerHTML = msgHTML(IA.msgs[i], i); el.replaceWith(t.firstElementChild);
+      if (IA.follow) scrollEnd(false);
+      updateJump();
+    }
+    const paintLast = () => { if (raf) return; raf = requestAnimationFrame(() => { raf = 0; paintMsg(IA.msgs.length - 1); }); };
+    function appendMsg(i) {
+      let log = document.getElementById("ia-log");
+      if (!log) { refreshMain(); return; }
+      const t = document.createElement("div"); t.innerHTML = msgHTML(IA.msgs[i], i); log.appendChild(t.firstElementChild);
+    }
+    /* Défilement */
+    const nearEnd = () => innerHeight + scrollY >= document.documentElement.scrollHeight - 140;
     const scrollEnd = (smooth = true) => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: smooth ? "smooth" : "auto" });
-    function updateLast() {
-      const i = IA.msgs.length - 1, el = $(`#ia-m-${i}`); if (!el) return;
-      const stick = nearEnd();
-      const tmp = document.createElement("div"); tmp.innerHTML = msgHTML(IA.msgs[i], i); el.replaceWith(tmp.firstElementChild);
-      if (stick) scrollEnd(false);
+    function updateJump() { const j = document.getElementById("ia-jump"); if (j) j.hidden = !IA.msgs.length || nearEnd(); }
+    /* Suivi automatique du bas pendant que Holly écrit, sauf si l'utilisateur remonte lire. */
+    IA.follow = true; let lastY = 0;
+    addEventListener("scroll", () => { if (!onPage()) return; const y = scrollY; if (y < lastY - 4 && !nearEnd()) IA.follow = false; else if (nearEnd()) IA.follow = true; lastY = y; updateJump(); }, { passive: true });
+
+    /* Plein écran : hauteurs des barres, clavier iOS */
+    const measure = () => {
+      const t = $(".top"), b = $(".tabbar"), f = document.getElementById("ia-foot"), r = document.documentElement.style;
+      const bot = b && getComputedStyle(b).display !== "none" ? b.offsetHeight : 0, top = t ? t.offsetHeight : 0;
+      r.setProperty("--ia-top", top + "px"); r.setProperty("--ia-bot", bot + "px");
+      r.scrollPaddingTop = (top + 64) + "px"; r.scrollPaddingBottom = (bot + (f && !f.classList.contains("off") ? f.offsetHeight : 0) + 8) + "px";
+    };
+    const syncMode = () => { const on = onPage(); document.body.classList.toggle("ia-on", on); if (!on) { document.body.classList.remove("ia-kb"); const r = document.documentElement.style; r.scrollPaddingTop = r.scrollPaddingBottom = ""; } if (on) measure(); };
+    addEventListener("hashchange", syncMode);
+    addEventListener("resize", () => { if (document.body.classList.contains("ia-on")) measure(); });
+    if (window.visualViewport) visualViewport.addEventListener("resize", () => { if (onPage() && document.body.classList.contains("ia-kb")) { measure(); if (nearEnd()) scrollEnd(false); } });
+
+    function bindKeyForm() {
+      const f = document.getElementById("ia-keyform"); if (!f) return;
+      f.addEventListener("submit", e => {
+        e.preventDefault(); const v = (document.getElementById("ia-key").value || "").trim();
+        if (!/^[\w.\-]{20,}$/.test(v)) { ui.toast("Cette clé ne ressemble pas à une clé Gemini : recopie-la en entier."); return; }
+        J.setGeminiKey(v); ui.toast("Holly est réveillé !"); refreshAll();
+        const ta = document.getElementById("ia-q"); if (ta) ta.focus();
+      });
     }
-    /* Hauteur de la barre du haut et de la barre d'onglets, pour que le chat occupe tout l'écran. */
-    const measure = () => { const t = $(".top"), b = $(".tabbar"); const r = document.documentElement.style; r.setProperty("--ia-top", (t ? t.offsetHeight : 0) + "px"); r.setProperty("--ia-bot", (b && getComputedStyle(b).display !== "none" ? b.offsetHeight : 0) + "px"); };
-    const syncMode = () => { const on = (location.hash || "") === "#ia"; document.body.classList.toggle("ia-on", on); if (on) measure(); };
-    addEventListener("hashchange", syncMode); addEventListener("resize", () => { if (document.body.classList.contains("ia-on")) measure(); });
 
     VIEWS.ia = {
       render() {
-        const avail = IA.sample, waiting = avail === undefined, off = avail === null, has = IA.msgs.length > 0;
-        const sc = IA.scope && J.byId[IA.scope];
-        const empty = `<div class="ia-empty">
-            <div class="big" aria-hidden="true">${H("prof")}</div>
-            ${off ? `<h2>Réveille Holly</h2><p>Pour que Holly réponde ici, colle une fois ta clé Gemini gratuite (créée sur aistudio.google.com) dans les Réglages.</p><a class="btn pri sm" href="#reglages">Ouvrir les Réglages</a> <button class="btn sec sm" data-act="search">Rechercher dans mes cours</button>`
-            : `<h2>On révise quoi, Jojo ?</h2><p>Pose-moi n'importe quelle question de droit. Je m'appuie sur tes cours et je te dis où relire.</p>
-            <div class="ia-sugg">${SUGG.map(([a, b2, q], k) => `<button data-act="ia-sugg" data-k="${k}"><b>${esc(a)}</b><span>${esc(b2)}</span></button>`).join("")}</div>`}
-          </div>`;
         return `<div class="ia-page">
-          <div class="ia-head">${avatar()}<div class="grow"><b>Holly</b><span class="sub">IA de droit · tes cours de L1</span></div>${has ? `<button class="ia-new" data-act="ia-clear" ${IA.busy ? "disabled" : ""} aria-label="Nouvelle conversation" title="Nouvelle conversation">${IC.neu}</button>` : ""}</div>
-          ${has ? `<div class="ia-log" id="ia-log" aria-live="polite">${IA.msgs.map(msgHTML).join("")}</div><div style="flex:1"></div>` : empty}
-          <div class="ia-foot">
-            ${sc ? `<div class="ia-scope"><span>Sur : ${esc(label(sc))}</span><button data-act="ia-unscope" aria-label="Ne plus limiter à ce chapitre">×</button></div>` : ""}
+          <div class="ia-head">${avatar()}<div class="grow"><b>Holly</b><span class="sub" id="ia-sub">${headSub()}</span></div><button class="ia-new" id="ia-new" data-act="ia-clear" ${IA.msgs.length ? "" : "hidden"} ${IA.busy ? "disabled" : ""} aria-label="Nouvelle conversation" title="Nouvelle conversation">${IC.neu}</button></div>
+          <div id="ia-main" class="ia-main" aria-live="polite">${mainHTML()}</div>
+          <div class="ia-foot ${IA.sample === null ? "off" : ""}" id="ia-foot">
+            <button class="ia-jump" id="ia-jump" data-act="ia-jump" hidden aria-label="Aller en bas">${IC.down}</button>
+            <div id="ia-scopebox">${scopeHTML()}</div>
             <form class="ia-box" id="ia-form">
-              <label for="ia-q" style="position:absolute;left:-9999px">Ta question</label>
-              <textarea id="ia-q" rows="1" placeholder="${off ? "Ajoute ta clé Gemini dans les Réglages" : "Écris à Holly…"}" ${off ? "disabled" : ""} enterkeyhint="send"></textarea>
-              ${IA.busy ? `<button type="button" class="ia-send" data-act="ia-stop" aria-label="Arrêter">${IC.stop}</button>` : `<button type="submit" class="ia-send" id="ia-send" disabled aria-label="Envoyer">${IC.up}</button>`}
+              <label for="ia-q" class="sr">Ta question</label>
+              <textarea id="ia-q" rows="1" placeholder="${IA.sample === null ? "Ajoute d'abord ta clé ci-dessus" : "Écris à Holly…"}" ${IA.sample === null ? "disabled" : ""} enterkeyhint="send"></textarea>
+              ${sendBtnHTML()}
             </form>
             <p class="ia-note">Holly peut se tromper. Vérifie les points importants dans tes cours.</p>
           </div>
         </div>`;
       },
       after() {
-        syncMode();
-        const ta = $("#ia-q"), form = $("#ia-form"), send = $("#ia-send");
+        syncMode(); bindKeyForm();
+        const ta = $("#ia-q"), form = $("#ia-form");
         if (ta) {
-          const fit = () => { ta.style.height = "auto"; ta.style.height = Math.min(200, ta.scrollHeight) + "px"; if (send) send.disabled = IA.sample === null || !ta.value.trim(); };
-          ta.addEventListener("input", fit);
-          ta.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing && matchMedia("(hover:hover)").matches) { e.preventDefault(); form.requestSubmit(); } });
-          if (IA.draft) { ta.value = IA.draft; IA.draft = ""; }
-          fit();
-          if (IA.sample !== null && !IA.busy && matchMedia("(hover:hover)").matches) ta.focus();
+          ta.addEventListener("input", () => { IA.draft = ta.value; fitInput(); });
+          ta.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing && matchMedia("(hover:hover) and (pointer:fine)").matches) { e.preventDefault(); form.requestSubmit(); } });
+          ta.addEventListener("focus", () => { if (matchMedia("(pointer:coarse)").matches) { document.body.classList.add("ia-kb"); setTimeout(() => { measure(); if (IA.msgs.length) scrollEnd(false); }, 250); } });
+          ta.addEventListener("blur", () => { setTimeout(() => { if (document.activeElement !== ta) { document.body.classList.remove("ia-kb"); measure(); } }, 150); });
+          if (IA.draft) ta.value = IA.draft;
+          fitInput();
+          if (IA.sample && !IA.busy && matchMedia("(hover:hover) and (pointer:fine)").matches) ta.focus();
         }
-        if (form) form.addEventListener("submit", e => { e.preventDefault(); const q = ta.value.trim(); if (q) ask(q); });
-        if (IA.msgs.length) requestAnimationFrame(() => scrollEnd(false));
+        if (form) form.addEventListener("submit", e => { e.preventDefault(); if (IA.busy) return; const q = ta.value.trim(); if (q) ask(q); });
+        if (IA.msgs.length) requestAnimationFrame(() => { scrollEnd(false); updateJump(); });
       }
     };
 
     /* ---------- Envoi d'une question ---------- */
     const ERR = {
-      not_granted: "Tu n'as pas autorisé cette page à interroger Claude. Tu peux le réactiver dans les autorisations de la page, puis reposer ta question.",
-      rate_limited: "Holly reprend son souffle (limite gratuite atteinte) : réessaie dans une minute.", queue_overflow: "Holly reprend son souffle : réessaie dans une minute.",
+      not_granted: "Tu n'as pas autorisé cette page à interroger Claude. Réactive-le dans les autorisations de la page, puis réessaie.",
+      rate_limited: "Holly reprend son souffle : la limite gratuite de Google est atteinte pour l'instant. Réessaie dans une minute.",
+      queue_overflow: "Holly reprend son souffle : réessaie dans une minute.",
       prompt_too_large: "C'est trop de cours d'un coup. Ouvre le chapitre concerné et utilise « Une question sur ce chapitre ? », ou raccourcis ta question.",
       session_expired: "Ta session Claude a expiré : recharge la page.",
-      refused: "Holly ne peut pas répondre à cette question.",
-      bad_key: "Google refuse cette clé. Crée plutôt une clé qui commence par AIza (voir Réglages).", network: "Pas de connexion : vérifie Internet puis réessaie.", server: "Le serveur de Holly a un souci : réessaie dans un instant.",
+      refused: "Holly ne peut pas répondre à cette question telle qu'elle est formulée. Essaie de la reformuler.",
+      empty: "Holly n'a rien répondu cette fois. Réessaie.",
+      bad_key: "Google refuse cette clé. Recopie-la en entier depuis aistudio.google.com/apikey (Réglages > Holly).",
+      forbidden: "Google n'autorise pas cette clé pour Gemini. Crée une nouvelle clé sur aistudio.google.com/apikey.",
+      no_model: "Aucun modèle Gemini n'est disponible avec cette clé pour l'instant.",
+      bad_request: "Google a refusé la demande.",
+      network: "Pas de connexion : vérifie Internet, puis réessaie.",
+      server: "Le serveur de Holly a un souci : réessaie dans un instant.",
       sampling_disabled: "Les réponses de Holly ne sont pas disponibles sur ce compte.", capability_disabled: "Les réponses de Holly ne sont pas disponibles ici.", capability_removed: "Les réponses de Holly ne sont pas disponibles ici.", not_declared: "Les réponses de Holly ne sont pas disponibles ici."
     };
-    async function ask(q) {
+    async function ask(q, opts2 = {}) {
       if (IA.busy) return;
-      const s = IA.sample === undefined ? await IA.ready : IA.sample;
-      if (!s) { IA.draft = q; ui.rerender(); return; }
+      let s = IA.sample;
+      if (s === undefined) { IA.busy = true; refreshFoot(); s = await IA.ready; IA.busy = false; }
+      if (!s) { refreshAll(); ui.toast("Holly dort encore : ajoute ta clé Gemini pour le réveiller."); return; }
       const prevUser = [...IA.msgs].reverse().find(m => m.role === "user");
       const picked = pickChapters(q, prevUser && prevUser.content);
       const used = picked.map(c => c.id);
-      const history = IA.msgs.filter(m => m.content && !m.err).slice(-8).map(m => ({ role: m.role === "user" ? "user" : "assistant", content: m.content }));
-      IA.msgs.push({ role: "user", content: q });
+      const base = opts2.retry ? IA.msgs.slice(0, -1) : IA.msgs;
+      const history = base.filter(m => m.content && !m.pending).slice(-10).map(m => ({ role: m.role, content: m.content }));
+      if (!opts2.retry) { IA.msgs.push({ role: "user", content: q }); }
       const bot = { role: "assistant", content: "", pending: true, chs: used, step: "" };
       IA.msgs.push(bot);
-      IA.busy = true; saveChat(); ui.rerender(); scrollEnd(false);
+      IA.busy = true; IA.draft = "";
+      const ta = document.getElementById("ia-q"); if (ta && !opts2.retry) { ta.value = ""; }
+      if (IA.msgs.length <= 2 || !document.getElementById("ia-log")) refreshMain();
+      else { if (!opts2.retry) appendMsg(IA.msgs.length - 2); appendMsg(IA.msgs.length - 1); }
+      refreshFoot(); IA.follow = true; requestAnimationFrame(() => scrollEnd(false));
+      saveChat();
 
-      const ctx = `${RULES.replace(/Jojo/g, J.name())}
+      const name = J.name();
+      const sys = `${RULES.replace(/Jojo/g, name)}
 
 CATALOGUE DES CHAPITRES (identifiant, titre, résumé) :
 ${CATALOGUE()}
 
 CONTENU DES COURS — extraits les plus utiles pour la question :
-${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspond directement aux mots de la question. Si elle touche quand même aux cours, appuie-toi sur le catalogue" + (IA.tools ? " et utilise les outils" : "") + " ; sinon, réponds comme juriste selon la règle 2.)"}`;
-      const input = [{ role: "user", content: ctx }, { role: "assistant", content: "Compris. Je suis Holly, je réponds à Jojo en m'appuyant sur ses cours quand c'est possible, et je cite mes sources." }, ...history, { role: "user", content: q }];
+${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspond directement : si la question touche quand même aux cours, appuie-toi sur le catalogue" + (IA.tools ? " et utilise les outils" : "") + " ; sinon, réponds comme juriste selon la règle 3.)"}`;
+      const convo = alternate([...history, { role: "user", content: q }]);
+      const isGem = s.engine === "gemini";
+      const input = isGem ? convo : alternate([{ role: "user", content: sys }, { role: "assistant", content: `Compris. Je suis Holly, je réponds à ${name} en m'appuyant sur ses cours quand c'est possible, et je cite mes sources.` }, ...convo]);
       const ctl = IA.ctl = new AbortController();
-      const opts = { signal: ctl.signal, cache: false, modelTier: "default", onText: ({ text }) => { bot.content = text; bot.step = ""; updateLast(); } };
-      if (IA.tools) opts.tools = makeTools(used, step => { bot.step = step; updateLast(); });
+      const opts = { signal: ctl.signal, cache: false, modelTier: "default", onText: ({ text }) => { bot.content = text; bot.step = ""; paintLast(); } };
+      if (isGem) opts.system = sys;
+      if (IA.tools && !isGem) opts.tools = makeTools(used, step => { bot.step = step; paintLast(); });
       try {
         const r = await s(input, opts);
-        bot.content = r.text;
-        if (r.truncated) bot.err = "Réponse coupée car trop longue : demande une partie à la fois.";
+        bot.content = r.text || bot.content;
+        if (r.truncated) bot.err = "Réponse coupée car très longue : demande la suite (« continue »).";
         const d = J.day(); d.ia = (d.ia || 0) + 1;
         if (d.ia <= 10) J.addXP(2, "Question à Holly", "ia"); else J.save();
       } catch (e) {
         const code = e && e.code;
         if (e && e.text) bot.content = e.text;
-        if (code === "cancelled") { if (!bot.content) bot.content = "*(Question interrompue.)*"; }
-        else bot.err = (ERR[code] || "Holly a trébuché sur une erreur. Réessaie dans un instant.") + (IA.engine === "gemini" && e && e.message ? ` (${e.message})` : "");
+        if (code === "cancelled") { if (!bot.content) bot.content = "*(Réponse interrompue.)*"; }
+        else bot.err = (ERR[code] || "Holly a trébuché sur une erreur. Réessaie dans un instant.") + (e && e.message && ["bad_request", "server", "no_model", "forbidden", "empty"].includes(code) ? ` (${e.message})` : "");
       } finally {
+        if (raf) { cancelAnimationFrame(raf); raf = 0; }
         bot.pending = false; bot.step = ""; IA.busy = false; IA.ctl = null;
-        if (!bot.content && bot.err) { IA.msgs.pop(); IA.msgs.pop(); IA.draft = q; ui.toast(bot.err); }
         saveChat();
-        if ((location.hash || "") === "#ia") { const st = nearEnd(); ui.rerender(); if (st) scrollEnd(false); }
+        if (onPage()) {
+          const i = IA.msgs.length - 1;
+          if (i > 0) paintMsg(i - 1);
+          paintMsg(i);
+          const prev = IA.msgs.length - 3; if (prev >= 0 && IA.msgs[prev].role === "assistant") paintMsg(prev);
+          refreshFoot();
+          if (IA.follow) requestAnimationFrame(() => scrollEnd(false));
+        }
       }
     }
     ACT["ia-sugg"] = b => ask(SUGG[+b.dataset.k][2]);
-    ACT["ia-unscope"] = () => { IA.scope = ""; ui.rerender(); };
-    ACT["ia-copy"] = b => { const m = IA.msgs[+b.dataset.i]; if (!m) return; const t = m.content; try { navigator.clipboard.writeText(t).then(() => ui.toast("Réponse copiée."), () => ui.toast("Copie impossible ici.")); } catch (e) { ui.toast("Copie impossible ici."); } };
-    ACT["ia-redo"] = () => { if (IA.busy) return; const u = [...IA.msgs].reverse().find(m => m.role === "user"); if (!u) return; const q = u.content; while (IA.msgs.length && IA.msgs[IA.msgs.length - 1] !== u) IA.msgs.pop(); IA.msgs.pop(); ask(q); };
+    ACT["ia-unscope"] = () => { IA.scope = ""; refreshFoot(); };
+    ACT["ia-jump"] = () => { IA.follow = true; scrollEnd(true); };
+    ACT["ia-copy"] = b => {
+      const m = IA.msgs[+b.dataset.i]; if (!m) return; const t = m.content;
+      const fallback = () => { const x = document.createElement("textarea"); x.value = t; x.style.position = "fixed"; x.style.opacity = "0"; document.body.appendChild(x); x.select(); let ok = false; try { ok = document.execCommand("copy"); } catch (e) { } x.remove(); ui.toast(ok ? "Réponse copiée." : "Copie impossible ici."); };
+      try { navigator.clipboard.writeText(t).then(() => ui.toast("Réponse copiée."), fallback); } catch (e) { fallback(); }
+    };
+    ACT["ia-redo"] = () => {
+      if (IA.busy) return;
+      while (IA.msgs.length && IA.msgs[IA.msgs.length - 1].role === "assistant") IA.msgs.pop();
+      const u = IA.msgs[IA.msgs.length - 1]; if (!u) { refreshAll(); return; }
+      refreshMain(); ask(u.content, { retry: true });
+    };
     ACT["ia-stop"] = () => { if (IA.ctl) IA.ctl.abort(); };
-    ACT["ia-clear"] = () => { if (IA.busy) return; IA.msgs = []; saveChat(); ui.rerender(); };
+    ACT["ia-clear"] = () => { if (IA.busy) return; IA.msgs = []; saveChat(); refreshAll(); };
     ACT["ia-ch"] = b => { IA.scope = b.dataset.id; location.hash = "#ia"; };
   })();
 
@@ -5929,7 +6112,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
 })();
 
 </script>
-<script>window.JBA_BUILD="20261103-220207";
+<script>window.JBA_BUILD="20261104-094311";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
