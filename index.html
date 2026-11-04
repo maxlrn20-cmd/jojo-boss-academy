@@ -679,6 +679,26 @@ body.ia-on .toast{bottom:calc(var(--ia-bot,0px) + 118px)}
 :root[data-theme="dark"] .chtabs button.on{background:#636366}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chtabs button.on{background:#636366}}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg button.on,:root:not([data-theme="light"]) .tabs button.on{background:#636366}}
+
+/* ===== Animations, troisième passe (discrètes) ===== */
+.wrap.enter .pgroup>.prow,.wrap.enter .pgroup>.pdet{animation:rise .38s var(--ease) both}
+.wrap.enter .pgroup>*:nth-child(2){animation-delay:.03s}.wrap.enter .pgroup>*:nth-child(3){animation-delay:.06s}.wrap.enter .pgroup>*:nth-child(4){animation-delay:.09s}.wrap.enter .pgroup>*:nth-child(5){animation-delay:.12s}.wrap.enter .pgroup>*:nth-child(6){animation-delay:.15s}.wrap.enter .pgroup>*:nth-child(n+7){animation-delay:.18s}
+.wrap.swap .q-opt{animation:rise .32s var(--ease) both}
+.wrap.swap .q-opt:nth-child(2){animation-delay:.04s}.wrap.swap .q-opt:nth-child(3){animation-delay:.08s}.wrap.swap .q-opt:nth-child(4){animation-delay:.12s}.wrap.swap .q-opt:nth-child(n+5){animation-delay:.16s}
+#chbody.tabin{animation:tabin .3s var(--ease) both}
+@keyframes tabin{from{opacity:0;transform:translateY(6px)}}
+.hero.home .art .bob{animation:bob 4.5s ease-in-out infinite}
+.gring svg circle:last-child{transition:stroke-dashoffset 1s cubic-bezier(.22,.8,.25,1)}
+.bar>i{transition:width .9s cubic-bezier(.22,.8,.25,1)}
+.chtabs button{transition:background-color .2s,box-shadow .2s,color .2s}
+.prow .pchev{transition:transform .2s var(--ease)}
+@media (hover:hover){.prow:hover .pchev{transform:translateX(2px)}}
+.ia-sugg button,.ia-photo-cta{transition:transform .18s var(--ease),background-color .2s}
+.ia-sugg button:active,.ia-photo-cta:active{transform:scale(.97)}
+.wrap.enter .ia-sugg button{animation:rise .4s var(--ease) both}
+.wrap.enter .ia-sugg button:nth-child(2){animation-delay:.05s}.wrap.enter .ia-sugg button:nth-child(3){animation-delay:.1s}.wrap.enter .ia-sugg button:nth-child(4){animation-delay:.15s}
+/* Moins d'éléments décoratifs sur téléphone */
+@media (max-width:600px){header .deco{display:none}}
 </style>
 </head><body>
 <div id="root"></div>
@@ -4768,6 +4788,22 @@ JBA.chapter({
   ];
 
   /* ---------- Coquille ---------- */
+  /* ---------- Petites animations : chiffres qui défilent, anneaux et barres qui se remplissent ---------- */
+  const reduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+  ui.animate = (root) => {
+    if (reduced() || !root) return;
+    root.querySelectorAll(".bignum, .gring b, .stat b").forEach(el => {
+      const tn = [...el.childNodes].find(n => n.nodeType === 3 && /\d/.test(n.nodeValue)); if (!tn) return;
+      const m = tn.nodeValue.match(/^(\D*)(\d+)(.*)$/s); if (!m) return;
+      const end = +m[2]; if (!end || end > 100000) return;
+      const t0 = performance.now(), dur = Math.min(900, 380 + end * 2);
+      const step = t => { const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3); tn.nodeValue = m[1] + Math.round(end * e) + m[3]; if (k < 1) requestAnimationFrame(step); };
+      tn.nodeValue = m[1] + "0" + m[3]; requestAnimationFrame(step);
+    });
+    root.querySelectorAll(".gring svg circle:last-child").forEach(c => { const to = c.getAttribute("stroke-dashoffset"), full = c.getAttribute("stroke-dasharray"); c.style.transition = "none"; c.setAttribute("stroke-dashoffset", full); requestAnimationFrame(() => requestAnimationFrame(() => { c.style.transition = ""; c.setAttribute("stroke-dashoffset", to); })); });
+    root.querySelectorAll(".bar>i").forEach(b => { const w = b.style.width; b.style.transition = "none"; b.style.width = "0"; requestAnimationFrame(() => requestAnimationFrame(() => { b.style.transition = ""; b.style.width = w; })); });
+  };
+
   /* ---------- Personnalisation du prénom : « Jojo » devient le prénom choisi partout à l'écran ---------- */
   const BASE_TITLE = document.title;
   ui.personalize = (root) => {
@@ -4816,7 +4852,6 @@ JBA.chapter({
           <span class="grow"></span>
           <button class="xpchip" id="xpchip" data-go="progres" aria-label="Ma progression"></button>
           <button class="iconbtn" data-act="search" aria-label="Rechercher dans les cours">${ICON.search}</button>
-          <button class="iconbtn" data-act="theme" id="themebtn" aria-label="Changer de thème"></button>
           <button class="iconbtn desk-only" data-act="more" aria-label="Plus : compte et rubriques">${ICON.more}</button>
         </header>
         <main id="main" tabindex="-1"></main>
@@ -4961,6 +4996,8 @@ JBA.chapter({
     ui._lastHash = location.hash; ui.animNext = false;
     main.innerHTML = `<div class="wrap ${fx}">${VIEWS[name].render(arg)}</div>`;
     VIEWS[name].after && VIEWS[name].after(arg);
+    if (ui.animTab) { ui.animTab = false; const cb = $("#chbody"); if (cb) cb.classList.add("tabin"); }
+    if (fx === "enter") ui.animate(main);
     const key = name === "chapitre" ? "cours" : name === "casdetail" ? "cas" : name;
     $$("[data-nav]").forEach(a => a.classList.toggle("on", a.dataset.nav === key));
     $$("[data-tab]").forEach(a => a.classList.toggle("on", a.dataset.tab === key));
@@ -5007,7 +5044,7 @@ JBA.chapter({
         <div class="stack" style="gap:14px">
           <h1>Bienvenue chez toi,<br class="br-d"> Jojo Boss.</h1>
           <p class="slogan">De Coco Plage au Code civil, rien ne résiste à Jojo Boss.</p>
-          <div class="row" style="margin-top:4px"><a class="btn pri" href="${last ? esc(last) : "#cours"}">${last ? "Reprendre mes révisions" : "Commencer à réviser"}</a><a class="btn link" href="#holly">Découvrir mon univers ›</a></div>
+          <div class="row" style="margin-top:4px"><a class="btn pri" href="${last ? esc(last) : "#cours"}">${last ? "Reprendre mes révisions" : "Commencer à réviser"}</a></div>
         </div>
         <div class="art"><div class="bob">${H("prof", { label: "Holly en professeur de droit, avec un Code civil et des sushis" })}</div></div>
       </section>
@@ -5093,7 +5130,7 @@ JBA.chapter({
     },
     after(id) { const s = $("#st-sel"); if (s) s.addEventListener("change", () => { J.chs(id).status = s.value; J.save(); ui.toast(`Statut : ${STATUS[s.value]}`); ui.rerender(); }); }
   };
-  ACT.chtab = b => { chTab = b.dataset.k; ui.rerender(); };
+  ACT.chtab = b => { chTab = b.dataset.k; ui.animTab = true; ui.rerender(); };
   ACT.fav = b => { const st = J.chs(b.dataset.id); st.fav = !st.fav; J.save(); ui.toast(st.fav ? "Ajouté aux favoris" : "Retiré des favoris"); ui.rerender(); };
   ACT.read = b => { const st = J.chs(b.dataset.id); if (!st.read) { st.read = true; J.day().lesson++; J.addXP(10, `Leçon lue : ${J.byId[b.dataset.id].title}`, "lecon"); ui.celebrate("+10 XP", "Leçon terminée", J.line("finLecon"), "sieste"); } ui.rerender(); };
   ACT.fiche = b => { const st = J.chs(b.dataset.id); if (!st.fiche) { st.fiche = true; J.day().lesson++; J.addXP(15, `Fiche terminée : ${J.byId[b.dataset.id].title}`, "fiche"); ui.toast("+15 XP · " + J.line("bon")); } ui.rerender(); };
@@ -5566,10 +5603,9 @@ JBA.chapter({
       <section class="grings2">${["dc", "ip"].map(sb => { const x = subjStats(sb); return `<div class="card stack" style="gap:10px"><span class="eyebrow">${J.SUBJECTS[sb].short}</span><b class="bignum tnum" style="font-size:40px">${x.prog}<span style="font-size:18px;color:var(--ink2)"> %</span></b><div class="bar"><i style="width:${x.prog}%"></i></div><div class="minis"><span><b class="tnum">${x.read}/${x.n}</b> leçons</span><span><b class="tnum">${x.avg == null ? "—" : x.avg + " %"}</b> aux quiz</span><span><b class="tnum">${x.m}</b> cartes sues</span></div></div>`; }).join("")}</section>
       <section class="card stack"><div class="row between"><h3>Régularité</h3><span class="small muted tnum">${J.streak()} jour${J.streak() > 1 ? "s" : ""} d'affilée · ${S.days.length} au total</span></div><div class="ddays">${days}</div></section>
       ${["dc", "ip"].map(sb => `<section class="stack" style="gap:0"><p class="plabel">${J.SUBJECTS[sb].name}</p><div class="pgroup">${J.chaptersOf(sb).map(c => { const st = J.chs(c.id), p = J.chapterProgress(c); return `<a class="prow" href="#ch-${c.id}"><span class="tile num-tile">${c.num}</span><span class="pmain"><span class="pt">${esc(c.title)}</span><span class="ps">${ui.STATUS[st.status]}${st.best != null ? ` · meilleur quiz ${st.best} %` : ""}</span></span><span class="mini-ring" style="--p:${p};--c:${dot[st.status]}"></span><span class="pchev">${ICON.chev}</span></a>`; }).join("")}</div></section>`).join("")}
-      <section class="stack" style="gap:0"><p class="plabel">Badges · ${got}/${J.BADGES.length}</p><div class="pgroup">${J.BADGES.map(b => `<div class="prow ${S.badges[b.id] ? "" : "dim"}"><span class="bmedal">${medal(b)}</span><span class="pmain"><span class="pt">${esc(b.name)}</span><span class="ps">${S.badges[b.id] ? "Obtenu le " + esc(S.badges[b.id]) : esc(b.desc)}</span></span>${S.badges[b.id] ? `<span class="pcount" style="color:#34C759">${ICON.check}</span>` : ""}</div>`).join("")}</div></section>
-      <section class="stack" style="gap:0"><p class="plabel">Niveaux</p><div class="pgroup">${J.LEVELS.map(l => `<div class="prow ${S.xp >= l.xp ? "" : "dim"}"><span class="tile num-tile">${l.n}</span><span class="pmain"><span class="pt">${esc(l.name)}</span></span><span class="pcount tnum">${l.xp} XP</span>${l.n === L.n ? `<span class="pill fav">Toi</span>` : ""}</div>`).join("")}</div>
-        <p class="pnote">Leçon lue +10 · fiche +15 · quiz +20 (+15 si sans-faute) · cas pratique +30 · examen +50 · carte +1 · question à Holly +2.</p></section>
-      ${S.history.length ? `<section class="stack" style="gap:0"><p class="plabel">Activité récente</p><div class="pgroup">${S.history.slice(0, 12).map(h => `<div class="prow"><span class="pmain"><span class="pt">${esc(h.label)}</span><span class="ps">${J.fmtDate(h.t)}</span></span><span class="pcount tnum">+${h.xp}</span></div>`).join("")}</div></section>` : ""}`;
+      <details class="pdetails"><summary>Badges <span class="muted">${got}/${J.BADGES.length}</span></summary><div class="pgroup" style="margin-top:10px;box-shadow:none;background:var(--surface2)">${J.BADGES.map(b => `<div class="prow ${S.badges[b.id] ? "" : "dim"}"><span class="bmedal">${medal(b)}</span><span class="pmain"><span class="pt">${esc(b.name)}</span><span class="ps">${S.badges[b.id] ? "Obtenu le " + esc(S.badges[b.id]) : esc(b.desc)}</span></span>${S.badges[b.id] ? `<span class="pcount" style="color:#34C759">${ICON.check}</span>` : ""}</div>`).join("")}</div></details>
+
+      ${S.history.length ? `<section class="stack" style="gap:0"><p class="plabel">Activité récente</p><div class="pgroup">${S.history.slice(0, 5).map(h => `<div class="prow"><span class="pmain"><span class="pt">${esc(h.label)}</span><span class="ps">${J.fmtDate(h.t)}</span></span><span class="pcount tnum">+${h.xp}</span></div>`).join("")}</div></section>` : ""}`;
     }
   };
 
@@ -5598,7 +5634,7 @@ JBA.chapter({
         <details class="pdet"><summary class="prow"><span class="tile" style="background:#0A84FF">${ICON.back}</span><span class="pmain"><span class="pt">Importer une sauvegarde</span></span><span class="pchev">${ICON.chev}</span></summary>
           <div class="setbox"><textarea class="input" id="imp" style="min-height:90px;font-size:12px" placeholder="Colle ici un code de sauvegarde"></textarea><button class="btn sec sm" data-act="imp" style="align-self:flex-start">Importer</button></div></details>
         ${confirmReset ? `<div class="setbox" style="border-top:.5px solid var(--line)"><span class="small" style="color:var(--ko);font-weight:600">Tout effacer ? Ta progression sur cet appareil sera perdue.</span><div class="row"><button class="btn sm" style="background:#FF3B30;color:#fff" data-act="reset2">Oui, tout effacer</button><button class="btn ghost sm" data-act="reset0">Annuler</button></div></div>` : `<button type="button" class="prow danger" data-act="reset1"><span class="tile" style="background:#FF3B30">${ICON.x}</span><span class="pmain"><span class="pt">Réinitialiser ma progression</span></span></button>`}
-      </div><p class="pnote">La progression s'enregistre toute seule sur cet appareil. Le code sert à la transférer sur un autre appareil si tu n'utilises pas la connexion Google.</p></section>
+      </div></section>
       <section class="stack" style="gap:0"><p class="plabel">À propos</p><div class="pgroup">
         <details class="pdet"><summary class="prow"><span class="tile" style="background:#8E8E93">${ICON.book}</span><span class="pmain"><span class="pt">Jojo Boss Academy</span></span><span class="pchev">${ICON.chev}</span></summary><div class="setbox"><p class="small">Contenus pédagogiques construits uniquement à partir des cours fournis (Droit constitutionnel 1, M. Verpeaux, UNJF ; Introduction au droit privé, P. Vannier). Chaque fiche indique sa source et ses pages. Les quelques compléments extérieurs (réformes postérieures, coquilles du polycopié) sont toujours séparés et signalés « hors cours ».</p><p class="small">Illustrations : Holly, les lieux et les motifs sont des dessins originaux réalisés pour ce site (aucune image externe). Police : celle du système (San Francisco sur Mac et iPhone). <a href="ASSETS.md" target="_blank" rel="noopener">Détail des sources et licences</a>.</p><p class="small muted">Raccourci clavier : <span class="kbd">/</span> pour rechercher.</p></div></details>
       </div></section>`;
@@ -6009,7 +6045,7 @@ Règles :
               <textarea id="ia-q" rows="1" placeholder="${IA.sample === null ? "Ajoute d'abord ta clé ci-dessus" : "Écris à Holly…"}" ${IA.sample === null ? "disabled" : ""} enterkeyhint="send"></textarea>
               ${sendBtnHTML()}
             </form>
-            <p class="ia-note">Holly peut se tromper. Vérifie les points importants dans tes cours.</p>
+            <p class="ia-note">Holly peut se tromper : vérifie dans tes cours.</p>
           </div>
         </div>`;
       },
@@ -6262,7 +6298,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
 })();
 
 </script>
-<script>window.JBA_BUILD="20261104-100505";
+<script>window.JBA_BUILD="20261104-101741";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
