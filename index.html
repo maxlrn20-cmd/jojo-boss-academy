@@ -619,6 +619,27 @@ body.ia-kb .ia-note{display:none}
 .ia-page [hidden]{display:none!important}
 .ia-foot.off{display:none}
 body.ia-on .toast{bottom:calc(var(--ia-bot,0px) + 118px)}
+
+/* ===== Holly : photos ===== */
+.ia-clip{width:38px;height:38px;flex:none;border-radius:50%;border:0;background:var(--surface2);color:var(--ink);display:grid;place-items:center;cursor:pointer;margin-left:-10px}
+.ia-clip:hover{background:var(--surface3)}.ia-clip svg{width:20px;height:20px}
+.ia-box{padding-left:12px}
+.ia-att{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 4px 8px}
+.ia-att:empty{display:none}
+.ia-thumb{position:relative;width:64px;height:64px;border-radius:14px;overflow:hidden;flex:none;box-shadow:0 2px 8px rgba(0,0,0,.12);animation:popin .3s var(--spring)}
+.ia-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.ia-thumb button{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:15px;line-height:1;display:grid;place-items:center;cursor:pointer}
+.ia-atthint{font-size:12.5px;color:var(--ink2);flex:1 1 160px}
+.ia-ucol{display:flex;flex-direction:column;align-items:flex-end;gap:6px;max-width:82%}
+.ia-msg.me .ia-ucol .ia-b{max-width:100%}
+.ia-uimgs{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.ia-uimgs img{width:150px;height:150px;object-fit:cover;border-radius:18px;display:block;box-shadow:0 2px 10px rgba(0,0,0,.1)}
+.ia-uimgs img:only-child{width:min(240px,60vw);height:auto;max-height:320px}
+.ia-photo-cta{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px dashed color-mix(in srgb,var(--framboise) 45%,transparent);background:var(--rose2);color:var(--ink);border-radius:16px;padding:12px 14px;font:inherit;cursor:pointer;margin-top:2px}
+.ia-photo-cta>svg{width:26px;height:26px;color:var(--framboise);flex:none}
+.ia-photo-cta b{display:block;font-size:14.5px;font-weight:600}
+.ia-photo-cta span span{font-size:13px;color:var(--ink2)}
+.ia-att:not(:empty){background:var(--bg);border-radius:16px;padding:6px;margin:0 0 6px}
 </style>
 </head><body>
 <div id="root"></div>
@@ -5530,18 +5551,22 @@ JBA.chapter({
      pour garder le clavier ouvert, le texte en cours de saisie et une défilement fluide. */
   (function () {
     const CHATKEY = "jojo-boss-academy-holly-chat";
-    const IA = J.ia = { msgs: [], busy: false, ctl: null, scope: "", sample: undefined, tools: false, engine: "" };
-    try { const m = JSON.parse(localStorage.getItem(CHATKEY) || "[]"); if (Array.isArray(m)) IA.msgs = m.filter(x => x && (x.content || x.err) && !x.pending).map(x => ({ role: x.role, content: x.content || "", chs: x.chs, err: x.err })).slice(-40); } catch (e) { }
-    const saveChat = () => { try { localStorage.setItem(CHATKEY, JSON.stringify(IA.msgs.filter(x => !x.pending && (x.content || x.err)).slice(-40).map(x => ({ role: x.role, content: x.content, chs: x.chs, err: x.err })))); } catch (e) { } };
+    const IA = J.ia = { msgs: [], busy: false, ctl: null, scope: "", sample: undefined, tools: false, engine: "", att: [] };
+    try { const m = JSON.parse(localStorage.getItem(CHATKEY) || "[]"); if (Array.isArray(m)) IA.msgs = m.filter(x => x && (x.content || x.err || x.imgs) && !x.pending).map(x => ({ role: x.role, content: x.content || "", chs: x.chs, err: x.err, imgs: Array.isArray(x.imgs) ? x.imgs : undefined })).slice(-40); } catch (e) { }
+    const saveChat = () => {
+      const pack = n => JSON.stringify(IA.msgs.filter(x => !x.pending && (x.content || x.err || (x.imgs && x.imgs.length))).slice(-40).map((x, k, arr) => ({ role: x.role, content: x.content, chs: x.chs, err: x.err, imgs: k >= arr.length - n ? x.imgs : undefined })));
+      try { localStorage.setItem(CHATKEY, pack(12)); } catch (e) { try { localStorage.setItem(CHATKEY, pack(0)); } catch (e2) { } }
+    };
 
     /* ---------- Conversation : rôles alternés (exigé par Gemini, plus propre pour Claude) ---------- */
     function alternate(list) {
       const out = [];
       list.forEach(m => {
-        const role = m.role === "assistant" ? "assistant" : "user", content = String(m.content || "").trim();
-        if (!content) return;
-        if (out.length && out[out.length - 1].role === role) out[out.length - 1].content += "\n\n" + content;
-        else out.push({ role, content });
+        const role = m.role === "assistant" ? "assistant" : "user", content = String(m.content || "").trim(), images = m.images && m.images.length ? m.images : null;
+        if (!content && !images) return;
+        const prev = out[out.length - 1];
+        if (prev && prev.role === role) { if (content) prev.content = prev.content ? prev.content + "\n\n" + content : content; if (images) prev.images = (prev.images || []).concat(images); }
+        else out.push(images ? { role, content, images } : { role, content });
       });
       while (out.length && out[0].role !== "user") out.shift();
       return out;
@@ -5590,7 +5615,7 @@ JBA.chapter({
       const fn = async (input, o = {}) => {
         const msgs = alternate(typeof input === "string" ? [{ role: "user", content: input }] : input);
         const sys = o.system || "";
-        const contents = msgs.map(m => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] }));
+        const contents = msgs.map(m => ({ role: m.role === "assistant" ? "model" : "user", parts: [...(m.images || []).map(im => ({ inlineData: { mimeType: im.mime, data: im.data } })), ...(m.content ? [{ text: m.content }] : [])] }));
         const saved = gModelSaved();
         const order = saved && MODELS.includes(saved) ? [saved, ...MODELS.filter(m => m !== saved)] : MODELS.slice();
         let last;
@@ -5727,7 +5752,8 @@ Règles :
 8. Quiz : si Jojo demande un quiz, pose les questions une par une et corrige chaque réponse avant la suivante, sauf si elle veut tout d'un coup.
 9. Conversation : réponds naturellement et brièvement à un bonjour, un merci ou un message personnel. Pour une demande sans rapport avec le droit ou les études, réponds en une ou deux phrases puis propose de revenir aux révisions.
 10. Personnalité : au plus une petite touche d'humour de Holly (siestes, promenades, sushis, croquettes) par réponse, jamais au détriment de la précision. Ne commence jamais par « En tant qu'IA » et ne te présente pas à chaque réponse.
-11. Format : Markdown simple uniquement (paragraphes courts, **gras**, listes « - » ou « 1. », titres « ### »). Pas de tableaux.`;
+11. Photos : si Jojo envoie une photo (exercice, QCM, cas pratique, copie, fiche), lis-la attentivement. Recopie brièvement la consigne, puis dis clairement si sa réponse est juste : commence par ✅ « Juste », ⚠️ « Presque » ou ❌ « À revoir ». Explique ensuite chaque erreur ou oubli, donne la bonne réponse rédigée, et termine par un conseil de méthode. Pour une copie rédigée, donne une appréciation et une note indicative sur 20. S'il n'y a pas de réponse sur la photo, résous l'exercice en expliquant. Si la photo est illisible ou floue, dis-le et demande une photo plus nette.
+12. Format : Markdown simple uniquement (paragraphes courts, **gras**, listes « - » ou « 1. », titres « ### »). Pas de tableaux.`;
 
     /* ---------- Markdown minimal et sûr ---------- */
     function md(src) {
@@ -5760,13 +5786,14 @@ Règles :
       stop: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor"/></svg>`,
       copy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5V6.5a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2"/></svg>`,
       redo: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5"/></svg>`,
+      cam: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.4-2h6.6l1.4 2h1.8A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg>`,
       neu: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h8M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`,
       down: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5.5 12.5 12 19l6.5-6.5"/></svg>`
     };
     const onPage = () => (location.hash || "") === "#ia";
     const avatar = () => `<span class="av" aria-hidden="true">${H("prof", { tilt: -4 })}</span>`;
     function msgHTML(m, i) {
-      if (m.role === "user") return `<div class="ia-msg me" id="ia-m-${i}"><div class="ia-b">${esc(m.content)}</div></div>`;
+      if (m.role === "user") return `<div class="ia-msg me" id="ia-m-${i}"><div class="ia-ucol">${m.imgs && m.imgs.length ? `<div class="ia-uimgs">${m.imgs.map(src => `<img src="${src}" alt="Photo envoyée à Holly" loading="lazy">`).join("")}</div>` : ""}${m.content ? `<div class="ia-b">${esc(m.content)}</div>` : ""}</div></div>`;
       const thinking = m.pending && !m.content;
       const body = thinking ? `<span class="ia-typing" aria-label="Holly réfléchit"><i></i><i></i><i></i></span>${m.step ? ` <span class="ia-step">${esc(m.step)}</span>` : ""}` : md(m.content) + (m.pending ? `<span class="ia-caret" aria-hidden="true"></span>` : "");
       const chs = (m.chs || []).filter(id => J.byId[id]);
@@ -5789,12 +5816,48 @@ Règles :
           <div class="big" aria-hidden="true">${H("prof")}</div>
           <h2>On révise quoi, Jojo ?</h2><p>Pose-moi n'importe quelle question de droit. Je m'appuie sur tes cours et je te dis où relire.</p>
           <div class="ia-sugg">${SUGG.map(([a, b2], k) => `<button data-act="ia-sugg" data-k="${k}" ${waiting ? "disabled" : ""}><b>${esc(a)}</b><span>${esc(b2)}</span></button>`).join("")}</div>
+          <button class="ia-photo-cta" data-act="ia-pick" ${waiting ? "disabled" : ""}>${IC.cam}<span><b>Envoie une photo de ton exercice</b><span>Holly te dit si ta réponse est juste et te corrige.</span></span></button>
         </div>`;
     }
     const mainHTML = () => IA.msgs.length ? `<div class="ia-log" id="ia-log">${IA.msgs.map(msgHTML).join("")}</div>` : emptyHTML();
     const sendBtnHTML = () => IA.busy ? `<button type="button" class="ia-send" id="ia-send" data-act="ia-stop" aria-label="Arrêter">${IC.stop}</button>` : `<button type="submit" class="ia-send" id="ia-send" disabled aria-label="Envoyer">${IC.up}</button>`;
     const scopeHTML = () => { const sc = IA.scope && J.byId[IA.scope]; return sc ? `<div class="ia-scope"><span>Sur : ${esc(label(sc))}</span><button type="button" data-act="ia-unscope" aria-label="Ne plus limiter à ce chapitre">×</button></div>` : ""; };
     const headSub = () => IA.engine === "claude" ? "IA de droit · avec Claude" : IA.engine === "gemini" ? "IA de droit · avec Gemini" : "IA de droit · tes cours de L1";
+
+    /* ---------- Photos jointes (exercice, copie…) : réduites sur l'appareil avant l'envoi ---------- */
+    const MAXIMG = 4;
+    const attHTML = () => IA.att.length ? IA.att.map((a, k) => `<span class="ia-thumb"><img src="${a.thumb}" alt="Photo jointe ${k + 1}"><button type="button" data-act="ia-unatt" data-k="${k}" aria-label="Retirer la photo">×</button></span>`).join("") + `<span class="ia-atthint">Holly va corriger ${IA.att.length > 1 ? "ces photos" : "cette photo"}. Ajoute une question si tu veux.</span>` : "";
+    function refreshAtt() { const el = document.getElementById("ia-att"); if (el) el.innerHTML = attHTML(); fitInput(); }
+    function loadImg(file) {
+      return new Promise((res, rej) => {
+        const url = URL.createObjectURL(file), im = new Image();
+        im.onload = () => { URL.revokeObjectURL(url); res(im); };
+        im.onerror = () => { URL.revokeObjectURL(url); rej(new Error("format")); };
+        im.src = url;
+      });
+    }
+    function shrink(im, max, q) {
+      const r = Math.min(1, max / Math.max(im.naturalWidth || im.width, im.naturalHeight || im.height));
+      const w = Math.max(1, Math.round((im.naturalWidth || im.width) * r)), h = Math.max(1, Math.round((im.naturalHeight || im.height) * r));
+      const c = document.createElement("canvas"); c.width = w; c.height = h;
+      const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, w, h); x.drawImage(im, 0, 0, w, h);
+      return c.toDataURL("image/jpeg", q);
+    }
+    async function addFiles(files) {
+      if (IA.sample === null) { ui.toast("Ajoute d'abord ta clé Gemini pour réveiller Holly."); return; }
+      const imgs = files.filter(f => /^image\//.test(f.type) || /\.(heic|heif|jpe?g|png|webp)$/i.test(f.name || ""));
+      if (!imgs.length) { ui.toast("Choisis une photo (JPEG, PNG ou HEIC)."); return; }
+      for (const f of imgs) {
+        if (IA.att.length >= MAXIMG) { ui.toast(`${MAXIMG} photos maximum par message.`); break; }
+        try {
+          const im = await loadImg(f);
+          const big = shrink(im, 1600, .85), thumb = shrink(im, 260, .7);
+          IA.att.push({ mime: "image/jpeg", data: big.split(",")[1], thumb });
+        } catch (e) { ui.toast("Cette photo n'a pas pu être lue. Essaie une capture d'écran ou un autre format."); }
+      }
+      refreshAtt();
+      const ta = document.getElementById("ia-q"); if (ta && matchMedia("(hover:hover) and (pointer:fine)").matches) ta.focus();
+    }
 
     /* Mises à jour ciblées */
     const $m = () => document.getElementById("ia-main");
@@ -5812,7 +5875,7 @@ Règles :
       const ta = document.getElementById("ia-q"), send = document.getElementById("ia-send"); if (!ta) return;
       ta.style.height = "auto"; ta.style.height = Math.min(200, ta.scrollHeight) + "px";
       if (onPage()) measure();
-      if (send && !IA.busy) send.disabled = IA.sample === null || !ta.value.trim();
+      if (send && !IA.busy) send.disabled = IA.sample === null || (!ta.value.trim() && !IA.att.length);
     }
     let raf = 0;
     function paintMsg(i) {
@@ -5865,7 +5928,10 @@ Règles :
           <div class="ia-foot ${IA.sample === null ? "off" : ""}" id="ia-foot">
             <button class="ia-jump" id="ia-jump" data-act="ia-jump" hidden aria-label="Aller en bas">${IC.down}</button>
             <div id="ia-scopebox">${scopeHTML()}</div>
+            <div class="ia-att" id="ia-att">${attHTML()}</div>
             <form class="ia-box" id="ia-form">
+              <button type="button" class="ia-clip" id="ia-clip" data-act="ia-pick" aria-label="Ajouter une photo" title="Ajouter une photo (exercice, copie…)">${IC.cam}</button>
+              <input type="file" id="ia-file" accept="image/*" multiple hidden>
               <label for="ia-q" class="sr">Ta question</label>
               <textarea id="ia-q" rows="1" placeholder="${IA.sample === null ? "Ajoute d'abord ta clé ci-dessus" : "Écris à Holly…"}" ${IA.sample === null ? "disabled" : ""} enterkeyhint="send"></textarea>
               ${sendBtnHTML()}
@@ -5886,7 +5952,10 @@ Règles :
           fitInput();
           if (IA.sample && !IA.busy && matchMedia("(hover:hover) and (pointer:fine)").matches) ta.focus();
         }
-        if (form) form.addEventListener("submit", e => { e.preventDefault(); if (IA.busy) return; const q = ta.value.trim(); if (q) ask(q); });
+        if (form) form.addEventListener("submit", e => { e.preventDefault(); if (IA.busy) return; const q = ta.value.trim(); if (q || IA.att.length) ask(q); });
+        const fi = $("#ia-file"); if (fi) fi.addEventListener("change", () => { addFiles([...fi.files]); fi.value = ""; });
+        const box = $("#ia-form"); if (box) { box.addEventListener("dragover", e => { e.preventDefault(); }); box.addEventListener("drop", e => { e.preventDefault(); addFiles([...(e.dataTransfer && e.dataTransfer.files || [])]); }); }
+        if (ta) ta.addEventListener("paste", e => { const fs = [...(e.clipboardData && e.clipboardData.files || [])].filter(f => /^image\//.test(f.type)); if (fs.length) { e.preventDefault(); addFiles(fs); } });
         if (IA.msgs.length) requestAnimationFrame(() => { scrollEnd(false); updateJump(); });
       }
     };
@@ -5917,8 +5986,11 @@ Règles :
       const picked = pickChapters(q, prevUser && prevUser.content);
       const used = picked.map(c => c.id);
       const base = opts2.retry ? IA.msgs.slice(0, -1) : IA.msgs;
-      const history = base.filter(m => m.content && !m.pending).slice(-10).map(m => ({ role: m.role, content: m.content }));
-      if (!opts2.retry) { IA.msgs.push({ role: "user", content: q }); }
+      const history = base.filter(m => (m.content || m.imgs) && !m.pending).slice(-10).map(m => ({ role: m.role, content: (m.imgs && m.imgs.length ? `[${m.imgs.length > 1 ? m.imgs.length + " photos envoyées" : "Photo envoyée"}] ` : "") + (m.content || "") }));
+      let full = opts2.retry ? (IA.msgs[IA.msgs.length - 1]._full || []) : IA.att.map(a => ({ mime: a.mime, data: a.data }));
+      if (!opts2.retry) { IA.msgs.push({ role: "user", content: q, imgs: IA.att.length ? IA.att.map(a => a.thumb) : undefined, _full: full.length ? full : undefined }); IA.att = []; refreshAtt(); }
+      const hasImg = full.length > 0;
+      if (hasImg && !q) q = "Voici mon exercice (en photo). Corrige-moi.";
       const bot = { role: "assistant", content: "", pending: true, chs: used, step: "" };
       IA.msgs.push(bot);
       IA.busy = true; IA.draft = "";
@@ -5936,9 +6008,10 @@ ${CATALOGUE()}
 
 CONTENU DES COURS — extraits les plus utiles pour la question :
 ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspond directement : si la question touche quand même aux cours, appuie-toi sur le catalogue" + (IA.tools ? " et utilise les outils" : "") + " ; sinon, réponds comme juriste selon la règle 3.)"}`;
-      const convo = alternate([...history, { role: "user", content: q }]);
+      const convo = alternate([...history, { role: "user", content: q, images: hasImg ? full : null }]);
       const isGem = s.engine === "gemini";
-      const input = isGem ? convo : alternate([{ role: "user", content: sys }, { role: "assistant", content: `Compris. Je suis Holly, je réponds à ${name} en m'appuyant sur ses cours quand c'est possible, et je cite mes sources.` }, ...convo]);
+      const toClaude = list => list.map(m => m.images ? { role: m.role, content: [...m.images.map(im => ({ type: "image", source: { type: "base64", media_type: im.mime, data: im.data } })), { type: "text", text: m.content || "Corrige-moi." }] } : m);
+      const input = isGem ? convo : toClaude(alternate([{ role: "user", content: sys }, { role: "assistant", content: `Compris. Je suis Holly, je réponds à ${name} en m'appuyant sur ses cours quand c'est possible, et je cite mes sources.` }, ...convo]));
       const ctl = IA.ctl = new AbortController();
       const opts = { signal: ctl.signal, cache: false, modelTier: "default", onText: ({ text }) => { bot.content = text; bot.step = ""; paintLast(); } };
       if (isGem) opts.system = sys;
@@ -5953,6 +6026,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
         const code = e && e.code;
         if (e && e.text) bot.content = e.text;
         if (code === "cancelled") { if (!bot.content) bot.content = "*(Réponse interrompue.)*"; }
+        else if (hasImg && !isGem && !bot.content && code !== "rate_limited") bot.err = "Ici, Holly n'arrive pas à lire les photos. Essaie depuis l'appli sur ton iPhone (avec Gemini), ou recopie l'exercice en texte.";
         else bot.err = (ERR[code] || "Holly a trébuché sur une erreur. Réessaie dans un instant.") + (e && e.message && ["bad_request", "server", "no_model", "forbidden", "empty"].includes(code) ? ` (${e.message})` : "");
       } finally {
         if (raf) { cancelAnimationFrame(raf); raf = 0; }
@@ -5969,6 +6043,8 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
       }
     }
     ACT["ia-sugg"] = b => ask(SUGG[+b.dataset.k][2]);
+    ACT["ia-pick"] = () => { const f = document.getElementById("ia-file"); if (f) f.click(); };
+    ACT["ia-unatt"] = b => { IA.att.splice(+b.dataset.k, 1); refreshAtt(); };
     ACT["ia-unscope"] = () => { IA.scope = ""; refreshFoot(); };
     ACT["ia-jump"] = () => { IA.follow = true; scrollEnd(true); };
     ACT["ia-copy"] = b => {
@@ -5980,7 +6056,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
       if (IA.busy) return;
       while (IA.msgs.length && IA.msgs[IA.msgs.length - 1].role === "assistant") IA.msgs.pop();
       const u = IA.msgs[IA.msgs.length - 1]; if (!u) { refreshAll(); return; }
-      refreshMain(); ask(u.content, { retry: true });
+      refreshMain(); ask(u.content || "", { retry: true });
     };
     ACT["ia-stop"] = () => { if (IA.ctl) IA.ctl.abort(); };
     ACT["ia-clear"] = () => { if (IA.busy) return; IA.msgs = []; saveChat(); refreshAll(); };
@@ -6112,7 +6188,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
 })();
 
 </script>
-<script>window.JBA_BUILD="20261104-094311";
+<script>window.JBA_BUILD="20261104-094956";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
