@@ -7422,7 +7422,8 @@ DIRE: ce que tu dis à voix haute
       const pool = J.shuffle(oralPool()).filter(x => !due.some(d => d.q === x.q));
       return J.shuffle(due.concat(pool.slice(0, 16 - due.length)));
     }
-    function liveSystem() {
+    function liveSystem(items) {
+      items = items || LV.items;
       const nm = J.name();
       return `Tu es Holly, la prof de droit de ${nm} dans l'appli Jojo Boss Academy. Tu lui fais passer un ORAL DE RÉVISION en direct, à voix haute, en français uniquement. ${nm} est en première année de licence de droit.
 
@@ -7446,7 +7447,7 @@ LE DÉROULÉ
 - Ne dis jamais les mots « référence » ou « réponse attendue ». Dis « article » pour « art. ».
 
 LES QUESTIONS (dans l'ordre)
-${LV.items.map((x, i) => `${i + 1}. [${J.SUBJECTS[J.byId[x.ch].subject].short} ${J.byId[x.ch].num}] ${x.q}\n   Référence : ${x.model}`).join("\n")}
+${items.map((x, i) => `${i + 1}. [${J.SUBJECTS[J.byId[x.ch].subject].short} ${J.byId[x.ch].num}] ${x.q}\n   Référence : ${x.model}`).join("\n")}
 Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle terminer.`;
     }
     const liveTools = [{ functionDeclarations: [
@@ -7468,7 +7469,7 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
       while (pos < f32.length) { const k = Math.floor(pos); let v = f32[k]; if (k + 1 < f32.length) v += (f32[k + 1] - v) * (pos - k); out.push(Math.max(-1, Math.min(1, v)) * 32767); pos += ratio; }
       frac = pos - f32.length;
       const merged = new Int16Array(acc.length + out.length); merged.set(acc); merged.set(out, acc.length); acc = merged;
-      if (acc.length >= 1600) { const chunk = acc; acc = new Int16Array(0); send({ realtimeInput: { audio: { data: b64(new Uint8Array(chunk.buffer)), mimeType: "audio/pcm;rate=16000" } } }); }
+      if (acc.length >= 640) { const chunk = acc; acc = new Int16Array(0); send({ realtimeInput: { audio: { data: b64(new Uint8Array(chunk.buffer)), mimeType: "audio/pcm;rate=16000" } } }); }
     }
     async function startMic() {
       const C = window.AudioContext || window.webkitAudioContext;
@@ -7496,7 +7497,7 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
       let s = 0; for (let i = 0; i < n; i++) { const v = dv.getInt16(i * 2, true) / 32768; ch[i] = v; s += v * v; }
       LV.lvOut = Math.max(LV.lvOut, Math.sqrt(s / Math.max(1, n)));
       const src = LV.ctx.createBufferSource(); src.buffer = buf; src.connect(LV.ctx.destination);
-      const t = Math.max(LV.ctx.currentTime + .04, LV.nextT); src.start(t); LV.nextT = t + buf.duration;
+      const t = Math.max(LV.ctx.currentTime + .015, LV.nextT); src.start(t); LV.nextT = t + buf.duration;
       LV.srcs.push(src); src.onended = () => { LV.srcs = LV.srcs.filter(x => x !== src); if (!LV.srcs.length && LV.on) { setSt("listening"); if (LV.ending) liveEnd(); } };
       setSt("speaking");
     }
@@ -7516,7 +7517,8 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
     function closeBubbles() { LV.log.forEach(m => m.done = true); }
 
     /* ---------- Connexion ---------- */
-    function connect(attempt) {
+    function connect(attempt, items) {
+      items = items || LV.items;
       return new Promise((resolve, reject) => {
         const saved = (() => { try { return JSON.parse(localStorage.getItem(LKEY) || "null"); } catch (e) { return null; } })();
         const combos = []; LIVE_MODELS.forEach(m => LIVE_VOICES.forEach(v => combos.push({ m, v })));
@@ -7527,10 +7529,10 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
         ws.onopen = () => ws.send(JSON.stringify({ setup: {
           model: "models/" + c.m,
           generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: c.v } } } },
-          systemInstruction: { parts: [{ text: liveSystem() }] },
+          systemInstruction: { parts: [{ text: liveSystem(items) }] },
           tools: liveTools,
           inputAudioTranscription: {}, outputAudioTranscription: {},
-          realtimeInputConfig: { automaticActivityDetection: { silenceDurationMs: 650, prefixPaddingMs: 120 } }
+          realtimeInputConfig: { automaticActivityDetection: { silenceDurationMs: 520, prefixPaddingMs: 100 } }
         } }));
         ws.onmessage = async ev => {
           let m; try { m = JSON.parse(typeof ev.data === "string" ? ev.data : await ev.data.text()); } catch (e) { return; }
@@ -7538,7 +7540,7 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
           onMsg(m);
         };
         ws.onclose = ev => {
-          if (!ok) { const r = ev.reason || ""; if (/api key|API_KEY|permission|PERMISSION_DENIED/i.test(r) && !/model/i.test(r)) return reject({ code: "bad_key", message: r }); if (/quota|RESOURCE_EXHAUSTED|rate/i.test(r)) return reject({ code: "rate_limited", message: r }); if (attempt === 0 && saved) { try { localStorage.removeItem(LKEY); } catch (e) { } } return connect(attempt + 1).then(resolve, reject); }
+          if (!ok) { const r = ev.reason || ""; if (/api key|API_KEY|permission|PERMISSION_DENIED/i.test(r) && !/model/i.test(r)) return reject({ code: "bad_key", message: r }); if (/quota|RESOURCE_EXHAUSTED|rate/i.test(r)) return reject({ code: "rate_limited", message: r }); if (attempt === 0 && saved) { try { localStorage.removeItem(LKEY); } catch (e) { } } return connect(attempt + 1, items).then(resolve, reject); }
           if (LV.on && LV.ws === ws) { LV.err = ev.code === 1000 ? "" : (/quota|RESOURCE_EXHAUSTED/i.test(ev.reason || "") ? "Holly a atteint la limite gratuite de Gemini pour l'instant. Réessaie un peu plus tard." : "La connexion avec Holly s'est coupée."); liveEnd(true); }
         };
         ws.onerror = () => { };
@@ -7574,15 +7576,27 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
       if (m.goAway) LV.ending = true;
     }
 
+    function dropPre() { if (LV.pre) { LV.pre.p.then(ws => { try { ws && ws !== LV.ws && ws.close(1000); } catch (e) { } }).catch(() => { }); LV.pre = null; } }
+    function prewarm() {
+      if (!liveOK() || LV.on || OR.on || (LV.pre && LV.pre.subj === OR.subj)) return;
+      dropPre();
+      const items = liveItems();
+      const pre = { subj: OR.subj, t: Date.now(), items };
+      pre.p = connect(0, items).catch(() => null); LV.pre = pre;
+    }
     async function liveStart() {
       LV.on = true; LV.st = "connecting"; LV.log = []; LV.score = { ok: 0, part: 0, ko: 0 }; LV.cur = 0; LV.err = ""; LV.ending = false; LV.muted = false; LV.ready = false; LV.t0 = Date.now();
-      LV.items = liveItems();
+      /* Connexion préparée dès l'ouverture de la page : Holly répond tout de suite. */
+      const pre = LV.pre && LV.pre.subj === OR.subj && Date.now() - LV.pre.t < 8 * 60e3 ? LV.pre : null;
+      LV.pre = null;
+      LV.items = pre ? pre.items : liveItems();
       const C = window.AudioContext || window.webkitAudioContext;
       try { LV.ctx = new C({ latencyHint: "interactive" }); LV.ctx.resume(); } catch (e) { }
       ui.rerender();
       try {
-        await startMic();
-        LV.ws = await connect(0);
+        const wsP = pre ? pre.p.then(ws => ws && ws.readyState === 1 ? ws : connect(0)).catch(() => connect(0)) : connect(0);
+        const [ws] = await Promise.all([wsP, startMic()]);
+        LV.ws = ws;
         LV.ready = true; setSt("thinking");
         send({ clientContent: { turns: [{ role: "user", parts: [{ text: "Bonjour Holly, on commence l'oral." }] }], turnComplete: true } });
         meter();
@@ -7605,7 +7619,7 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
       OR.ended = tot ? Object.assign({}, s) : OR.ended;
       if (location.hash === "#oral") ui.rerender();
     }
-    addEventListener("hashchange", () => { if (LV.on && location.hash !== "#oral") liveEnd(true); });
+    addEventListener("hashchange", () => { if (location.hash !== "#oral") { dropPre(); if (LV.on) liveEnd(true); } });
     document.addEventListener("visibilitychange", () => { if (LV.on && document.visibilityState === "hidden") liveEnd(true); });
     function meter() {
       const h = document.getElementById("lv-holly");
@@ -7661,9 +7675,9 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
         }
         return `<div class="or-page"><span class="eyebrow" style="text-align:center">À l'oral avec Holly</span><div id="or-stage" class="or-stage">${stageHTML()}</div></div>`;
       },
-      after() { if (LV.on) { paintLog(); return; } paint(); }
+      after() { if (LV.on) { paintLog(); return; } paint(); prewarm(); }
     };
-    ACT["or-subj"] = b => { OR.subj = b.dataset.k; ui.rerender(); };
+    ACT["or-subj"] = b => { OR.subj = b.dataset.k; dropPre(); ui.rerender(); };
     ACT["or-start"] = (forceSimple) => {
       if (forceSimple !== true && liveOK() && !LV.on) { LV.err = ""; liveStart(); return; }
       OR.on = true; OR.log = []; OR.score = { ok: 0, part: 0, ko: 0 }; OR.n = 0; OR.ended = null; OR.err = ""; OR.typed = "";
@@ -7808,7 +7822,7 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
 })();
 
 </script>
-<script>window.JBA_BUILD="20261105-182608";
+<script>window.JBA_BUILD="20261105-183315";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;

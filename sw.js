@@ -1,7 +1,7 @@
 /* Jojo Boss Academy — fonctionnement hors ligne.
-   Page : réseau d'abord (pour recevoir les mises à jour), copie locale si pas de réseau.
+   Page : copie locale d'abord (ouverture instantanée), mise à jour en arrière-plan ; une nouvelle version détectée est chargée depuis le réseau.
    Icônes et scripts Firebase : copie locale d'abord. Holly (Gemini) et la sauvegarde en ligne passent toujours par le réseau. */
-const CACHE = "jba-20261105-182608";
+const CACHE = "jba-20261105-183315";
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./icon-512.png", "./apple-touch-icon.png"];
 const LIBS = ["app", "auth", "firestore"].map(m => `https://www.gstatic.com/firebasejs/10.14.1/firebase-${m}-compat.js`);
 self.addEventListener("install", e => {
@@ -24,7 +24,14 @@ self.addEventListener("fetch", e => {
   if (req.mode === "navigate" || (url.origin === location.origin && /(\/|index\.html)$/.test(url.pathname))) {
     e.respondWith((async () => {
       const c = await caches.open(CACHE);
-      try { const r = await timeout(fetch(req, { cache: "no-store" }), 4000); if (r && r.ok) c.put("./index.html", r.clone()); return r; }
+      const fresh = () => fetch(req, { cache: "no-store" }).then(r => { if (r && r.ok) c.put("./index.html", r.clone()); return r; });
+      /* Ouverture instantanée : copie locale tout de suite, mise à jour en arrière-plan.
+         Quand une nouvelle version est détectée (?v=…), on va la chercher sur le réseau. */
+      if (!/[?&]v=/.test(url.search)) {
+        const hit = (await c.match("./index.html")) || (await c.match("./"));
+        if (hit) { e.waitUntil(fresh().catch(() => { })); return hit; }
+      }
+      try { return await timeout(fresh(), 6000); }
       catch (err) { return (await c.match("./index.html")) || (await c.match("./")) || Response.error(); }
     })());
     return;
