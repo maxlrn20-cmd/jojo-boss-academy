@@ -1,7 +1,7 @@
 /* Jojo Boss Academy — fonctionnement hors ligne.
    Page : copie locale d'abord (ouverture instantanée), mise à jour en arrière-plan ; une nouvelle version détectée est chargée depuis le réseau.
    Icônes et scripts Firebase : copie locale d'abord. Holly (Gemini) et la sauvegarde en ligne passent toujours par le réseau. */
-const CACHE = "jba-20261105-183315";
+const CACHE = "jba-20261105-185016";
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./icon-512.png", "./apple-touch-icon.png"];
 const LIBS = ["app", "auth", "firestore"].map(m => `https://www.gstatic.com/firebasejs/10.14.1/firebase-${m}-compat.js`);
 self.addEventListener("install", e => {

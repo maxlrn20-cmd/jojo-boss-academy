@@ -5605,6 +5605,76 @@ JBA.more("ip9", [
     conseil: ["Lis d'abord la fiche express, puis fais le quiz : ta mémoire adore les petits défis.", "Les dates et les arrêts se retiennent mieux en flashcards, cinq minutes par jour.", "Pour un cas pratique, commence toujours par qualifier les faits. Même moi, je qualifie : « ceci est une friandise ».", "Explique une notion à voix haute comme si j'étais ton élève. Je suis un élève très patient.", "Revois tes erreurs le lendemain : c'est là qu'elles deviennent des connaissances.", "Une pause de cinq minutes toutes les quarante-cinq minutes. C'est la règle du professeur Holly."]
   };
   J.LINES = L;
+
+  /* ---------- La grosse Adèle : blagues d'erreur, sans répétition ---------- */
+  const AD = {
+    simple: [
+      "Faux. La grosse Adèle vient de te faire un clin d'œil complice.",
+      "Raté. Quelque part, la grosse Adèle pose ses fiches et murmure : « enfin une collègue ».",
+      "Même la grosse Adèle l'avait eue, celle-là. Au troisième essai, mais quand même.",
+      "Cette erreur vient d'être homologuée par la grosse Adèle. Elle en a fait un poster.",
+      "La grosse Adèle a répondu exactement la même chose. Ça devrait t'inquiéter.",
+      "Faux. La grosse Adèle t'envoie un vocal de quatre minutes pour te féliciter.",
+      "Holly a vérifié : cette réponse est déposée à l'INPI au nom de la grosse Adèle.",
+      "Tu viens de faire une « Adèle ». C'est un verbe maintenant. Pas un compliment.",
+      "La grosse Adèle croit que la Ve République est un groupe de rap. Ne la rejoins pas.",
+      "La grosse Adèle pense qu'un arrêt de la Cour de cassation, c'est un arrêt de bus. Toi, tu vaux mieux.",
+      "Raté. La grosse Adèle a déjà commandé deux t-shirts « Team Erreur ». Un est à ta taille.",
+      "Encore une comme ça et on te met en TD avec la grosse Adèle. Personne ne mérite ça.",
+      "La grosse Adèle confond le Sénat et le Sénégal. Toi, tu viens de confondre autre chose.",
+      "Faux. Holly a soupiré si fort que la grosse Adèle l'a entendu depuis chez elle.",
+      "La grosse Adèle a révisé ce chapitre en scrollant sur TikTok. On dirait que toi aussi.",
+      "Erreur. La grosse Adèle vient de liker ta réponse.",
+      "La grosse Adèle répond toujours « c'est la faute à Montesquieu ». Toi, c'est quoi ton excuse ?",
+      "Ce n'est pas ça. La grosse Adèle aurait au moins inventé une jurisprudence avec aplomb.",
+      "La grosse Adèle note tes erreurs dans un carnet. Elle commence à manquer de pages.",
+      "Faux. La grosse Adèle t'a gardé une place à côté d'elle en amphi. Dernier rang, près du radiateur.",
+      "Raté. Même le Code civil a eu un petit mouvement de recul.",
+      "La grosse Adèle dit que le droit, c'est « genre des règles, tu vois ». Ta réponse avait ce niveau-là.",
+      "Holly cache vite ta copie avant que la grosse Adèle ne la recopie.",
+      "Faux. La grosse Adèle propose d'ouvrir une association : « Les Amis de l'Erreur ». Tu serais vice-présidente.",
+      "La grosse Adèle pense que l'habeas corpus est un sort d'Harry Potter. Ne lui donne pas raison.",
+      "Raté. La grosse Adèle a sorti le champagne. Sans alcool, elle n'a pas trouvé le rayon.",
+      "La grosse Adèle croit que Kelsen est un joueur du PSG. Ta réponse était presque aussi audacieuse.",
+      "Faux. Si l'erreur était une matière, la grosse Adèle aurait enfin la mention très bien. Ne la concurrence pas.",
+      "La grosse Adèle a essayé de prêter serment devant la Cour… de récré. Toi, reste sérieuse.",
+      "Raté. La grosse Adèle t'ajoute à sa liste d'amies. Elle est très courte, et maintenant tu sais pourquoi.",
+      "La grosse Adèle répond au hasard depuis 2019. Statistiquement, elle a déjà eu juste deux fois.",
+      "Faux. Holly a vu la grosse Adèle faire exactement cette erreur. Il a eu honte pour elle, et un peu pour toi.",
+      "La grosse Adèle confond la Constitution et le menu du kebab. Toi, tu viens de commander une sauce bizarre.",
+      "Mauvaise réponse. La grosse Adèle te demande tes fiches : elle pense que vous êtes au même niveau.",
+      "Raté. Quelque part, la grosse Adèle se sent un peu moins seule.",
+      "La grosse Adèle croit que le Code civil est un code promo. Toi, tu as juste eu un bug."
+    ],
+    dur: [
+      "Celle-là était coriace. Même la grosse Adèle n'aurait pas osé répondre.",
+      "Question de chef : aucune honte. La grosse Adèle, elle, aurait déjà quitté la salle.",
+      "Raté, mais avec panache. La grosse Adèle se trompe sans panache, c'est toute la différence.",
+      "Difficile, celle-là. La grosse Adèle aurait dit « joker » et commandé un kebab.",
+      "Presque. La grosse Adèle, elle, n'a jamais été « presque » de sa vie.",
+      "Erreur de haut niveau. La grosse Adèle ne sait même pas que ce niveau existe.",
+      "Pas grave, c'était du Dragon Roll. La grosse Adèle en est encore aux Makis.",
+      "Raté, mais la grosse Adèle aurait mis trois heures à comprendre la question.",
+      "Question vicieuse. La grosse Adèle aurait accusé le prof, puis le Wi-Fi."
+    ],
+    serie: [
+      "Deux erreurs de suite… la grosse Adèle est en train de te recruter.",
+      "Trois d'affilée. La grosse Adèle vient de t'ajouter au groupe WhatsApp « Rattrapages ».",
+      "La série continue. Holly appelle un ami. Pas la grosse Adèle : elle répondrait faux aussi.",
+      "Stop ! Pause framboise, puis on repart. La grosse Adèle, elle, ne repart jamais.",
+      "Encore raté. La grosse Adèle te propose ses fiches. Refuse. Par pitié, refuse.",
+      "La grosse Adèle regarde ta série avec des étoiles dans les yeux. Casse-lui le rêve à la prochaine."
+    ]
+  };
+  J.ADELE = AD;
+  J.adele = (o = {}) => {
+    const k = o.streak >= 2 ? "serie" : o.d >= 3 ? "dur" : "simple", arr = AD[k];
+    const seen = S.seenLines.ad = (S.seenLines.ad || []).filter(x => typeof x === "string");
+    let pool = arr.filter(x => !seen.includes(x)); if (!pool.length) { S.seenLines.ad = seen.filter(x => !arr.includes(x)); pool = arr; }
+    const line = pool[Math.floor(Math.random() * pool.length)];
+    S.seenLines.ad.push(line); S.seenLines.ad = S.seenLines.ad.slice(-40); J.save();
+    return line;
+  };
   J.line = (k) => { const arr = L[k] || L.accueil; S.seenLines[k] = ((S.seenLines[k] || 0) + 1) % arr.length; const i = (S.seenLines[k] + Math.floor(Math.random() * arr.length)) % arr.length; return arr[i]; };
 
 
@@ -6271,7 +6341,7 @@ JBA.more("ip9", [
   }
   function quizQuestion() {
     const Q = J.quiz, it = Q.items[Q.i], q = it.q, multi = q.a.length > 1, n = Q.items.length;
-    const fb = Q.answered ? (() => { const ok = Q.results[Q.i].ok; return `<div class="fb ${ok ? "ok" : "ko"}" aria-live="polite">${ui.sayHTML(ok ? "celebrate" : "perplexed", J.line(ok ? "bon" : "adele"), true, true)}<p><b>${ok ? "Bonne réponse." : "Réponse attendue : " + q.a.map(i => esc(q.o[i])).join(" ; ")}</b></p><p>${esc(q.e)}</p><p class="small muted">Notion : ${esc(q.n)} · ${esc(chLabel(q.ch))}${q.p ? " · " + esc(q.p) : ""}</p>${ok ? "" : reviewHTML(q)}</div>`; })() : "";
+    const fb = Q.answered ? (() => { const ok = Q.results[Q.i].ok; return `<div class="fb ${ok ? "ok" : "ko"}" aria-live="polite">${ui.sayHTML(ok ? "celebrate" : "perplexed", Q.results[Q.i].line, true, true)}<p><b>${ok ? "Bonne réponse." : "Réponse attendue : " + q.a.map(i => esc(q.o[i])).join(" ; ")}</b></p><p>${esc(q.e)}</p><p class="small muted">Notion : ${esc(q.n)} · ${esc(chLabel(q.ch))}${q.p ? " · " + esc(q.p) : ""}</p>${ok ? "" : reviewHTML(q)}</div>`; })() : "";
     return `
       <div class="row between"><span class="eyebrow">Sushi Quiz · question ${Q.i + 1} sur ${n}</span><button class="btn ghost sm" data-act="qquit">Quitter</button></div>
       <div class="bar"><i style="width:${(Q.i + (Q.answered ? 1 : 0)) / n * 100}%"></i></div>
@@ -6292,7 +6362,8 @@ JBA.more("ip9", [
   ACT.qvalid = () => {
     const Q = J.quiz, q = Q.items[Q.i].q;
     const ok = Q.sel.length === q.a.length && q.a.every(x => Q.sel.includes(x));
-    Q.answered = true; Q.results[Q.i] = { id: q.id, ok, sel: Q.sel.slice() };
+    Q.ko = ok ? 0 : (Q.ko || 0) + 1;
+    Q.answered = true; Q.results[Q.i] = { id: q.id, ok, sel: Q.sel.slice(), line: ok ? J.line("bon") : J.adele({ d: q.d, streak: Q.ko }) };
     if (!q.custom) J.answerQ(q, ok);
     J.day().q++; J.save(); ui.rerender();
   };
@@ -6323,7 +6394,8 @@ JBA.more("ip9", [
         <span class="eyebrow">Résultat du Sushi Quiz</span>
         <div style="width:170px">${H(mood)}</div>
         <h1 class="tnum">${ok} / ${n}</h1>
-        <p class="hand" style="font-size:calc(26px*var(--ts,1))">${esc(J.line(pct === 100 ? "parfait" : pct >= 70 ? "qcmReussi" : pct >= 40 ? "moyen" : "bas"))}</p>
+        <p class="hand" style="font-size:calc(26px*var(--ts,1))">${esc(Q.resLine || (Q.resLine = J.line(pct === 100 ? "parfait" : pct >= 70 ? "qcmReussi" : pct >= 40 ? "moyen" : "bas")))}</p>
+        ${pct < 50 && n >= 5 ? `<p class="small muted">${esc(Q.endLine || (Q.endLine = J.ADELE.serie[Math.floor(Math.random() * J.ADELE.serie.length)]))}</p>` : pct === 100 && n >= 5 ? `<p class="small muted">${esc(Q.endLine || (Q.endLine = "La grosse Adèle demande comment tu fais. Ne lui dis rien."))}</p>` : ""}
         <div class="row" style="justify-content:center"><span class="pill maitrisee">${pct} %</span><span class="pill fav">+${Q.xp} XP</span></div>
       </div>
       ${Object.keys(notions).length ? `<div class="card stack"><h3>Notions à retravailler</h3><div class="chips">${Object.values(notions).map(x => `<button class="chip" data-act="quiz-notion" data-ch="${x.ch}" data-n="${esc(x.n)}">${esc(x.n)} <span class="small muted">· ${esc(J.SUBJECTS[J.byId[x.ch].subject].short)} ${J.byId[x.ch].num}</span></button>`).join("")}</div><p class="small muted">Touche une notion pour t'entraîner dessus.</p></div>` : ""}
@@ -7330,7 +7402,7 @@ Réponds UNIQUEMENT avec un tableau JSON, sans texte autour, de la forme :
       const bodyOf = t => { const m = t.match(/DIRE\s*:\s*([\s\S]*)/i); return m ? m[1] : null; };
       const begin = () => {
         if (sp) return; sp = speaker();
-        if (verdict === "faux" && Math.random() < .5) { const L = J.LINES.adele.filter(x => !/relis|correction|écrire|écrit/i.test(x)); intro = L[Math.floor(Math.random() * L.length)]; sp.push(intro); }
+        if (verdict === "faux" && Math.random() < .6) { intro = J.adele({ d: OR.it.qref ? OR.it.qref.d : 2 }); sp.push(intro); }
         bubble = { who: "holly", t: intro, v: verdict }; OR.log.push(bubble); trimLog();
       };
       const feed = (body, final) => {
@@ -7410,6 +7482,8 @@ DIRE: ce que tu dis à voix haute
        Repli automatique sur le mode « voix de l'iPhone » si Live n'est pas disponible.
        ===================================================================== */
     const LV = { on: false, st: "idle", ws: null, ctx: null, stream: null, node: null, srcs: [], nextT: 0, items: [], cur: 0, log: [], score: { ok: 0, part: 0, ko: 0 }, lvIn: 0, lvOut: 0, muted: false, err: "", ending: false, t0: 0, raf: 0, seq: 0 };
+    const MIC = { stream: null, t: 0 };
+    const releaseMic = () => { try { MIC.stream && MIC.stream.getTracks().forEach(t => t.stop()); } catch (e) { } MIC.stream = null; };
     const LIVE_MODELS = ["gemini-3.8-live", "gemini-3.1-flash-live-preview", "gemini-2.5-flash-native-audio-preview-09-2025"];
     const LIVE_VOICES = ["Aoede", "Kore"];
     const LKEY = "jojo-boss-academy-live";
@@ -7431,7 +7505,8 @@ TA FAÇON DE PARLER
 - Parle comme une vraie personne au téléphone avec une amie qu'elle fait réviser : chaleureuse, vive, drôle, naturelle, avec des petites réactions spontanées (« Ah, bien vu ! », « Hmm, presque… », « Attends, attends… »).
 - Phrases courtes. Jamais de listes, jamais de « premièrement, deuxièmement ». Tu ne lis jamais un texte.
 - Réagis vraiment à ce qu'elle dit, reprends ses mots. Varie toujours tes formulations.
-- Une seule question à la fois, puis tu te tais et tu l'écoutes.
+- Une seule question à la fois. Dès que tu as posé ta question, TU T'ARRÊTES DE PARLER et tu attends sa réponse en silence, aussi longtemps qu'il faut.
+- RÈGLE ABSOLUE : tu ne donnes JAMAIS la réponse, un indice ou la correction avant qu'elle ait répondu elle-même. Ne réponds jamais à ta propre question. Si tu entends ta propre voix ou du bruit, ignore-le.
 
 LE DÉROULÉ
 - Commence par un bonjour très court (une phrase) et pose tout de suite la question 1. Tu peux reformuler la question à l'oral pour qu'elle sonne naturelle.
@@ -7439,8 +7514,8 @@ LE DÉROULÉ
   · juste (l'essentiel y est, même dit autrement) : félicite en quelques mots, éventuellement un petit détail utile ;
   · partiel : dis ce qui manque ; si un seul élément manque, relance-la une fois (« Et tu te rappelles qui… ? ») avant de conclure ;
   · faux ou « je ne sais pas » : donne la bonne réponse en une ou deux phrases simples, avec une astuce pour la retenir si tu en as une.
-- Quand elle se trompe vraiment, tu peux la taquiner gentiment en la comparant à « la grosse Adèle » (une blague entre eux), au maximum une erreur sur trois.
-- Dès que tu as tranché une question, appelle l'outil noter, puis enchaîne directement sur la suivante, sans demander la permission.
+- Quand elle se trompe, tu peux la taquiner en la comparant à « la grosse Adèle » (une copine, c'est leur blague à elles) : une phrase courte et drôle, environ une erreur sur deux, jamais deux fois la même blague. Invente-en de nouvelles dans ce style : ${J.shuffle(J.ADELE.simple).slice(0, 5).map(x => "« " + x + " »").join(" ")}
+- Seulement APRÈS sa réponse et ta correction, appelle l'outil noter, puis enchaîne directement sur la question suivante, sans demander la permission.
 - Si elle te pose une question ou te demande d'expliquer, explique simplement en 20 secondes maximum, puis reprends l'oral.
 - Si elle dit « répète », répète. Si elle dit « passe », note « faux » et passe. Si elle veut arrêter, fais un bilan chaleureux en une phrase et appelle l'outil terminer.
 - Sa voix est transcrite automatiquement : tolère les noms propres, les mots latins et les dates mal prononcés.
@@ -7462,9 +7537,9 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
       let s = 0; for (let i = 0; i < f32.length; i++) s += f32[i] * f32[i];
       const rms = Math.sqrt(s / f32.length); LV.lvIn = LV.lvIn * .7 + rms * .3;
       if (!LV.ws || LV.ws.readyState !== 1 || !LV.ready || LV.muted) return;
-      /* Pendant que Holly parle, on n'envoie que si elle parle franchement (pour lui couper la parole) : l'écho du haut-parleur ne déclenche rien. */
-      const talking = LV.srcs.length > 0;
-      if (talking && rms < .045) return;
+      /* Pendant que Holly parle (et un court instant après), le micro n'envoie rien : sinon Holly s'entend
+         dans le haut-parleur et croit que c'est la réponse. Pour lui couper la parole : toucher Holly. */
+      if (LV.srcs.length > 0 || (LV.ctx && LV.ctx.currentTime < LV.nextT + .35)) return;
       const out = []; let pos = frac;
       while (pos < f32.length) { const k = Math.floor(pos); let v = f32[k]; if (k + 1 < f32.length) v += (f32[k + 1] - v) * (pos - k); out.push(Math.max(-1, Math.min(1, v)) * 32767); pos += ratio; }
       frac = pos - f32.length;
@@ -7475,7 +7550,11 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
       const C = window.AudioContext || window.webkitAudioContext;
       LV.ctx = LV.ctx || new C({ latencyHint: "interactive" });
       if (LV.ctx.state === "suspended") await LV.ctx.resume();
-      LV.stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 } });
+      /* Le micro déjà autorisé est gardé quelques minutes : relancer l'oral ne redemande pas l'autorisation. */
+      clearTimeout(MIC.t);
+      if (!(MIC.stream && MIC.stream.getAudioTracks().some(t => t.readyState === "live"))) MIC.stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 } });
+      MIC.stream.getAudioTracks().forEach(t => t.enabled = true);
+      LV.stream = MIC.stream;
       ratio = LV.ctx.sampleRate / 16000; frac = 0; acc = new Int16Array(0);
       const src = LV.ctx.createMediaStreamSource(LV.stream);
       let wk = false;
@@ -7504,7 +7583,7 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
     function hush() { LV.srcs.forEach(s => { try { s.onended = null; s.stop(); } catch (e) { } }); LV.srcs = []; LV.nextT = 0; }
     const send = o => { try { LV.ws && LV.ws.readyState === 1 && LV.ws.send(JSON.stringify(o)); } catch (e) { } };
     function setSt(s) { if (LV.st === s) return; LV.st = s; const el = document.getElementById("lv-st"); if (el) { el.textContent = LVTXT[s] || ""; document.getElementById("lv-holly").dataset.st = s; } }
-    const LVTXT = { connecting: "Holly arrive…", listening: "Je t'écoute", speaking: "Holly parle — tu peux lui couper la parole", thinking: "Holly réfléchit…", muted: "Micro coupé" };
+    const LVTXT = { connecting: "Holly arrive…", listening: "Je t'écoute", speaking: "Holly parle · touche-la pour l'interrompre", thinking: "Holly réfléchit…", muted: "Micro coupé" };
 
     /* ---------- Transcriptions → bulles ---------- */
     function say2(who, txt) {
@@ -7550,7 +7629,7 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
       const sc = m.serverContent;
       if (sc) {
         if (sc.interrupted) { hush(); closeBubbles(); setSt("listening"); }
-        if (sc.inputTranscription && sc.inputTranscription.text) { const last = LV.log[LV.log.length - 1]; if (last && last.who === "holly") last.done = true; say2("me", sc.inputTranscription.text); }
+        if (sc.inputTranscription && sc.inputTranscription.text) { if (sc.inputTranscription.text.trim().length > 1) LV.heard = true; const last = LV.log[LV.log.length - 1]; if (last && last.who === "holly") last.done = true; say2("me", sc.inputTranscription.text); }
         if (sc.outputTranscription && sc.outputTranscription.text) { const last = LV.log[LV.log.length - 1]; if (last && last.who === "me") last.done = true; say2("holly", sc.outputTranscription.text); }
         const parts = sc.modelTurn && sc.modelTurn.parts || [];
         parts.forEach(p => { if (p.inlineData && p.inlineData.data && /audio/.test(p.inlineData.mimeType || "audio")) play(p.inlineData.data); });
@@ -7560,6 +7639,8 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
         const resp = m.toolCall.functionCalls.map(fc => {
           if (fc.name === "noter") {
             const a = fc.args || {}, it = LV.items[(+a.numero || 0) - 1], v = a.verdict;
+            if (!LV.heard) return { id: fc.id, name: fc.name, response: { result: "refusé", raison: `${J.name()} n'a encore rien répondu. Ne donne pas la réponse : repose la question et attends en silence qu'elle réponde.` } };
+            LV.heard = false;
             if (it && !it.done) {
               it.done = v; LV.cur = Math.max(LV.cur, +a.numero);
               if (v === "juste") { LV.score.ok++; J.addXP(3, "Oral avec Holly", "oral"); if (it.qref) J.answerQ(it.qref, true); }
@@ -7585,7 +7666,7 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
       pre.p = connect(0, items).catch(() => null); LV.pre = pre;
     }
     async function liveStart() {
-      LV.on = true; LV.st = "connecting"; LV.log = []; LV.score = { ok: 0, part: 0, ko: 0 }; LV.cur = 0; LV.err = ""; LV.ending = false; LV.muted = false; LV.ready = false; LV.t0 = Date.now();
+      LV.on = true; LV.st = "connecting"; LV.log = []; LV.score = { ok: 0, part: 0, ko: 0 }; LV.cur = 0; LV.err = ""; LV.ending = false; LV.muted = false; LV.ready = false; LV.heard = false; LV.t0 = Date.now();
       /* Connexion préparée dès l'ouverture de la page : Holly répond tout de suite. */
       const pre = LV.pre && LV.pre.subj === OR.subj && Date.now() - LV.pre.t < 8 * 60e3 ? LV.pre : null;
       LV.pre = null;
@@ -7612,7 +7693,8 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
       LV.on = false; cancelAnimationFrame(LV.raf);
       hush();
       try { LV.ws && LV.ws.close(1000); } catch (e) { } LV.ws = null;
-      try { LV.stream && LV.stream.getTracks().forEach(t => t.stop()); } catch (e) { } LV.stream = null;
+      try { LV.stream && LV.stream.getTracks().forEach(t => t.enabled = false); } catch (e) { } LV.stream = null;
+      clearTimeout(MIC.t); MIC.t = setTimeout(releaseMic, 10 * 60e3);
       try { LV.node && LV.node.disconnect(); LV.micSrc && LV.micSrc.disconnect(); } catch (e) { }
       try { LV.ctx && LV.ctx.close(); } catch (e) { } LV.ctx = null;
       const s = LV.score, tot = s.ok + s.part + s.ko;
@@ -7650,12 +7732,12 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
           <button class="lv-btn ${LV.muted ? "off" : ""}" data-act="lv-mute" aria-label="${LV.muted ? "Réactiver le micro" : "Couper le micro"}">${ICON.mic}<span>${LV.muted ? "Micro coupé" : "Micro"}</span></button>
           <button class="lv-btn end" data-act="lv-end" aria-label="Terminer l'oral">${ICON.x}<span>Terminer</span></button>
         </div>
-        <p class="small muted" style="text-align:center">Parle normalement, comme au téléphone. Tu peux lui couper la parole, lui demander d'expliquer ou de répéter.</p>
+        <p class="small muted" style="text-align:center">Parle normalement, comme au téléphone. Pour couper la parole à Holly, touche-la. Tu peux aussi lui demander d'expliquer ou de répéter.</p>
       </div>`;
     }
     ACT["lv-mute"] = () => { LV.muted = !LV.muted; if (LV.muted) send({ realtimeInput: { audioStreamEnd: true } }); ui.rerender(); };
     ACT["lv-end"] = () => { if (LV.ws && LV.ready && !LV.ending && (LV.score.ok + LV.score.part + LV.score.ko)) { LV.ending = true; hush(); send({ clientContent: { turns: [{ role: "user", parts: [{ text: "On arrête là, fais-moi juste le bilan en une phrase puis appelle terminer." }] }], turnComplete: true } }); setTimeout(() => liveEnd(), 9000); } else liveEnd(); };
-    ACT["lv-holly"] = () => { if (LV.st === "speaking") { hush(); setSt("listening"); } };
+    ACT["lv-holly"] = () => { if (LV.st === "speaking") { hush(); LV.nextT = 0; closeBubbles(); setSt("listening"); } };
     VIEWS.oral = {
       render() {
         if (!OR.subj) { const P = J.plan(); OR.subj = P ? P.subj : "all"; }
@@ -7822,7 +7904,7 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
 })();
 
 </script>
-<script>window.JBA_BUILD="20261105-183315";
+<script>window.JBA_BUILD="20261105-185016";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
