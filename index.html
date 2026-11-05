@@ -741,6 +741,25 @@ body.ia-on .toast{bottom:calc(var(--ia-bot,0px) + 118px)}
 .or-mic.speaking,.or-mic.thinking{background:var(--surface3);color:var(--ink);box-shadow:none}
 .or-mic .ia-typing i{background:var(--ink2)}
 @media (prefers-reduced-motion:reduce){.or-holly.listening::after,.or-mic.listening{animation:none}}
+
+/* Oral en direct */
+.or-page.lv{align-items:stretch;gap:12px}
+.lv-q{text-align:center;margin-top:2px}
+.lv-holly{--lv:0;position:relative;width:min(56vw,230px);aspect-ratio:1;align-self:center;display:grid;place-items:center;margin:6px 0 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.lv-face{width:78%;position:relative;z-index:2;transform:scale(calc(1 + var(--lv) * .06));transition:transform .08s linear}
+.lv-ring{position:absolute;inset:6%;border-radius:50%;background:radial-gradient(circle,rgba(255,45,85,.16),rgba(255,45,85,0) 70%);transform:scale(calc(.92 + var(--lv) * .35));transition:transform .09s linear,opacity .3s;opacity:.9}
+.lv-ring.r2{inset:0;background:none;border:2px solid rgba(255,45,85,.22);transform:scale(calc(.9 + var(--lv) * .5));opacity:calc(.25 + var(--lv) * .75)}
+.lv-holly[data-st="listening"] .lv-ring{background:radial-gradient(circle,rgba(52,199,89,.18),rgba(52,199,89,0) 70%)}
+.lv-holly[data-st="listening"] .lv-ring.r2{border-color:rgba(52,199,89,.35)}
+.lv-holly[data-st="connecting"] .lv-ring.r2,.lv-holly[data-st="thinking"] .lv-ring.r2{animation:orpulse 1.4s infinite;border-color:rgba(142,142,147,.35)}
+.lv-st{text-align:center;font-weight:600;font-size:calc(17px*var(--ts,1));min-height:24px;margin:0}
+.lv-log{max-height:30dvh;min-height:90px}
+.lv-ctl{display:flex;justify-content:center;gap:28px;margin-top:auto}
+.lv-btn{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:var(--ink);font-size:calc(13px*var(--ts,1));cursor:pointer}
+.lv-btn svg{width:62px;height:62px;padding:17px;border-radius:50%;background:var(--surface3);box-sizing:border-box;transition:background .2s,transform .15s var(--ease)}
+.lv-btn:active svg{transform:scale(.93)}
+.lv-btn.off svg{background:var(--ink);color:var(--bg)}
+.lv-btn.end svg{background:#FF3B30;color:#fff}
 </style>
 </head><body>
 <div id="root"></div>
@@ -7385,27 +7404,268 @@ DIRE: ce que tu dis à voix haute
         <p class="small muted" style="text-align:center">Tu peux aussi dire « répète », « passe » ou « stop ». ${TTS ? "" : "Cet appareil ne sait pas lire à voix haute : lis la question à l'écran."}</p>`;
     }
     function paint() { const el = document.getElementById("or-stage"); if (!el) return; el.innerHTML = stageHTML(); const lg = document.getElementById("or-log"); if (lg) lg.scrollTop = lg.scrollHeight; const ti = document.getElementById("or-type"); if (ti) { ti.addEventListener("input", () => { OR.typed = ti.value; }); ti.addEventListener("keydown", e => { if (e.key === "Enter") ACT["or-send"](); }); if (matchMedia("(hover:hover)").matches) ti.focus(); } }
+    /* =====================================================================
+       ORAL EN DIRECT (Gemini Live) : vraie voix humaine, réponses instantanées,
+       elle peut couper la parole à Holly comme dans une vraie conversation.
+       Repli automatique sur le mode « voix de l'iPhone » si Live n'est pas disponible.
+       ===================================================================== */
+    const LV = { on: false, st: "idle", ws: null, ctx: null, stream: null, node: null, srcs: [], nextT: 0, items: [], cur: 0, log: [], score: { ok: 0, part: 0, ko: 0 }, lvIn: 0, lvOut: 0, muted: false, err: "", ending: false, t0: 0, raf: 0, seq: 0 };
+    const LIVE_MODELS = ["gemini-3.8-live", "gemini-3.1-flash-live-preview", "gemini-2.5-flash-native-audio-preview-09-2025"];
+    const LIVE_VOICES = ["Aoede", "Kore"];
+    const LKEY = "jojo-boss-academy-live";
+    const liveOK = () => !!(gKey() && window.WebSocket && navigator.mediaDevices && navigator.mediaDevices.getUserMedia && (window.AudioContext || window.webkitAudioContext));
+    const b64 = u8 => { let s = ""; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s); };
+    const unb64 = s => { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; };
+    function liveItems() {
+      const due = J.shuffle(J.reviewDue(J.questions.filter(q => (OR.subj === "all" || J.byId[q.ch].subject === OR.subj) && q.a.length === 1 && !rx.test(q.q)))).slice(0, 4)
+        .map(q => ({ ch: q.ch, q: q.q, model: `${q.o[q.a[0]]}. ${q.e}`, qref: q }));
+      const pool = J.shuffle(oralPool()).filter(x => !due.some(d => d.q === x.q));
+      return J.shuffle(due.concat(pool.slice(0, 16 - due.length)));
+    }
+    function liveSystem() {
+      const nm = J.name();
+      return `Tu es Holly, la prof de droit de ${nm} dans l'appli Jojo Boss Academy. Tu lui fais passer un ORAL DE RÉVISION en direct, à voix haute, en français uniquement. ${nm} est en première année de licence de droit.
+
+TA FAÇON DE PARLER
+- Parle comme une vraie personne au téléphone avec une amie qu'elle fait réviser : chaleureuse, vive, drôle, naturelle, avec des petites réactions spontanées (« Ah, bien vu ! », « Hmm, presque… », « Attends, attends… »).
+- Phrases courtes. Jamais de listes, jamais de « premièrement, deuxièmement ». Tu ne lis jamais un texte.
+- Réagis vraiment à ce qu'elle dit, reprends ses mots. Varie toujours tes formulations.
+- Une seule question à la fois, puis tu te tais et tu l'écoutes.
+
+LE DÉROULÉ
+- Commence par un bonjour très court (une phrase) et pose tout de suite la question 1. Tu peux reformuler la question à l'oral pour qu'elle sonne naturelle.
+- Après sa réponse, juge-la UNIQUEMENT d'après la « référence » du cours (ne l'invente jamais, ne cite rien qui n'y est pas) :
+  · juste (l'essentiel y est, même dit autrement) : félicite en quelques mots, éventuellement un petit détail utile ;
+  · partiel : dis ce qui manque ; si un seul élément manque, relance-la une fois (« Et tu te rappelles qui… ? ») avant de conclure ;
+  · faux ou « je ne sais pas » : donne la bonne réponse en une ou deux phrases simples, avec une astuce pour la retenir si tu en as une.
+- Quand elle se trompe vraiment, tu peux la taquiner gentiment en la comparant à « la grosse Adèle » (une blague entre eux), au maximum une erreur sur trois.
+- Dès que tu as tranché une question, appelle l'outil noter, puis enchaîne directement sur la suivante, sans demander la permission.
+- Si elle te pose une question ou te demande d'expliquer, explique simplement en 20 secondes maximum, puis reprends l'oral.
+- Si elle dit « répète », répète. Si elle dit « passe », note « faux » et passe. Si elle veut arrêter, fais un bilan chaleureux en une phrase et appelle l'outil terminer.
+- Sa voix est transcrite automatiquement : tolère les noms propres, les mots latins et les dates mal prononcés.
+- Ne dis jamais les mots « référence » ou « réponse attendue ». Dis « article » pour « art. ».
+
+LES QUESTIONS (dans l'ordre)
+${LV.items.map((x, i) => `${i + 1}. [${J.SUBJECTS[J.byId[x.ch].subject].short} ${J.byId[x.ch].num}] ${x.q}\n   Référence : ${x.model}`).join("\n")}
+Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle terminer.`;
+    }
+    const liveTools = [{ functionDeclarations: [
+      { name: "noter", description: "Enregistre le résultat d'une question dès que tu l'as jugée.", parameters: { type: "OBJECT", properties: { numero: { type: "INTEGER", description: "Numéro de la question (1, 2, 3…)" }, verdict: { type: "STRING", enum: ["juste", "partiel", "faux"] } }, required: ["numero", "verdict"] } },
+      { name: "terminer", description: "Termine l'oral après le bilan." }
+    ] }];
+
+    /* ---------- Micro : capture, réduction à 16 kHz, envoi ---------- */
+    const WORKLET = `class M extends AudioWorkletProcessor{process(i){const c=i[0]&&i[0][0];if(c)this.port.postMessage(c.slice(0));return true}}registerProcessor("jba-mic",M);`;
+    let acc = new Int16Array(0), ratio = 3, frac = 0;
+    function onMic(f32) {
+      let s = 0; for (let i = 0; i < f32.length; i++) s += f32[i] * f32[i];
+      const rms = Math.sqrt(s / f32.length); LV.lvIn = LV.lvIn * .7 + rms * .3;
+      if (!LV.ws || LV.ws.readyState !== 1 || !LV.ready || LV.muted) return;
+      /* Pendant que Holly parle, on n'envoie que si elle parle franchement (pour lui couper la parole) : l'écho du haut-parleur ne déclenche rien. */
+      const talking = LV.srcs.length > 0;
+      if (talking && rms < .045) return;
+      const out = []; let pos = frac;
+      while (pos < f32.length) { const k = Math.floor(pos); let v = f32[k]; if (k + 1 < f32.length) v += (f32[k + 1] - v) * (pos - k); out.push(Math.max(-1, Math.min(1, v)) * 32767); pos += ratio; }
+      frac = pos - f32.length;
+      const merged = new Int16Array(acc.length + out.length); merged.set(acc); merged.set(out, acc.length); acc = merged;
+      if (acc.length >= 1600) { const chunk = acc; acc = new Int16Array(0); send({ realtimeInput: { audio: { data: b64(new Uint8Array(chunk.buffer)), mimeType: "audio/pcm;rate=16000" } } }); }
+    }
+    async function startMic() {
+      const C = window.AudioContext || window.webkitAudioContext;
+      LV.ctx = LV.ctx || new C({ latencyHint: "interactive" });
+      if (LV.ctx.state === "suspended") await LV.ctx.resume();
+      LV.stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 } });
+      ratio = LV.ctx.sampleRate / 16000; frac = 0; acc = new Int16Array(0);
+      const src = LV.ctx.createMediaStreamSource(LV.stream);
+      let wk = false;
+      if (LV.ctx.audioWorklet && window.AudioWorkletNode) {
+        try {
+          const url = URL.createObjectURL(new Blob([WORKLET], { type: "application/javascript" }));
+          await LV.ctx.audioWorklet.addModule(url); URL.revokeObjectURL(url);
+          const n = new AudioWorkletNode(LV.ctx, "jba-mic"); n.port.onmessage = e => onMic(e.data); src.connect(n); LV.node = n; wk = true;
+        } catch (e) { wk = false; }
+      }
+      if (!wk) {
+        const n = LV.ctx.createScriptProcessor(2048, 1, 1); n.onaudioprocess = e => onMic(e.inputBuffer.getChannelData(0)); src.connect(n); n.connect(LV.ctx.destination); LV.node = n;
+      }
+      LV.micSrc = src;
+    }
+    /* ---------- Haut-parleur : lecture du flux 24 kHz, sans trou ---------- */
+    function play(b64data) {
+      const u8 = unb64(b64data), n = u8.length >> 1, dv = new DataView(u8.buffer), buf = LV.ctx.createBuffer(1, n, 24000), ch = buf.getChannelData(0);
+      let s = 0; for (let i = 0; i < n; i++) { const v = dv.getInt16(i * 2, true) / 32768; ch[i] = v; s += v * v; }
+      LV.lvOut = Math.max(LV.lvOut, Math.sqrt(s / Math.max(1, n)));
+      const src = LV.ctx.createBufferSource(); src.buffer = buf; src.connect(LV.ctx.destination);
+      const t = Math.max(LV.ctx.currentTime + .04, LV.nextT); src.start(t); LV.nextT = t + buf.duration;
+      LV.srcs.push(src); src.onended = () => { LV.srcs = LV.srcs.filter(x => x !== src); if (!LV.srcs.length && LV.on) { setSt("listening"); if (LV.ending) liveEnd(); } };
+      setSt("speaking");
+    }
+    function hush() { LV.srcs.forEach(s => { try { s.onended = null; s.stop(); } catch (e) { } }); LV.srcs = []; LV.nextT = 0; }
+    const send = o => { try { LV.ws && LV.ws.readyState === 1 && LV.ws.send(JSON.stringify(o)); } catch (e) { } };
+    function setSt(s) { if (LV.st === s) return; LV.st = s; const el = document.getElementById("lv-st"); if (el) { el.textContent = LVTXT[s] || ""; document.getElementById("lv-holly").dataset.st = s; } }
+    const LVTXT = { connecting: "Holly arrive…", listening: "Je t'écoute", speaking: "Holly parle — tu peux lui couper la parole", thinking: "Holly réfléchit…", muted: "Micro coupé" };
+
+    /* ---------- Transcriptions → bulles ---------- */
+    function say2(who, txt) {
+      if (!txt) return;
+      const last = LV.log[LV.log.length - 1];
+      if (last && last.who === who && !last.done) last.t += txt;
+      else { LV.log.push({ who, t: txt.replace(/^\s+/, ""), k: ++LV.seq }); LV.log = LV.log.slice(-8); }
+      paintLog();
+    }
+    function closeBubbles() { LV.log.forEach(m => m.done = true); }
+
+    /* ---------- Connexion ---------- */
+    function connect(attempt) {
+      return new Promise((resolve, reject) => {
+        const saved = (() => { try { return JSON.parse(localStorage.getItem(LKEY) || "null"); } catch (e) { return null; } })();
+        const combos = []; LIVE_MODELS.forEach(m => LIVE_VOICES.forEach(v => combos.push({ m, v })));
+        if (saved) combos.unshift(saved);
+        const c = combos[attempt]; if (!c) return reject({ code: "no_model" });
+        const ws = new WebSocket(`wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=${encodeURIComponent(gKey())}`);
+        let ok = false;
+        ws.onopen = () => ws.send(JSON.stringify({ setup: {
+          model: "models/" + c.m,
+          generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: c.v } } } },
+          systemInstruction: { parts: [{ text: liveSystem() }] },
+          tools: liveTools,
+          inputAudioTranscription: {}, outputAudioTranscription: {},
+          realtimeInputConfig: { automaticActivityDetection: { silenceDurationMs: 650, prefixPaddingMs: 120 } }
+        } }));
+        ws.onmessage = async ev => {
+          let m; try { m = JSON.parse(typeof ev.data === "string" ? ev.data : await ev.data.text()); } catch (e) { return; }
+          if (m.setupComplete && !ok) { ok = true; try { localStorage.setItem(LKEY, JSON.stringify(c)); } catch (e) { } resolve(ws); return; }
+          onMsg(m);
+        };
+        ws.onclose = ev => {
+          if (!ok) { const r = ev.reason || ""; if (/api key|API_KEY|permission|PERMISSION_DENIED/i.test(r) && !/model/i.test(r)) return reject({ code: "bad_key", message: r }); if (/quota|RESOURCE_EXHAUSTED|rate/i.test(r)) return reject({ code: "rate_limited", message: r }); if (attempt === 0 && saved) { try { localStorage.removeItem(LKEY); } catch (e) { } } return connect(attempt + 1).then(resolve, reject); }
+          if (LV.on && LV.ws === ws) { LV.err = ev.code === 1000 ? "" : (/quota|RESOURCE_EXHAUSTED/i.test(ev.reason || "") ? "Holly a atteint la limite gratuite de Gemini pour l'instant. Réessaie un peu plus tard." : "La connexion avec Holly s'est coupée."); liveEnd(true); }
+        };
+        ws.onerror = () => { };
+      });
+    }
+    function onMsg(m) {
+      const sc = m.serverContent;
+      if (sc) {
+        if (sc.interrupted) { hush(); closeBubbles(); setSt("listening"); }
+        if (sc.inputTranscription && sc.inputTranscription.text) { const last = LV.log[LV.log.length - 1]; if (last && last.who === "holly") last.done = true; say2("me", sc.inputTranscription.text); }
+        if (sc.outputTranscription && sc.outputTranscription.text) { const last = LV.log[LV.log.length - 1]; if (last && last.who === "me") last.done = true; say2("holly", sc.outputTranscription.text); }
+        const parts = sc.modelTurn && sc.modelTurn.parts || [];
+        parts.forEach(p => { if (p.inlineData && p.inlineData.data && /audio/.test(p.inlineData.mimeType || "audio")) play(p.inlineData.data); });
+        if (sc.turnComplete) { closeBubbles(); if (!LV.srcs.length) { setSt("listening"); if (LV.ending) liveEnd(); } }
+      }
+      if (m.toolCall && m.toolCall.functionCalls) {
+        const resp = m.toolCall.functionCalls.map(fc => {
+          if (fc.name === "noter") {
+            const a = fc.args || {}, it = LV.items[(+a.numero || 0) - 1], v = a.verdict;
+            if (it && !it.done) {
+              it.done = v; LV.cur = Math.max(LV.cur, +a.numero);
+              if (v === "juste") { LV.score.ok++; J.addXP(3, "Oral avec Holly", "oral"); if (it.qref) J.answerQ(it.qref, true); }
+              else if (v === "partiel") { LV.score.part++; J.addXP(1, "Oral avec Holly", "oral"); }
+              else { LV.score.ko++; if (it.qref) J.answerQ(it.qref, false); }
+              paintTop();
+            }
+          }
+          if (fc.name === "terminer") LV.ending = true;
+          return { id: fc.id, name: fc.name, response: { result: "ok" } };
+        });
+        send({ toolResponse: { functionResponses: resp } });
+      }
+      if (m.goAway) LV.ending = true;
+    }
+
+    async function liveStart() {
+      LV.on = true; LV.st = "connecting"; LV.log = []; LV.score = { ok: 0, part: 0, ko: 0 }; LV.cur = 0; LV.err = ""; LV.ending = false; LV.muted = false; LV.ready = false; LV.t0 = Date.now();
+      LV.items = liveItems();
+      const C = window.AudioContext || window.webkitAudioContext;
+      try { LV.ctx = new C({ latencyHint: "interactive" }); LV.ctx.resume(); } catch (e) { }
+      ui.rerender();
+      try {
+        await startMic();
+        LV.ws = await connect(0);
+        LV.ready = true; setSt("thinking");
+        send({ clientContent: { turns: [{ role: "user", parts: [{ text: "Bonjour Holly, on commence l'oral." }] }], turnComplete: true } });
+        meter();
+      } catch (e) {
+        LV.lastErr = String((e && (e.message || e.code || e.name)) || e); const code = e && (e.code || e.name);
+        LV.err = code === "NotAllowedError" ? "Autorise le micro pour parler avec Holly (Réglages de l'iPhone > Safari > Micro)." : code === "bad_key" ? "Google refuse la clé Gemini : vérifie-la dans les Réglages." : code === "rate_limited" ? "Holly a atteint la limite gratuite de Gemini pour l'instant. Réessaie un peu plus tard." : "";
+        LV.fallback = !LV.err; liveEnd(true);
+        if (LV.fallback) { ui.toast("Le direct n'est pas disponible avec cette clé : Holly passe en mode voix de l'iPhone."); ACT["or-start"](true); }
+      }
+    }
+    function liveEnd(silent) {
+      if (!LV.on) return;
+      LV.on = false; cancelAnimationFrame(LV.raf);
+      hush();
+      try { LV.ws && LV.ws.close(1000); } catch (e) { } LV.ws = null;
+      try { LV.stream && LV.stream.getTracks().forEach(t => t.stop()); } catch (e) { } LV.stream = null;
+      try { LV.node && LV.node.disconnect(); LV.micSrc && LV.micSrc.disconnect(); } catch (e) { }
+      try { LV.ctx && LV.ctx.close(); } catch (e) { } LV.ctx = null;
+      const s = LV.score, tot = s.ok + s.part + s.ko;
+      OR.ended = tot ? Object.assign({}, s) : OR.ended;
+      if (location.hash === "#oral") ui.rerender();
+    }
+    addEventListener("hashchange", () => { if (LV.on && location.hash !== "#oral") liveEnd(true); });
+    document.addEventListener("visibilitychange", () => { if (LV.on && document.visibilityState === "hidden") liveEnd(true); });
+    function meter() {
+      const h = document.getElementById("lv-holly");
+      if (h) { const v = LV.st === "speaking" ? LV.lvOut : LV.st === "listening" && !LV.muted ? LV.lvIn * 2.2 : 0; h.style.setProperty("--lv", Math.min(1, v * 4).toFixed(3)); }
+      LV.lvOut *= .86;
+      if (LV.ending && !LV.srcs.length && LV.st !== "speaking" && Date.now() - LV.t0 > 3000) { /* attendu */ }
+      if (Date.now() - LV.t0 > 14.5 * 60e3) { LV.err = "Fin de la séance (15 minutes maximum)."; liveEnd(true); return; }
+      LV.raf = requestAnimationFrame(meter);
+    }
+    function liveTopHTML() {
+      const s = LV.score, it = LV.items[Math.min(LV.cur, LV.items.length - 1)];
+      return `<div class="or-score tnum"><span>${s.ok} juste${s.ok > 1 ? "s" : ""}</span><span>${s.part} presque</span><span>${s.ko} à revoir</span></div>
+        ${it ? `<div class="lv-q"><span class="eyebrow">Question ${Math.min(LV.cur + 1, LV.items.length)} sur ${LV.items.length} · ${esc(J.SUBJECTS[J.byId[it.ch].subject].short)} ${J.byId[it.ch].num}</span></div>` : ""}`;
+    }
+    function paintTop() { const el = document.getElementById("lv-top"); if (el) el.innerHTML = liveTopHTML(); }
+    function paintLog() {
+      const el = document.getElementById("lv-log"); if (!el) return;
+      el.innerHTML = LV.log.map(m => { const nw = !OR.seen.has("l" + m.k); OR.seen.add("l" + m.k); return `<div class="or-b ${m.who}${nw ? " new" : ""}">${esc(m.t.trim())}</div>`; }).join("");
+      el.scrollTop = el.scrollHeight;
+    }
+    function liveHTML() {
+      return `<div class="or-page lv">
+        <div id="lv-top">${liveTopHTML()}</div>
+        <div class="lv-holly" id="lv-holly" data-st="${LV.st}" data-act="lv-holly"><span class="lv-ring"></span><span class="lv-ring r2"></span><div class="lv-face">${H("prof")}</div></div>
+        <p class="lv-st" id="lv-st" aria-live="polite">${LVTXT[LV.st] || ""}</p>
+        <div class="or-log lv-log" id="lv-log"></div>
+        <div class="lv-ctl">
+          <button class="lv-btn ${LV.muted ? "off" : ""}" data-act="lv-mute" aria-label="${LV.muted ? "Réactiver le micro" : "Couper le micro"}">${ICON.mic}<span>${LV.muted ? "Micro coupé" : "Micro"}</span></button>
+          <button class="lv-btn end" data-act="lv-end" aria-label="Terminer l'oral">${ICON.x}<span>Terminer</span></button>
+        </div>
+        <p class="small muted" style="text-align:center">Parle normalement, comme au téléphone. Tu peux lui couper la parole, lui demander d'expliquer ou de répéter.</p>
+      </div>`;
+    }
+    ACT["lv-mute"] = () => { LV.muted = !LV.muted; if (LV.muted) send({ realtimeInput: { audioStreamEnd: true } }); ui.rerender(); };
+    ACT["lv-end"] = () => { if (LV.ws && LV.ready && !LV.ending && (LV.score.ok + LV.score.part + LV.score.ko)) { LV.ending = true; hush(); send({ clientContent: { turns: [{ role: "user", parts: [{ text: "On arrête là, fais-moi juste le bilan en une phrase puis appelle terminer." }] }], turnComplete: true } }); setTimeout(() => liveEnd(), 9000); } else liveEnd(); };
+    ACT["lv-holly"] = () => { if (LV.st === "speaking") { hush(); setSt("listening"); } };
     VIEWS.oral = {
       render() {
         if (!OR.subj) { const P = J.plan(); OR.subj = P ? P.subj : "all"; }
         const noIA = IA.sample === null;
+        if (LV.on) return liveHTML();
         if (!OR.on) {
           const E = OR.ended;
           return `
           <a href="#quiz" class="backlink">${ICON.back.replace("<svg", "<svg width=17 height=17")} Sushi Quiz</a>
-          <header class="stack" style="gap:6px"><h1>À l'oral avec Holly</h1><p class="muted">Holly te pose des questions à voix haute. Tu réponds en parlant, il te dit si c'est juste, puis il enchaîne.</p></header>
+          <header class="stack" style="gap:6px"><h1>À l'oral avec Holly</h1><p class="muted">Une vraie conversation : Holly t'interroge, tu réponds en parlant, elle te corrige et enchaîne.</p></header>
+          ${LV.err ? `<div class="note">${esc(LV.err)}</div>` : ""}
           ${E ? `<section class="card stack" style="align-items:center;text-align:center"><span class="eyebrow">Dernier oral</span><h2 class="tnum">${E.ok} / ${E.ok + E.part + E.ko}</h2><p class="small muted">${E.part} presque · ${E.ko} à revoir (elles rejoignent « Mes erreurs » quand elles viennent du quiz)</p></section>` : ""}
           <section class="stack" style="gap:0"><p class="plabel">Matière</p><div class="seg wide">${[["all", "Les deux"], ["dc", "Constit."], ["ip", "Droit privé"]].map(([k, t]) => `<button class="${OR.subj === k ? "on" : ""}" data-act="or-subj" data-k="${k}">${t}</button>`).join("")}</div></section>
-          <div class="or-start"><div style="width:170px">${H("prof")}</div>
+          <div class="or-start"><div style="width:120px">${H("prof")}</div>
             <button class="btn pri block" data-act="or-start">${E ? "Recommencer" : "Commencer l'oral"}</button>
-            <p class="small muted" style="text-align:center">${noIA ? "Sans clé Gemini, Holly lit les questions et la réponse du cours, et c'est toi qui juges. Ajoute ta clé dans Réglages pour qu'il te corrige." : "Avec des écouteurs, c'est encore mieux : Holly ne s'entend pas lui-même."}</p></div>`;
+            <p class="small muted" style="text-align:center">${noIA ? "Sans clé Gemini, Holly lit les questions et la réponse du cours, et c'est toi qui juges. Ajoute ta clé dans Réglages pour qu'elle te corrige." : liveOK() ? "Avec des écouteurs, c'est encore plus naturel." : "Avec des écouteurs, c'est encore mieux."}</p></div>`;
         }
         return `<div class="or-page"><span class="eyebrow" style="text-align:center">À l'oral avec Holly</span><div id="or-stage" class="or-stage">${stageHTML()}</div></div>`;
       },
-      after() { paint(); }
+      after() { if (LV.on) { paintLog(); return; } paint(); }
     };
     ACT["or-subj"] = b => { OR.subj = b.dataset.k; ui.rerender(); };
-    ACT["or-start"] = () => {
+    ACT["or-start"] = (forceSimple) => {
+      if (forceSimple !== true && liveOK() && !LV.on) { LV.err = ""; liveStart(); return; }
       OR.on = true; OR.log = []; OR.score = { ok: 0, part: 0, ko: 0 }; OR.n = 0; OR.ended = null; OR.err = ""; OR.typed = "";
       /* La première question part pendant le toucher : c'est ce qui autorise la voix sur iPhone. */
       ui.rerender(); ask();
@@ -7548,7 +7808,7 @@ DIRE: ce que tu dis à voix haute
 })();
 
 </script>
-<script>window.JBA_BUILD="20261105-181411";
+<script>window.JBA_BUILD="20261105-182608";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
