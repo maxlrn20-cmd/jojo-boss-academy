@@ -760,6 +760,7 @@ body.ia-on .toast{bottom:calc(var(--ia-bot,0px) + 118px)}
 .lv-btn:active svg{transform:scale(.93)}
 .lv-btn.off svg{background:var(--ink);color:var(--bg)}
 .lv-btn.end svg{background:#FF3B30;color:#fff}
+@media (max-width:430px){.chtabs button{padding:7px 6px;font-size:calc(14px*var(--ts,1))}}
 </style>
 </head><body>
 <div id="root"></div>
@@ -6139,13 +6140,7 @@ JBA.more("ip9", [
         </div>
       </div>
       ${subj.map(s => { const list = chs.filter(c => c.subject === s); if (!list.length) return ""; const S0 = J.SUBJECTS[s]; return `
-        <section class="stack" style="gap:0"><p class="plabel">${S0.name}</p><div class="pgroup">${list.map(row).join("")}</div></section>`; }).join("") || `<div class="empty">Aucun chapitre ne correspond.</div>`}
-      <details class="card flat"><summary style="cursor:pointer;font-weight:600">Documents d'origine</summary>
-        <div class="scroll-x" style="margin-top:12px"><table class="tbl"><thead><tr><th>Document</th><th>Matière</th><th>Contenu</th><th>Remarque</th></tr></thead><tbody>
-        ${J.list.map(c => `<tr><td>${window.JBA_NOPDF ? esc(c.source) : `<a href="${c.pdf}" target="_blank" rel="noopener">${esc(c.source)}</a>`}</td><td>${J.SUBJECTS[c.subject].short}</td><td>${esc(c.title)} · ${c.plan.length} parties · ${c.qcm.length} QCM</td><td class="small muted">${c.note ? esc(c.note) : c.complements ? c.complements.length + " complément(s) signalé(s)" : "Lu en entier"}</td></tr>`).join("")}
-        </tbody></table></div>
-        <p class="small muted" style="margin-top:10px">Les PDF « COURS INTRO 1 » (parties I à IV) et « COURS 2 » (parties V à X) forment le cours d'Introduction au droit privé. Les leçons 1 à 9 forment le cours de Droit constitutionnel 1. Les compléments extérieurs au cours sont toujours signalés à part dans les fiches.</p>
-      </details>`;
+        <section class="stack" style="gap:0"><p class="plabel">${S0.name}</p><div class="pgroup">${list.map(row).join("")}</div></section>`; }).join("") || `<div class="empty">${ui.sayHTML("lost", "Aucun chapitre ne correspond. J'ai cherché partout, même sous le canapé.", true)}</div>`}`;
     },
     after() {
       const i = $("#lib-q"); if (i) i.addEventListener("input", () => { libQ = i.value; const p = i.selectionStart; ui.rerender(); const n = $("#lib-q"); n.focus(); n.setSelectionRange(p, p); });
@@ -6163,7 +6158,7 @@ JBA.more("ip9", [
       if (J._lastCh !== id) { chTab = "cours"; J._lastCh = id; const st = J.chs(id); st.opened++; if (st.status === "decouvrir") st.status = "encours"; J.save(); }
       if (ui.pendingTab) { chTab = ui.pendingTab; ui.pendingTab = null; }
       const st = J.chs(id), sub = J.SUBJECTS[c.subject];
-      const tabs = [["cours", "Cours"], ["fiche", "Fiche"], ["express", "Express"], ["juris", `Arrêts${c.juris.length ? " " + c.juris.length : ""}`], ["entrainement", "Réviser"], ["holly", "Holly"]];
+      const tabs = [["cours", "Cours"], ["fiche", "Fiche"], ["express", "5 min"], ["juris", "Arrêts"], ["entrainement", "Réviser"], ["holly", "Holly"]];
       return `
       <a href="#cours" class="backlink">${ICON.back.replace("<svg", "<svg width=17 height=17")} Mes cours</a>
       <header class="stack" style="gap:6px">
@@ -7580,7 +7575,7 @@ LE DÉROULÉ (très important)
     function hush() { LV.srcs.forEach(s => { try { s.onended = null; s.stop(); } catch (e) { } }); LV.srcs = []; LV.nextT = 0; }
     const send = o => { try { LV.ws && LV.ws.readyState === 1 && LV.ws.send(JSON.stringify(o)); } catch (e) { } };
     function setSt(s) { if (LV.st === s) return; LV.st = s; const el = document.getElementById("lv-st"); if (el) { el.textContent = LVTXT[s] || ""; document.getElementById("lv-holly").dataset.st = s; } }
-    const LVTXT = { connecting: "Holly arrive…", listening: "Je t'écoute", speaking: "Holly parle · touche-la pour l'interrompre", thinking: "Holly réfléchit…", muted: "Micro coupé" };
+    const LVTXT = { connecting: "Holly arrive…", listening: "Je t'écoute", speaking: "Holly parle · touche Holly pour l'interrompre", thinking: "Holly réfléchit…", muted: "Micro coupé" };
 
     /* ---------- Transcriptions → bulles ---------- */
     function say2(who, txt) {
@@ -7778,7 +7773,7 @@ LE DÉROULÉ (très important)
           <button class="lv-btn ${LV.muted ? "off" : ""}" data-act="lv-mute" aria-label="${LV.muted ? "Réactiver le micro" : "Couper le micro"}">${ICON.mic}<span>${LV.muted ? "Micro coupé" : "Micro"}</span></button>
           <button class="lv-btn end" data-act="lv-end" aria-label="Terminer l'oral">${ICON.x}<span>Terminer</span></button>
         </div>
-        <p class="small muted" style="text-align:center">Parle normalement, comme au téléphone. Pour couper la parole à Holly, touche-la. Tu peux aussi lui demander d'expliquer ou de répéter.</p>
+        <p class="small muted" style="text-align:center">Parle normalement, comme au téléphone. Pour couper la parole à Holly, touche son portrait. Tu peux aussi lui demander d'expliquer ou de répéter.</p>
       </div>`;
     }
     ACT["lv-mute"] = () => { LV.muted = !LV.muted; if (LV.muted) send({ realtimeInput: { audioStreamEnd: true } }); ui.rerender(); };
@@ -7793,13 +7788,13 @@ LE DÉROULÉ (très important)
           const E = OR.ended;
           return `
           <a href="#quiz" class="backlink">${ICON.back.replace("<svg", "<svg width=17 height=17")} Sushi Quiz</a>
-          <header class="stack" style="gap:6px"><h1>À l'oral avec Holly</h1><p class="muted">Une vraie conversation : Holly t'interroge, tu réponds en parlant, elle te corrige et enchaîne.</p></header>
+          <header class="stack" style="gap:6px"><h1>À l'oral avec Holly</h1><p class="muted">Une vraie conversation : Holly t'interroge, tu réponds en parlant, Holly corrige et enchaîne.</p></header>
           ${LV.err ? `<div class="note">${esc(LV.err)}</div>` : ""}
           ${E ? `<section class="card stack" style="align-items:center;text-align:center"><span class="eyebrow">Dernier oral</span><h2 class="tnum">${E.ok} / ${E.ok + E.part + E.ko}</h2><p class="small muted">${E.part} presque · ${E.ko} à revoir (elles rejoignent « Mes erreurs » quand elles viennent du quiz)</p></section>` : ""}
           <section class="stack" style="gap:0"><p class="plabel">Matière</p><div class="seg wide">${[["all", "Les deux"], ["dc", "Constit."], ["ip", "Droit privé"]].map(([k, t]) => `<button class="${OR.subj === k ? "on" : ""}" data-act="or-subj" data-k="${k}">${t}</button>`).join("")}</div></section>
           <div class="or-start"><div style="width:120px">${H("prof")}</div>
             <button class="btn pri block" data-act="or-start">${E ? "Recommencer" : "Commencer l'oral"}</button>
-            <p class="small muted" style="text-align:center">${noIA ? "Sans clé Gemini, Holly lit les questions et la réponse du cours, et c'est toi qui juges. Ajoute ta clé dans Réglages pour qu'elle te corrige." : liveOK() ? "Avec des écouteurs, c'est encore plus naturel." : "Avec des écouteurs, c'est encore mieux."}</p></div>`;
+            <p class="small muted" style="text-align:center">${noIA ? "Sans clé Gemini, Holly lit les questions et la réponse du cours, et c'est toi qui juges. Ajoute ta clé dans Réglages pour que Holly te corrige." : liveOK() ? "Avec des écouteurs, c'est encore plus naturel." : "Avec des écouteurs, c'est encore mieux."}</p></div>`;
         }
         return `<div class="or-page"><span class="eyebrow" style="text-align:center">À l'oral avec Holly</span><div id="or-stage" class="or-stage">${stageHTML()}</div></div>`;
       },
@@ -7950,7 +7945,7 @@ LE DÉROULÉ (très important)
 })();
 
 </script>
-<script>window.JBA_BUILD="20261105-185959";
+<script>window.JBA_BUILD="20261105-191404";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
