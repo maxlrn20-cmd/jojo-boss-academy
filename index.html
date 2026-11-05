@@ -39,15 +39,15 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 h1,h2,h3,.disp{font-family:var(--f-display);font-weight:400;letter-spacing:.005em;text-wrap:balance;margin:0}
 h1{font-size:clamp(30px,6vw,50px);line-height:1.05}
 h2{font-size:clamp(23px,3.6vw,30px);line-height:1.15}
-h3{font-size:20px;line-height:1.25}
+h3{font-size:calc(20px*var(--ts,1));line-height:1.25}
 p{margin:0}
 a{color:var(--framboise)}
 button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--turq);outline-offset:2px;border-radius:8px}
 .hand{font-family:var(--f-hand);font-size:1.35em;line-height:1.15}
-.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+.eyebrow{font-size:calc(12px*var(--ts,1));font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
 .muted{color:var(--ink2)}
-.small{font-size:14px}
+.small{font-size:calc(14px*var(--ts,1))}
 .tnum{font-variant-numeric:tabular-nums}
 
 /* Shell */
@@ -58,26 +58,26 @@ button,input,select,textarea{font:inherit;color:inherit}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;min-width:0}
 .brand .mini{width:40px;height:40px;flex:none;border-radius:50%;background:var(--rose2);overflow:hidden;display:grid;place-items:center}
 .brand .mini svg{width:46px;height:46px;margin-top:6px}
-.brand b{font-family:var(--f-display);font-weight:400;font-size:19px;line-height:1;white-space:nowrap}
-.brand small{display:block;font-size:11px;color:var(--ink2);letter-spacing:.08em;text-transform:uppercase}
+.brand b{font-family:var(--f-display);font-weight:400;font-size:calc(19px*var(--ts,1));line-height:1;white-space:nowrap}
+.brand small{display:block;font-size:calc(11px*var(--ts,1));color:var(--ink2);letter-spacing:.08em;text-transform:uppercase}
 .top .grow{flex:1}
 .brand>span:last-child{min-width:0;overflow:hidden}
 @media (max-width:440px){.top .brand>span:last-child{display:none}}
-.side .holly-say{grid-template-columns:56px 1fr}.side .holly-say .bubble{font-size:17px}
+.side .holly-say{grid-template-columns:56px 1fr}.side .holly-say .bubble{font-size:calc(17px*var(--ts,1))}
 .iconbtn{border:1px solid var(--line);background:var(--surface);width:40px;height:40px;border-radius:12px;display:grid;place-items:center;cursor:pointer;flex:none}
 .iconbtn:hover{border-color:var(--rose)}
 .iconbtn svg{width:20px;height:20px}
-.xpchip{display:flex;align-items:center;gap:8px;padding:6px 10px 6px 6px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
-.xpchip .lv{background:var(--framboise);color:#fff;border-radius:999px;padding:2px 8px;font-size:12px}
+.xpchip{display:flex;align-items:center;gap:8px;padding:6px 10px 6px 6px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:calc(13px*var(--ts,1));font-weight:700;cursor:pointer;white-space:nowrap}
+.xpchip .lv{background:var(--framboise);color:#fff;border-radius:999px;padding:2px 8px;font-size:calc(12px*var(--ts,1))}
 main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:22px 110px;min-width:0}
 .wrap{max-width:1060px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
 .read{max-width:760px}
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:45;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);
   padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
-.tabbar a,.tabbar button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px 9px;font-size:11.5px;font-weight:600;color:var(--ink2);text-decoration:none;background:none;border:0;cursor:pointer}
+.tabbar a,.tabbar button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px 9px;font-size:calc(11.5px*var(--ts,1));font-weight:600;color:var(--ink2);text-decoration:none;background:none;border:0;cursor:pointer}
 .tabbar svg{width:23px;height:23px}
 .tabbar .on{color:var(--framboise)}
-.nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;color:var(--ink);text-decoration:none;font-weight:600;font-size:15px}
+.nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;color:var(--ink);text-decoration:none;font-weight:600;font-size:calc(15px*var(--ts,1))}
 .nav a svg{width:20px;height:20px;color:var(--ink2);flex:none}
 .nav a:hover{background:var(--surface2)}
 .nav a.on{background:var(--rose2);color:var(--framboise2)}
@@ -108,39 +108,39 @@ main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .row.between{justify-content:space-between}
 .stack{display:flex;flex-direction:column;gap:12px;min-width:0}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:12px 20px;font-weight:700;font-size:15px;border:1.5px solid transparent;cursor:pointer;text-decoration:none;line-height:1.2;min-height:46px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:12px 20px;font-weight:700;font-size:calc(15px*var(--ts,1));border:1.5px solid transparent;cursor:pointer;text-decoration:none;line-height:1.2;min-height:46px}
 .btn.pri{background:var(--framboise);color:#fff}
 .btn.pri:hover{background:var(--framboise2)}
 .btn.sec{background:var(--surface);border-color:var(--rose);color:var(--ink)}
 .btn.sec:hover{background:var(--rose2)}
 .btn.ghost{background:transparent;color:var(--ink2);border-color:var(--line)}
 .btn.turq{background:var(--turq);color:#fff}
-.btn.sm{padding:8px 14px;font-size:14px;min-height:38px}
+.btn.sm{padding:8px 14px;font-size:calc(14px*var(--ts,1));min-height:38px}
 .btn[disabled]{opacity:.45;cursor:not-allowed}
-.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:700;white-space:nowrap}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-size:calc(12.5px*var(--ts,1));font-weight:700;white-space:nowrap}
 .pill.decouvrir{background:var(--surface3);color:var(--ink2)}
 .pill.encours{background:var(--turq2);color:var(--turq)}
 .pill.revoir{background:var(--gold2);color:var(--gold)}
 .pill.maitrisee{background:var(--ok2);color:var(--ok)}
 .pill.fav{background:var(--rose2);color:var(--framboise)}
 .seg{display:inline-flex;background:var(--surface2);border-radius:999px;padding:4px;gap:2px;flex-wrap:wrap}
-.seg button{border:0;background:transparent;border-radius:999px;padding:8px 14px;font-weight:700;font-size:14px;cursor:pointer;color:var(--ink2)}
+.seg button{border:0;background:transparent;border-radius:999px;padding:8px 14px;font-weight:700;font-size:calc(14px*var(--ts,1));cursor:pointer;color:var(--ink2)}
 .seg button.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-weight:600;font-size:14px;cursor:pointer}
+.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-weight:600;font-size:calc(14px*var(--ts,1));cursor:pointer}
 .chip.on{border-color:var(--framboise);background:var(--rose2);color:var(--framboise2)}
 .bar{height:10px;border-radius:999px;background:var(--surface3);overflow:hidden}
 .bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--framboise),#E7739A);border-radius:inherit;transition:width .6s ease}
 .bar.turq>i{background:linear-gradient(90deg,var(--turq),#7ED3CD)}
 .bar.sauge>i{background:var(--sauge)}
 .stat{display:flex;flex-direction:column;gap:2px}
-.stat b{font-size:28px;font-family:var(--f-display);font-weight:400;line-height:1.1}
-.stat span{font-size:13px;color:var(--ink2)}
-.input{width:100%;border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:12px 14px;font-size:16px}
+.stat b{font-size:calc(28px*var(--ts,1));font-family:var(--f-display);font-weight:400;line-height:1.1}
+.stat span{font-size:calc(13px*var(--ts,1));color:var(--ink2)}
+.input{width:100%;border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:12px 14px;font-size:calc(16px*var(--ts,1))}
 .input:focus{border-color:var(--turq);outline:none}
 textarea.input{min-height:180px;resize:vertical;line-height:1.55}
 .tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
-.tabs button{flex:none;border:0;background:transparent;padding:9px 14px;border-radius:999px;font-weight:700;font-size:14.5px;color:var(--ink2);cursor:pointer;white-space:nowrap}
+.tabs button{flex:none;border:0;background:transparent;padding:9px 14px;border-radius:999px;font-weight:700;font-size:calc(14.5px*var(--ts,1));color:var(--ink2);cursor:pointer;white-space:nowrap}
 .tabs button.on{background:var(--ink);color:var(--bg)}
 .list{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
 .list li::marker{color:var(--framboise)}
@@ -150,18 +150,18 @@ textarea.input{min-height:180px;resize:vertical;line-height:1.55}
 .dl dt{font-weight:700}
 .dl dd{margin:0;min-width:0}
 @media (max-width:620px){.dl>div{grid-template-columns:1fr}}
-.ref{font-size:12.5px;color:var(--ink2);white-space:nowrap}
-.note{border-left:4px solid var(--gold);background:var(--gold2);padding:12px 14px;border-radius:0 12px 12px 0;font-size:14.5px}
+.ref{font-size:calc(12.5px*var(--ts,1));color:var(--ink2);white-space:nowrap}
+.note{border-left:4px solid var(--gold);background:var(--gold2);padding:12px 14px;border-radius:0 12px 12px 0;font-size:calc(14.5px*var(--ts,1))}
 .note.turq{border-color:var(--turq);background:var(--turq2)}
 .empty{text-align:center;padding:26px;color:var(--ink2)}
 
 /* Holly */
 .holly-svg{width:100%;height:auto;display:block;overflow:visible}
-.bubble{position:relative;background:var(--surface);border:1.5px solid var(--rose);border-radius:20px;padding:14px 16px;font-family:var(--f-hand);font-size:23px;line-height:1.18;color:var(--ink)}
+.bubble{position:relative;background:var(--surface);border:1.5px solid var(--rose);border-radius:20px;padding:14px 16px;font-family:var(--f-hand);font-size:calc(23px*var(--ts,1));line-height:1.18;color:var(--ink)}
 .holly-say{display:grid;grid-template-columns:110px 1fr;gap:12px;align-items:center}
-.holly-say .who{font-family:var(--f-ui);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--framboise);display:block;margin-bottom:2px}
+.holly-say .who{font-family:var(--f-ui);font-size:calc(12px*var(--ts,1));font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--framboise);display:block;margin-bottom:2px}
 .holly-say.sm{grid-template-columns:72px 1fr}
-.holly-say.sm .bubble{font-size:20px;padding:10px 14px}
+.holly-say.sm .bubble{font-size:calc(20px*var(--ts,1));padding:10px 14px}
 .bob{animation:bob 4s ease-in-out infinite;transform-origin:50% 90%}
 @keyframes bob{50%{transform:translateY(-4px) rotate(1deg)}}
 .breathe{animation:breathe 5s ease-in-out infinite;transform-origin:50% 100%}
@@ -179,16 +179,16 @@ body.focus .deco,body.focus .holly-say:not(.keep),body.focus .love{display:none!
 /* Library */
 .chcard{display:flex;flex-direction:column;gap:12px;text-decoration:none;color:inherit;cursor:pointer;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:18px;box-shadow:var(--shadow);transition:transform .15s,border-color .15s;width:100%}
 .chcard:hover{transform:translateY(-2px);border-color:var(--rose)}
-.chcard .num{font-family:var(--f-display);font-size:30px;line-height:1;color:var(--framboise)}
-.chcard h3{font-size:18.5px}
+.chcard .num{font-family:var(--f-display);font-size:calc(30px*var(--ts,1));line-height:1;color:var(--framboise)}
+.chcard h3{font-size:calc(18.5px*var(--ts,1))}
 .ring{--p:0;width:46px;height:46px;border-radius:50%;background:conic-gradient(var(--framboise) calc(var(--p)*1%),var(--surface3) 0);display:grid;place-items:center;flex:none}
-.ring>span{width:36px;height:36px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-size:11.5px;font-weight:800}
+.ring>span{width:36px;height:36px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-size:calc(11.5px*var(--ts,1));font-weight:800}
 .subjhead{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
 .subjhead .ic{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:var(--turq2);color:var(--turq)}
 .subjhead .ic svg{width:30px;height:30px}
 
 /* Quiz */
-.q-opt{display:flex;gap:12px;align-items:flex-start;border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;cursor:pointer;background:var(--surface);text-align:left;width:100%;font-size:16px}
+.q-opt{display:flex;gap:12px;align-items:flex-start;border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;cursor:pointer;background:var(--surface);text-align:left;width:100%;font-size:calc(16px*var(--ts,1))}
 .q-opt:hover{border-color:var(--rose)}
 .q-opt .box{width:22px;height:22px;flex:none;border:2px solid var(--ink2);border-radius:50%;margin-top:1px;display:grid;place-items:center}
 .q-opt.multi .box{border-radius:6px}
@@ -198,7 +198,7 @@ body.focus .deco,body.focus .holly-say:not(.keep),body.focus .love{display:none!
 .q-opt.good{border-color:var(--ok);background:var(--ok2)}
 .q-opt.bad{border-color:var(--ko);background:var(--ko2)}
 .q-opt[disabled]{cursor:default}
-.diff{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700}
+.diff{display:inline-flex;align-items:center;gap:6px;font-size:calc(13px*var(--ts,1));font-weight:700}
 .fb{border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px}
 .fb.ok{background:var(--ok2)}
 .fb.ko{background:var(--ko2)}
@@ -213,7 +213,7 @@ body.focus .deco,body.focus .holly-say:not(.keep),body.focus .love{display:none!
 .flip .back{transform:rotateY(180deg);background:var(--turq2)}
 .flip .face .k{position:absolute;top:16px;left:20px}
 .flip .face .t{font-family:var(--f-display);font-size:clamp(20px,3vw,26px);line-height:1.25}
-.flip .back .t{font-family:var(--f-ui);font-size:18px;font-weight:500}
+.flip .back .t{font-family:var(--f-ui);font-size:calc(18px*var(--ts,1));font-weight:500}
 @media (prefers-reduced-motion:reduce){.flip .inner,.bar>i{transition:none}.bob,.breathe{animation:none}}
 
 /* Travel */
@@ -225,16 +225,16 @@ body.focus .deco,body.focus .holly-say:not(.keep),body.focus .love{display:none!
 .pin text{font:700 15px var(--f-ui);fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:4px}
 .scene{border-radius:18px;overflow:hidden;line-height:0}
 .scene svg{width:100%;height:auto;display:block;aspect-ratio:400/220}
-.stamp{border:2px dashed var(--framboise);border-radius:12px;padding:6px 10px;color:var(--framboise);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;transform:rotate(-4deg);display:inline-block}
+.stamp{border:2px dashed var(--framboise);border-radius:12px;padding:6px 10px;color:var(--framboise);font-weight:800;font-size:calc(12px*var(--ts,1));letter-spacing:.08em;text-transform:uppercase;transform:rotate(-4deg);display:inline-block}
 
 /* Love box */
 .env{position:relative;border-radius:18px;padding:18px;min-height:140px;display:flex;flex-direction:column;justify-content:space-between;gap:10px;cursor:pointer;border:1.5px solid var(--rose);background:var(--surface);text-align:left;width:100%}
 .env.locked{cursor:default;border-style:dashed;background:var(--surface2);color:var(--ink2)}
 .env.open{background:linear-gradient(150deg,var(--rose2),var(--surface))}
-.env .msg{font-family:var(--f-hand);font-size:24px;line-height:1.2;color:var(--ink)}
+.env .msg{font-family:var(--f-hand);font-size:calc(24px*var(--ts,1));line-height:1.2;color:var(--ink)}
 
 /* Overlays */
-.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:90;background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:700;font-size:14.5px;box-shadow:var(--shadow);max-width:calc(100% - 32px);text-align:center}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:90;background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-weight:700;font-size:calc(14.5px*var(--ts,1));box-shadow:var(--shadow);max-width:calc(100% - 32px);text-align:center}
 @media (min-width:960px){.toast{bottom:28px}}
 .celebrate{position:fixed;inset:0;z-index:95;background:rgba(40,20,30,.45);display:grid;place-items:center;padding:16px}
 .celebrate .card{max-width:420px;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
@@ -254,41 +254,41 @@ body.focus .deco,body.focus .holly-say:not(.keep),body.focus .love{display:none!
 .badge{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:14px 10px;border-radius:16px;background:var(--surface2)}
 .badge .medal{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:var(--gold2);border:2px solid var(--gold)}
 .badge.off{opacity:.45;filter:grayscale(1)}
-.badge b{font-size:14px;line-height:1.2}
-table.tbl{width:100%;border-collapse:collapse;font-size:14.5px}
+.badge b{font-size:calc(14px*var(--ts,1));line-height:1.2}
+table.tbl{width:100%;border-collapse:collapse;font-size:calc(14.5px*var(--ts,1))}
 .tbl th,.tbl td{text-align:left;padding:10px 8px;border-top:1px solid var(--line);vertical-align:top}
-.tbl th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);border-top:0}
+.tbl th{font-size:calc(12px*var(--ts,1));letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);border-top:0}
 .scroll-x{overflow-x:auto}
 .eli{border:1.5px dashed var(--turq);border-radius:18px;padding:16px;background:var(--turq2);display:flex;flex-direction:column;gap:10px}
-.eli h4{margin:0;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--turq)}
-.holly-btn{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--turq);background:var(--surface);color:var(--turq);border-radius:999px;padding:9px 16px;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em}
+.eli h4{margin:0;font-size:calc(14px*var(--ts,1));letter-spacing:.06em;text-transform:uppercase;color:var(--turq)}
+.holly-btn{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--turq);background:var(--surface);color:var(--turq);border-radius:999px;padding:9px 16px;font-weight:800;font-size:calc(14px*var(--ts,1));cursor:pointer;letter-spacing:.02em}
 .holly-btn:hover{background:var(--turq2)}
-.secnum{font-family:var(--f-display);color:var(--framboise);font-size:22px;line-height:1}
+.secnum{font-family:var(--f-display);color:var(--framboise);font-size:calc(22px*var(--ts,1));line-height:1}
 .fiche-sec{display:grid;grid-template-columns:44px 1fr;gap:12px;padding:18px 0;border-top:1px solid var(--line)}
 .fiche-sec:first-child{border-top:0}
 .juris{border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;background:var(--surface2)}
 .juris .dl>div{grid-template-columns:minmax(0,140px) 1fr;padding:6px 0}
-.kbd{font-size:12px;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 6px;color:var(--ink2)}
+.kbd{font-size:calc(12px*var(--ts,1));border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 6px;color:var(--ink2)}
 
 /* ===== Style Apple ===== */
-body{font-size:17px;line-height:1.47;letter-spacing:-.012em;-moz-osx-font-smoothing:grayscale}
+body{font-size:calc(17px*var(--ts,1));line-height:1.47;letter-spacing:-.012em;-moz-osx-font-smoothing:grayscale}
 h1,h2,h3,.disp{font-weight:700;letter-spacing:-.025em}
 h1{font-size:clamp(32px,6vw,52px);line-height:1.06}
 h2{font-size:clamp(22px,3.4vw,28px);letter-spacing:-.02em}
-h3{font-size:19px;font-weight:600;letter-spacing:-.015em}
-.eyebrow{letter-spacing:.02em;text-transform:none;font-size:13px;font-weight:600;color:var(--framboise)}
+h3{font-size:calc(19px*var(--ts,1));font-weight:600;letter-spacing:-.015em}
+.eyebrow{letter-spacing:.02em;text-transform:none;font-size:calc(13px*var(--ts,1));font-weight:600;color:var(--framboise)}
 .hand{font-style:italic;font-size:1.15em}
 .top{background:color-mix(in srgb,var(--bg) 72%,transparent);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:.5px solid var(--line)}
-.brand b{font-weight:700;font-size:18px;letter-spacing:-.02em}
-.brand small{letter-spacing:.02em;text-transform:none;font-size:12px}
+.brand b{font-weight:700;font-size:calc(18px*var(--ts,1));letter-spacing:-.02em}
+.brand small{letter-spacing:.02em;text-transform:none;font-size:calc(12px*var(--ts,1))}
 .iconbtn{border:0;background:var(--surface3);border-radius:50%;width:36px;height:36px}
 .iconbtn:hover{background:var(--line)}
 .iconbtn svg{width:18px;height:18px}
 .xpchip{border:0;background:var(--surface3)}
 .tabbar{background:color-mix(in srgb,var(--surface) 78%,transparent);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-top:.5px solid var(--line)}
-.tabbar a,.tabbar button{font-size:10.5px;font-weight:500}
+.tabbar a,.tabbar button{font-size:calc(10.5px*var(--ts,1));font-weight:500}
 @media (min-width:960px){.side{background:color-mix(in srgb,var(--surface2) 80%,transparent);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-right:.5px solid var(--line);padding:22px 12px}}
-.nav a{border-radius:8px;padding:7px 10px;font-weight:500;font-size:14px}
+.nav a{border-radius:8px;padding:7px 10px;font-weight:500;font-size:calc(14px*var(--ts,1))}
 .nav a svg{color:var(--framboise)}
 .nav a.on{background:var(--framboise);color:#fff}
 .nav a.on svg{color:#fff}
@@ -296,17 +296,17 @@ h3{font-size:19px;font-weight:600;letter-spacing:-.015em}
 .card{border:0;border-radius:var(--r);box-shadow:var(--shadow);padding:22px}
 .card.flat{background:var(--surface2);box-shadow:none}
 :root[data-theme="dark"] .card.flat{background:var(--surface)}
-.btn{font-weight:600;font-size:16px;border:0;min-height:44px;padding:11px 22px;letter-spacing:-.01em;transition:transform .12s,filter .15s}
+.btn{font-weight:600;font-size:calc(16px*var(--ts,1));border:0;min-height:44px;padding:11px 22px;letter-spacing:-.01em;transition:transform .12s,filter .15s}
 .btn:active{transform:scale(.97)}
 .btn.pri:hover{background:var(--framboise);filter:brightness(1.07)}
 .btn.sec{background:var(--surface3);color:var(--ink)}
 .btn.sec:hover{background:var(--surface3);filter:brightness(.97)}
 .btn.ghost{background:transparent;color:var(--framboise);border:0}
 .btn.ghost:hover{background:var(--surface2)}
-.btn.sm{font-size:14px;min-height:34px;padding:7px 14px}
-.pill{font-weight:600;font-size:12px;padding:3px 9px}
+.btn.sm{font-size:calc(14px*var(--ts,1));min-height:34px;padding:7px 14px}
+.pill{font-weight:600;font-size:calc(12px*var(--ts,1));padding:3px 9px}
 .seg{background:var(--surface3);border-radius:10px;padding:2px}
-.seg button{border-radius:8px;padding:6px 14px;font-weight:500;font-size:14px;color:var(--ink)}
+.seg button{border-radius:8px;padding:6px 14px;font-weight:500;font-size:calc(14px*var(--ts,1));color:var(--ink)}
 .seg button.on{background:var(--surface);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.04)}
 :root[data-theme="dark"] .seg button.on{background:#636366}
 .chip{border:0;background:var(--surface3);font-weight:500}
@@ -322,10 +322,10 @@ h3{font-size:19px;font-weight:600;letter-spacing:-.015em}
 .tabs button.on{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.12)}
 :root[data-theme="dark"] .tabs button.on{background:#636366}
 .note{border-left:0;border-radius:14px}
-.bubble{border:0;background:var(--surface2);border-radius:18px 18px 18px 6px;font-size:19px;line-height:1.3;font-style:italic}
+.bubble{border:0;background:var(--surface2);border-radius:18px 18px 18px 6px;font-size:calc(19px*var(--ts,1));line-height:1.3;font-style:italic}
 .card .bubble,.tint-rose .bubble{background:var(--surface)}
-.holly-say .who{letter-spacing:.02em;text-transform:none;font-style:normal;font-size:12px}
-.holly-say.sm .bubble{font-size:17px}
+.holly-say .who{letter-spacing:.02em;text-transform:none;font-style:normal;font-size:calc(12px*var(--ts,1))}
+.holly-say.sm .bubble{font-size:calc(17px*var(--ts,1))}
 .hero{background:linear-gradient(180deg,var(--rose2),var(--surface));box-shadow:var(--shadow);border-radius:28px}
 .hero .slogan{font-style:italic;font-size:clamp(20px,2.8vw,25px)}
 .chcard{border:0;border-radius:var(--r);box-shadow:var(--shadow)}
@@ -342,7 +342,7 @@ h3{font-size:19px;font-weight:600;letter-spacing:-.015em}
 .flip .face .t{font-family:var(--f-display);font-weight:600;letter-spacing:-.02em}
 .env{border:0;box-shadow:var(--shadow);border-radius:20px}
 .env.locked{border:0;box-shadow:none}
-.env .msg{font-style:italic;font-size:21px}
+.env .msg{font-style:italic;font-size:calc(21px*var(--ts,1))}
 .sheet,.search-ov,.celebrate{background:rgba(0,0,0,.28);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .sheet>div{border-radius:14px 14px 0 0}
 .search-ov>div{border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
@@ -352,7 +352,7 @@ h3{font-size:19px;font-weight:600;letter-spacing:-.015em}
 .eli{border:0;border-radius:18px}
 .holly-btn{border:0;background:var(--turq2);font-weight:600;letter-spacing:0}
 .secnum{font-family:var(--f-display);font-weight:700}
-.tbl th{letter-spacing:.01em;text-transform:none;font-size:13px;font-weight:600}
+.tbl th{letter-spacing:.01em;text-transform:none;font-size:calc(13px*var(--ts,1));font-weight:600}
 .juris{border:0}
 .badge{background:var(--surface2)}
 .btn.pri,.btn.pri:hover{background:#D2335F;color:#fff}
@@ -361,7 +361,7 @@ h3{font-size:19px;font-weight:600;letter-spacing:-.015em}
 .xpchip .lv{background:#D2335F}
 
 /* ===== Apple, deuxième passe ===== */
-body{font-size:17px}
+body{font-size:calc(17px*var(--ts,1))}
 main{padding-block:34px 120px}
 .wrap{gap:28px}
 h1{font-weight:700;letter-spacing:-.035em;line-height:1.04}
@@ -379,24 +379,24 @@ h2{font-weight:700;letter-spacing:-.028em}
 .hero .slogan,.hero.home p.slogan{font-family:var(--f-ui);font-style:normal;font-weight:700;letter-spacing:-.02em;font-size:clamp(20px,2.6vw,26px)!important;background:linear-gradient(90deg,#E0406E,#B04CC8 55%,#3A7BEA);-webkit-background-clip:text;background-clip:text;color:transparent!important}
 .btn.link{background:none;color:var(--framboise);padding-inline:4px;min-height:auto;font-weight:500}
 .btn.link:hover{text-decoration:underline;filter:none}
-.bubble,.holly-say.sm .bubble{font-family:var(--f-ui);font-style:normal;font-size:16.5px;line-height:1.4;font-weight:450}
+.bubble,.holly-say.sm .bubble{font-family:var(--f-ui);font-style:normal;font-size:calc(16.5px*var(--ts,1));line-height:1.4;font-weight:450}
 .hand{font-family:var(--f-ui);font-style:normal;font-weight:600;letter-spacing:-.02em;font-size:1.05em}
 .env .msg{font-family:var(--f-ui);font-style:normal}
-.eyebrow{font-weight:600;font-size:14px;letter-spacing:-.005em}
+.eyebrow{font-weight:600;font-size:calc(14px*var(--ts,1));letter-spacing:-.005em}
 .card{padding:24px}
 .nav{gap:1px;display:flex;flex-direction:column}
-.nav a{padding:6px 10px;font-size:13.5px}
+.nav a{padding:6px 10px;font-size:calc(13.5px*var(--ts,1))}
 .nav a svg{width:17px;height:17px}
 .nav a.on{background:color-mix(in srgb,var(--ink) 9%,transparent);color:var(--ink)}
 .nav a.on svg{color:var(--framboise)}
 @media (min-width:960px){.app{grid-template-columns:230px 1fr}}
 .top{border-bottom:.5px solid var(--line)}
-.stat b{font-size:34px}
+.stat b{font-size:calc(34px*var(--ts,1))}
 .note{background:var(--surface2)}
 .note.turq{background:var(--surface2)}
 .chcard{padding:22px}
 .pill.fav{background:var(--surface3);color:var(--ink)}
-@media (max-width:600px){.br-d{display:none}.hero.home h1{font-size:40px}}
+@media (max-width:600px){.br-d{display:none}.hero.home h1{font-size:calc(40px*var(--ts,1))}}
 
 /* ===== Feuille « Plus » façon iOS ===== */
 .sheet{align-items:flex-end;animation:fadein .2s ease}
@@ -408,9 +408,9 @@ h2{font-weight:700;letter-spacing:-.028em}
 .psheet .grab{width:36px;height:5px;border-radius:3px;background:var(--surface3);align-self:center;margin:2px 0 8px}
 .pclose{width:30px;height:30px;border-radius:50%;border:0;background:var(--surface3);color:var(--ink2);display:grid;place-items:center;cursor:pointer}
 .pclose svg{width:14px;height:14px;stroke-width:2.6}
-.plabel{font-size:13px;color:var(--ink2);text-transform:uppercase;letter-spacing:.02em;margin:14px 16px 6px}
+.plabel{font-size:calc(13px*var(--ts,1));color:var(--ink2);text-transform:uppercase;letter-spacing:.02em;margin:14px 16px 6px}
 .pgroup{background:var(--surface);border-radius:12px;overflow:hidden}
-.prow{display:flex;align-items:center;gap:12px;width:100%;padding:0 14px 0 14px;min-height:50px;background:none;border:0;text-align:left;color:var(--ink);text-decoration:none;cursor:pointer;font-size:17px;position:relative}
+.prow{display:flex;align-items:center;gap:12px;width:100%;padding:0 14px 0 14px;min-height:50px;background:none;border:0;text-align:left;color:var(--ink);text-decoration:none;cursor:pointer;font-size:calc(17px*var(--ts,1));position:relative}
 .prow:active{background:var(--surface3)}
 @media (hover:hover){.prow:hover{background:var(--surface2)}}
 .prow+.prow::before{content:"";position:absolute;top:0;right:0;left:56px;border-top:.5px solid var(--line)}
@@ -418,7 +418,7 @@ h2{font-weight:700;letter-spacing:-.028em}
 .prow .tile svg{width:18px;height:18px;stroke-width:2.1}
 .pmain{flex:1;min-width:0;display:flex;flex-direction:column;padding:10px 0}
 .pt{font-weight:400;letter-spacing:-.01em}
-.ps{font-size:13px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps{font-size:calc(13px*var(--ts,1));color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pchev{color:var(--ink2);opacity:.55;display:grid}
 .pchev svg{width:16px;height:16px;stroke-width:2.4}
 .ptoggle{width:51px;height:31px;border-radius:999px;background:var(--surface3);position:relative;flex:none;transition:background .2s}
@@ -427,10 +427,10 @@ h2{font-weight:700;letter-spacing:-.028em}
 .ptoggle.on i{transform:translateX(20px)}
 .pacct{min-height:76px}
 .pacct .av{width:56px;height:56px;border-radius:50%;flex:none;object-fit:cover;background:var(--surface3);display:grid;place-items:center;overflow:hidden}
-.pacct .pt{font-size:19px;font-weight:600}
+.pacct .pt{font-size:calc(19px*var(--ts,1));font-weight:600}
 .prow.pgoogle .pt{color:#007AFF}
 :root[data-theme="dark"] .prow.pgoogle .pt{color:#0A84FF}
-.pnote{font-size:13px;color:var(--ink2);margin:6px 16px 0;line-height:1.35}
+.pnote{font-size:calc(13px*var(--ts,1));color:var(--ink2);margin:6px 16px 0;line-height:1.35}
 .desk-only{display:none}@media (min-width:960px){.desk-only{display:grid}}
 .psheet>*{flex-shrink:0}
 .sheet>.psheet{--grp:#F2F2F7;--cell:#FFFFFF;background:var(--grp);padding:8px max(16px,env(safe-area-inset-left,0px)) calc(24px + env(safe-area-inset-bottom,0px));border-radius:14px 14px 0 0}@media (min-width:600px){.sheet>.psheet{border-radius:16px}}
@@ -479,7 +479,7 @@ html{scroll-behavior:smooth}
 .pgroup{background:var(--cell,var(--surface));border-radius:12px;overflow:hidden}
 .wrap .pgroup{box-shadow:var(--shadow)}
 .wrap .plabel{margin:4px 16px 8px}
-.pcount{color:var(--ink2);font-size:15px;margin-right:2px}
+.pcount{color:var(--ink2);font-size:calc(15px*var(--ts,1));margin-right:2px}
 .seg.wide{display:flex;width:100%;border-radius:9px}
 .seg.wide button{flex:1;padding:7px 6px;text-align:center}
 .btn.block{width:100%}
@@ -487,25 +487,25 @@ html{scroll-behavior:smooth}
 .gring{display:flex;flex-direction:column;align-items:center;gap:2px}
 .gring svg{width:72px;height:72px}
 .gring svg circle:last-child{transition:stroke-dashoffset .9s var(--ease)}
-.gring b{font-size:15px;margin-top:4px}
-.gring span{font-size:12px;color:var(--ink2)}
+.gring b{font-size:calc(15px*var(--ts,1));margin-top:4px}
+.gring span{font-size:calc(12px*var(--ts,1));color:var(--ink2)}
 .hero.home h1{font-size:clamp(36px,6.6vw,68px)}
 .hero.home .art{max-width:230px}
 .searchfield{display:flex;align-items:center;gap:8px;background:var(--surface3);border-radius:10px;padding:0 10px;height:38px;color:var(--ink2)}
 .searchfield svg{width:17px;height:17px;flex:none}
-.searchfield input{border:0;background:none;outline:none;flex:1;font-size:17px;color:var(--ink);min-width:0}
-.selpill select{appearance:none;-webkit-appearance:none;border:0;background:var(--surface3);border-radius:999px;padding:7px 28px 7px 14px;font-size:14px;font-weight:500;color:var(--ink);cursor:pointer;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 15px) 52%,calc(100% - 10px) 52%;background-size:5px 5px;background-repeat:no-repeat}
+.searchfield input{border:0;background:none;outline:none;flex:1;font-size:calc(17px*var(--ts,1));color:var(--ink);min-width:0}
+.selpill select{appearance:none;-webkit-appearance:none;border:0;background:var(--surface3);border-radius:999px;padding:7px 28px 7px 14px;font-size:calc(14px*var(--ts,1));font-weight:500;color:var(--ink);cursor:pointer;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 15px) 52%,calc(100% - 10px) 52%;background-size:5px 5px;background-repeat:no-repeat}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-.prow .num-tile{background:var(--surface2);color:var(--framboise);font-weight:700;font-size:15px}
+.prow .num-tile{background:var(--surface2);color:var(--framboise);font-weight:700;font-size:calc(15px*var(--ts,1))}
 .mini-ring{--p:0;width:22px;height:22px;border-radius:50%;flex:none;background:conic-gradient(var(--c,#0A84FF) calc(var(--p)*1%),var(--surface3) 0);-webkit-mask:radial-gradient(circle,transparent 6px,#000 6.5px);mask:radial-gradient(circle,transparent 6px,#000 6.5px)}
-.favstar{color:#FF9500;font-size:14px}
+.favstar{color:#FF9500;font-size:calc(14px*var(--ts,1))}
 .pdetails{background:var(--surface);border-radius:12px;padding:12px 16px;box-shadow:var(--shadow)}
 .pdetails summary{cursor:pointer;display:flex;justify-content:space-between;font-weight:500;list-style:none}
 .pdetails summary::-webkit-details-marker{display:none}
 .pdetails summary::after{content:"›";color:var(--ink2);transform:rotate(90deg);transition:transform .2s;margin-left:8px}
 .pdetails[open] summary::after{transform:rotate(-90deg)}
 .pdetails summary .muted{margin-left:auto;font-weight:400}
-.bignum{font-size:64px;font-weight:700;letter-spacing:-.04em;line-height:1}
+.bignum{font-size:calc(64px*var(--ts,1));font-weight:700;letter-spacing:-.04em;line-height:1}
 
 /* ===== Flashcard qui se retourne ===== */
 .fcard{perspective:1600px;-webkit-tap-highlight-color:transparent}
@@ -515,16 +515,16 @@ html{scroll-behavior:smooth}
 .fcard .face{position:absolute;inset:0;border-radius:28px;padding:28px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;overflow:auto;box-shadow:0 10px 30px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);-webkit-backface-visibility:hidden;backface-visibility:hidden}
 .fcard .front{background:linear-gradient(170deg,var(--surface) 55%,var(--rose2))}
 .fcard .back{background:linear-gradient(170deg,var(--surface) 50%,var(--turq2));transform:rotateY(180deg)}
-.fcard .face .k{position:absolute;top:16px;left:50%;transform:translateX(-50%);font-size:12px;font-weight:600;color:var(--ink2);background:var(--surface3);padding:3px 10px;border-radius:999px}
+.fcard .face .k{position:absolute;top:16px;left:50%;transform:translateX(-50%);font-size:calc(12px*var(--ts,1));font-weight:600;color:var(--ink2);background:var(--surface3);padding:3px 10px;border-radius:999px}
 .fcard .fholly{width:132px;flex:none;margin-top:8px}
 .fcard .fholly.sm{width:76px}
 .fcard .face .t{font-size:clamp(20px,5vw,25px);font-weight:600;letter-spacing:-.02em;line-height:1.28;margin:0;max-width:30ch}
 .fcard .back .t{font-weight:500;font-size:clamp(17px,4.4vw,20px);line-height:1.42}
-.fcard .hint{font-size:13px;color:var(--ink2);margin:0}
-.fcard .ref{font-size:12.5px;color:var(--ink2);margin:0}
+.fcard .hint{font-size:calc(13px*var(--ts,1));color:var(--ink2);margin:0}
+.fcard .ref{font-size:calc(12.5px*var(--ts,1));color:var(--ink2);margin:0}
 .rate{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .3s .25s,transform .4s .25s var(--spring)}
 .rate.show{opacity:1;transform:none;pointer-events:auto}
-.rate .btn{flex-direction:column;gap:6px;padding:10px 6px;font-size:14px;min-height:64px;border-radius:16px}
+.rate .btn{flex-direction:column;gap:6px;padding:10px 6px;font-size:calc(14px*var(--ts,1));min-height:64px;border-radius:16px}
 .dotc{width:10px;height:10px;border-radius:50%}
 /* ===== Demande à Holly (IA) ===== */
 .tabbar.six{grid-template-columns:repeat(6,1fr)}
@@ -535,8 +535,8 @@ body.ia-on .wrap{max-width:780px}
 .ia-head{display:flex;align-items:center;gap:10px;padding:12px 0;position:sticky;top:var(--ia-top,60px);z-index:5;background:var(--bg)}
 .ia-head .av{width:34px;height:34px;flex:none;border-radius:50%;background:var(--rose2);overflow:hidden;display:grid;place-items:center}
 .ia-head .av svg{width:42px;height:42px;margin-top:7px}
-.ia-head b{font-size:17px;font-weight:600;letter-spacing:-.01em}
-.ia-head .sub{font-size:12.5px;color:var(--ink2);display:block;line-height:1.2}
+.ia-head b{font-size:calc(17px*var(--ts,1));font-weight:600;letter-spacing:-.01em}
+.ia-head .sub{font-size:calc(12.5px*var(--ts,1));color:var(--ink2);display:block;line-height:1.2}
 .ia-head .grow{flex:1;min-width:0}
 .ia-new{border:0;background:none;width:38px;height:38px;border-radius:10px;display:grid;place-items:center;cursor:pointer;color:var(--ink)}
 .ia-new:hover{background:var(--surface2)}.ia-new svg{width:21px;height:21px}
@@ -546,7 +546,7 @@ body.ia-on .wrap{max-width:780px}
 .ia-empty h2{font-size:clamp(24px,5.4vw,30px);font-weight:600;letter-spacing:-.02em;margin:0}
 .ia-empty p{margin:0;color:var(--ink2);max-width:42ch}
 .ia-sugg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;margin-top:10px}
-.ia-sugg button{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:12px 14px;font:inherit;font-size:14px;line-height:1.35;color:var(--ink);cursor:pointer;min-width:0}
+.ia-sugg button{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:12px 14px;font:inherit;font-size:calc(14px*var(--ts,1));line-height:1.35;color:var(--ink);cursor:pointer;min-width:0}
 .ia-sugg button b{display:block;font-weight:600;margin-bottom:2px}
 .ia-sugg button span{color:var(--ink2)}
 .ia-sugg button:hover{background:var(--surface2)}
@@ -555,34 +555,34 @@ body.ia-on .wrap{max-width:780px}
 .ia-msg.me{justify-content:flex-end}
 .ia-msg .av{width:30px;height:30px;flex:none;border-radius:50%;background:var(--rose2);overflow:hidden;display:grid;place-items:center;margin-top:2px}
 .ia-msg .av svg{width:38px;height:38px;margin-top:6px}
-.ia-b{line-height:1.62;font-size:16px;overflow-wrap:anywhere;min-width:0}
+.ia-b{line-height:1.62;font-size:calc(16px*var(--ts,1));overflow-wrap:anywhere;min-width:0}
 .ia-msg.me .ia-b{background:var(--surface3);color:var(--ink);border-radius:22px;padding:10px 16px;max-width:82%;white-space:pre-wrap}
 .ia-msg.holly .ia-b{flex:1;padding-top:4px}
 .ia-b p{margin:0 0 12px}.ia-b p:last-child{margin-bottom:0}
 .ia-b ul,.ia-b ol{margin:4px 0 12px;padding-left:22px;display:flex;flex-direction:column;gap:5px}
 .ia-b li::marker{color:var(--ink2)}
-.ia-b h4{margin:16px 0 6px;font-size:17px;font-weight:600}
+.ia-b h4{margin:16px 0 6px;font-size:calc(17px*var(--ts,1));font-weight:600}
 .ia-b h4:first-child{margin-top:0}
 .ia-b code{font-size:.9em;background:var(--surface3);padding:1px 5px;border-radius:5px}
-.ia-src{font-size:12.5px;font-style:normal;color:var(--ink2);background:var(--surface2);border-radius:999px;padding:1px 8px;white-space:nowrap;display:inline-block}
+.ia-src{font-size:calc(12.5px*var(--ts,1));font-style:normal;color:var(--ink2);background:var(--surface2);border-radius:999px;padding:1px 8px;white-space:nowrap;display:inline-block}
 .ia-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center}
-.ia-meta a{font-size:12.5px;text-decoration:none;background:var(--surface2);color:var(--ink);border-radius:999px;padding:3px 10px}
+.ia-meta a{font-size:calc(12.5px*var(--ts,1));text-decoration:none;background:var(--surface2);color:var(--ink);border-radius:999px;padding:3px 10px}
 .ia-acts{display:flex;gap:2px;margin-top:6px;margin-left:-6px}
 .ia-acts button{border:0;background:none;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;color:var(--ink2);cursor:pointer}
 .ia-acts button:hover{background:var(--surface2);color:var(--ink)}.ia-acts svg{width:17px;height:17px}
-.ia-err{color:var(--ko);font-size:14px;margin-top:6px}
-.ia-step{font-size:13.5px;color:var(--ink2)}
+.ia-err{color:var(--ko);font-size:calc(14px*var(--ts,1));margin-top:6px}
+.ia-step{font-size:calc(13.5px*var(--ts,1));color:var(--ink2)}
 .ia-foot{position:sticky;bottom:var(--ia-bot,0px);z-index:5;padding:10px 0 12px;background:linear-gradient(to bottom,transparent,var(--bg) 22px)}
 .ia-box{display:flex;align-items:flex-end;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:8px 8px 8px 18px;box-shadow:0 6px 24px rgba(0,0,0,.07)}
 .ia-box:focus-within{border-color:color-mix(in srgb,var(--ink2) 45%,transparent)}
-.ia-box textarea{flex:1;border:0;outline:0;background:none;resize:none;font:inherit;font-size:16px;line-height:1.45;color:var(--ink);padding:7px 0;max-height:200px;min-height:24px}
+.ia-box textarea{flex:1;border:0;outline:0;background:none;resize:none;font:inherit;font-size:calc(16px*var(--ts,1));line-height:1.45;color:var(--ink);padding:7px 0;max-height:200px;min-height:24px}
 .ia-box textarea::placeholder{color:var(--ink2)}
 .ia-send{width:38px;height:38px;flex:none;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;background:var(--ink);color:var(--bg);transition:opacity .15s}
 .ia-send:disabled{opacity:.25;cursor:default}.ia-send svg{width:19px;height:19px}
-.ia-scope{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;background:var(--rose2);color:var(--framboise2);border-radius:999px;padding:4px 6px 4px 12px;margin:0 0 8px 6px;max-width:100%}
+.ia-scope{display:inline-flex;align-items:center;gap:6px;font-size:calc(12.5px*var(--ts,1));background:var(--rose2);color:var(--framboise2);border-radius:999px;padding:4px 6px 4px 12px;margin:0 0 8px 6px;max-width:100%}
 .ia-scope span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.ia-scope button{border:0;background:none;color:inherit;cursor:pointer;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:15px;line-height:1}
-.ia-note{font-size:12px;color:var(--ink2);text-align:center;margin:8px 0 0}
+.ia-scope button{border:0;background:none;color:inherit;cursor:pointer;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:calc(15px*var(--ts,1));line-height:1}
+.ia-note{font-size:calc(12px*var(--ts,1));color:var(--ink2);text-align:center;margin:8px 0 0}
 .ia-typing{display:inline-flex;gap:5px;padding:4px 0}.ia-typing i{width:7px;height:7px;border-radius:50%;background:var(--ink2);animation:iadot 1.2s infinite}.ia-typing i:nth-child(2){animation-delay:.2s}.ia-typing i:nth-child(3){animation-delay:.4s}
 @keyframes iadot{0%,60%,100%{opacity:.25}30%{opacity:1}}
 @media (prefers-reduced-motion:reduce){.ia-typing i{animation:none;opacity:.6}}
@@ -605,12 +605,12 @@ body.ia-on .wrap{max-width:780px}
 .ia-b p:has(+.ia-caret){display:inline}
 .ia-b blockquote{margin:6px 0 12px;padding:6px 12px;border-left:3px solid var(--rose);color:var(--ink2);background:var(--surface2);border-radius:0 10px 10px 0}
 .ia-b hr{border:0;border-top:.5px solid var(--line);margin:14px 0}
-.ia-err{display:flex;flex-wrap:wrap;align-items:center;gap:8px;color:var(--ko);font-size:14px;margin-top:8px;background:var(--ko2);padding:8px 12px;border-radius:12px}
-.ia-retry{border:0;background:var(--surface);color:var(--ink);font:inherit;font-size:13px;font-weight:600;border-radius:999px;padding:4px 12px;cursor:pointer}
+.ia-err{display:flex;flex-wrap:wrap;align-items:center;gap:8px;color:var(--ko);font-size:calc(14px*var(--ts,1));margin-top:8px;background:var(--ko2);padding:8px 12px;border-radius:12px}
+.ia-retry{border:0;background:var(--surface);color:var(--ink);font:inherit;font-size:calc(13px*var(--ts,1));font-weight:600;border-radius:999px;padding:4px 12px;cursor:pointer}
 .ia-jump{position:absolute;left:50%;top:-44px;transform:translateX(-50%);width:36px;height:36px;border-radius:50%;border:.5px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.12);cursor:pointer}
 .ia-jump svg{width:18px;height:18px}
 .ia-foot{position:sticky}
-.ia-steps{text-align:left;margin:4px auto 6px;padding-left:22px;display:flex;flex-direction:column;gap:4px;font-size:14.5px;max-width:42ch}
+.ia-steps{text-align:left;margin:4px auto 6px;padding-left:22px;display:flex;flex-direction:column;gap:4px;font-size:calc(14.5px*var(--ts,1));max-width:42ch}
 .ia-keyform{display:flex;gap:8px;width:100%;max-width:440px;flex-wrap:wrap;justify-content:center}
 .ia-keyform .input{flex:1 1 220px}
 body.ia-kb .tabbar{display:none}
@@ -628,8 +628,8 @@ body.ia-on .toast{bottom:calc(var(--ia-bot,0px) + 118px)}
 .ia-att:empty{display:none}
 .ia-thumb{position:relative;width:64px;height:64px;border-radius:14px;overflow:hidden;flex:none;box-shadow:0 2px 8px rgba(0,0,0,.12);animation:popin .3s var(--spring)}
 .ia-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.ia-thumb button{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:15px;line-height:1;display:grid;place-items:center;cursor:pointer}
-.ia-atthint{font-size:12.5px;color:var(--ink2);flex:1 1 160px}
+.ia-thumb button{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:calc(15px*var(--ts,1));line-height:1;display:grid;place-items:center;cursor:pointer}
+.ia-atthint{font-size:calc(12.5px*var(--ts,1));color:var(--ink2);flex:1 1 160px}
 .ia-ucol{display:flex;flex-direction:column;align-items:flex-end;gap:6px;max-width:82%}
 .ia-msg.me .ia-ucol .ia-b{max-width:100%}
 .ia-uimgs{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
@@ -637,21 +637,21 @@ body.ia-on .toast{bottom:calc(var(--ia-bot,0px) + 118px)}
 .ia-uimgs img:only-child{width:min(240px,60vw);height:auto;max-height:320px}
 .ia-photo-cta{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px dashed color-mix(in srgb,var(--framboise) 45%,transparent);background:var(--rose2);color:var(--ink);border-radius:16px;padding:12px 14px;font:inherit;cursor:pointer;margin-top:2px}
 .ia-photo-cta>svg{width:26px;height:26px;color:var(--framboise);flex:none}
-.ia-photo-cta b{display:block;font-size:14.5px;font-weight:600}
-.ia-photo-cta span span{font-size:13px;color:var(--ink2)}
+.ia-photo-cta b{display:block;font-size:calc(14.5px*var(--ts,1));font-weight:600}
+.ia-photo-cta span span{font-size:calc(13px*var(--ts,1));color:var(--ink2)}
 .ia-att:not(:empty){background:var(--bg);border-radius:16px;padding:6px;margin:0 0 6px}
 
 /* ===== Apple : progression, Holly, réglages ===== */
 .grings2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px}
-.minis{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--ink2)}
+.minis{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:calc(13px*var(--ts,1));color:var(--ink2)}
 .minis b{color:var(--ink);font-weight:600}
 .ddays{display:grid;grid-template-columns:repeat(14,1fr);gap:5px}
 .dday{aspect-ratio:1;border-radius:5px;background:var(--surface3)}
 .dday.on{background:#34C759}
 .prow.dim{opacity:.5}
 .prow.kv{align-items:flex-start;gap:16px;padding-top:12px;padding-bottom:12px}
-.prow.kv .k{flex:none;width:110px;color:var(--ink2);font-size:15px}
-.prow.kv .v{flex:1;font-size:15px;line-height:1.4}
+.prow.kv .k{flex:none;width:110px;color:var(--ink2);font-size:calc(15px*var(--ts,1))}
+.prow.kv .v{flex:1;font-size:calc(15px*var(--ts,1));line-height:1.4}
 .prow.kv+.prow.kv::before{left:14px}
 .bmedal{width:30px;height:30px;border-radius:50%;background:var(--gold2);display:grid;place-items:center;flex:none;overflow:hidden}
 .bmedal>*{max-width:26px;max-height:26px}
@@ -659,8 +659,8 @@ body.ia-on .toast{bottom:calc(var(--ia-bot,0px) + 118px)}
 .hgal figure{margin:0;background:var(--surface);border-radius:16px;padding:8px 6px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:var(--shadow)}
 .hgal .hh{width:72%}.hgal .hh.solo{width:78%}
 .hgal .hsc{position:relative;width:100%}.hgal .hsc .scene{position:absolute;inset:0;border-radius:10px;opacity:.85}.hgal .hsc .hh{position:relative;margin:0 auto}
-.hgal figcaption{font-size:12px;text-align:center;color:var(--ink2);line-height:1.25}
-.prow .pval{color:var(--ink2);font-size:15px;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hgal figcaption{font-size:calc(12px*var(--ts,1));text-align:center;color:var(--ink2);line-height:1.25}
+.prow .pval{color:var(--ink2);font-size:calc(15px*var(--ts,1));max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .prow.danger .pt{color:#FF3B30}
 .setbox{padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px;border-top:.5px solid var(--line)}
 .pdet>summary{list-style:none}.pdet>summary::-webkit-details-marker{display:none}
@@ -668,13 +668,13 @@ body.ia-on .toast{bottom:calc(var(--ia-bot,0px) + 118px)}
 .pdet+.prow::before,.prow+.pdet>summary::before,.pdet+.pdet>summary::before{content:"";position:absolute;top:0;right:0;left:56px;border-top:.5px solid var(--line)}
 .pdet>summary{position:relative}
 .wrap .pgroup .pnote{margin:0}
-.backlink{display:inline-flex;gap:4px;align-items:center;text-decoration:none;font-size:16px;color:var(--framboise);margin-bottom:-12px}
+.backlink{display:inline-flex;gap:4px;align-items:center;text-decoration:none;font-size:calc(16px*var(--ts,1));color:var(--framboise);margin-bottom:-12px}
 .chtools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.chipbtn{display:inline-flex;align-items:center;gap:6px;border:0;background:var(--surface3);color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;font-weight:500;cursor:pointer}
+.chipbtn{display:inline-flex;align-items:center;gap:6px;border:0;background:var(--surface3);color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-size:calc(14px*var(--ts,1));font-weight:500;cursor:pointer}
 .chipbtn svg{color:var(--framboise)}
 .chtabs{display:flex;gap:2px;overflow-x:auto;background:var(--surface3);border-radius:10px;padding:2px;scrollbar-width:none;-webkit-overflow-scrolling:touch;position:sticky;top:calc(var(--ia-top,60px) + 6px);z-index:6}
 .chtabs::-webkit-scrollbar{display:none}
-.chtabs button{flex:1 0 auto;border:0;background:transparent;border-radius:8px;padding:7px 12px;font:inherit;font-size:14px;font-weight:500;color:var(--ink);cursor:pointer;white-space:nowrap}
+.chtabs button{flex:1 0 auto;border:0;background:transparent;border-radius:8px;padding:7px 12px;font:inherit;font-size:calc(14px*var(--ts,1));font-weight:500;color:var(--ink);cursor:pointer;white-space:nowrap}
 .chtabs button.on{background:var(--surface);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.12)}
 :root[data-theme="dark"] .chtabs button.on{background:#636366}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chtabs button.on{background:#636366}}
@@ -699,6 +699,19 @@ body.ia-on .toast{bottom:calc(var(--ia-bot,0px) + 118px)}
 .wrap.enter .ia-sugg button:nth-child(2){animation-delay:.05s}.wrap.enter .ia-sugg button:nth-child(3){animation-delay:.1s}.wrap.enter .ia-sugg button:nth-child(4){animation-delay:.15s}
 /* Moins d'éléments décoratifs sur téléphone */
 @media (max-width:600px){header .deco{display:none}}
+
+/* Révisions : revoir dans le cours, programme, oral */
+.plabel-row{align-items:flex-end;flex-wrap:nowrap;gap:0}
+.plabel-row .plabel{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.plabel-row .btn.link{margin:0 12px 8px;font-size:calc(15px*var(--ts,1))}
+.revoir{border-top:.5px solid var(--line);padding-top:8px}
+.revoir summary{cursor:pointer;font-weight:600;color:var(--framboise);list-style:none;font-size:calc(15px*var(--ts,1))}
+.revoir summary::-webkit-details-marker{display:none}
+.revoir summary::after{content:" ›";display:inline-block;transition:transform .2s var(--ease)}
+.revoir[open] summary::after{transform:rotate(90deg)}
+.or-md p{margin:0 0 6px}
+#or-ans{min-height:110px;font-size:calc(17px*var(--ts,1))}
+#or-mic[aria-pressed="true"]{background:var(--ko2);color:var(--ko)}
 </style>
 </head><body>
 <div id="root"></div>
@@ -5457,7 +5470,7 @@ JBA.more("ip9", [
   const fresh = () => ({ v: 1, xp: 0, created: today(), history: [], ch: {}, q: {}, cards: {}, cases: {}, exams: [], quizzes: [], days: [], daily: {}, badges: {}, opened: {}, dest: {}, theme: "system", focus: false, last: null, pauses: 0, seenLines: {} });
   let S;
   try { S = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { S = null; }
-  if (!S || S.v !== 1) S = fresh();
+  if (!S || S.v !== 1) S = fresh(); else S = Object.assign(fresh(), S);
   J.S = S;
   let saveT;
   J.save = () => { clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { } }, 150); };
@@ -5561,6 +5574,15 @@ JBA.more("ip9", [
   };
   J.dueCards = (pool) => pool.filter(c => { const s = S.cards[c.id]; return s && s.due <= today(); });
   J.newCards = (pool) => pool.filter(c => !S.cards[c.id]);
+  /* Questions ratées : elles reviennent jusqu'à deux bonnes réponses, espacées (2 jours puis 5 jours). */
+  J.toReview = q => { const s = S.q[q.id]; if (!s || !s.ko) return false; return s.fix == null ? s.last === "ko" : s.fix < 2; };
+  J.reviewDue = (pool = J.questions) => pool.filter(q => J.toReview(q) && ((S.q[q.id].due || today()) <= today()));
+  J.answerQ = (q, ok) => {
+    const was = J.toReview(q), s = S.q[q.id] = S.q[q.id] || { seen: 0, ok: 0, ko: 0 }; s.seen++; ok ? s.ok++ : s.ko++; s.last = ok ? "ok" : "ko";
+    if (!ok) { s.fix = 0; s.due = today(); }
+    else if (was) { s.fix = (s.fix || 0) + 1; s.due = addDays(s.fix === 1 ? 2 : 5); }
+  };
+  J.addDays = addDays;
   J.mastered = (pool) => pool.filter(c => (S.cards[c.id] || {}).box >= 3).length;
 
   /* ---------- Statistiques ---------- */
@@ -5577,8 +5599,23 @@ JBA.more("ip9", [
   J.qcmAvg = (subj) => { const qs = S.quizzes.filter(x => !subj || x.subj === subj || (subj && x.subj === "mix" && false)); if (!qs.length) return null; return Math.round(qs.reduce((s, x) => s + x.pct, 0) / qs.length); };
   J.weakNotions = (n = 6) => {
     const m = {};
-    J.questions.forEach(q => { const s = S.q[q.id]; if (s && s.last === "ko") { const k = q.ch + "|" + q.n; m[k] = m[k] || { ch: q.ch, n: q.n, count: 0 }; m[k].count++; } });
+    J.questions.forEach(q => { if (J.toReview(q)) { const s = S.q[q.id]; const k = q.ch + "|" + q.n; m[k] = m[k] || { ch: q.ch, n: q.n, count: 0 }; m[k].count++; m[k].ko = (m[k].ko || 0) + s.ko; } });
     return Object.values(m).sort((a, b) => b.count - a.count).slice(0, n);
+  };
+  /* Partiels : programme du jour pour le prochain examen */
+  J.plan = () => {
+    const P = S.partiels || {}, t = today();
+    const next = Object.entries(P).filter(([k, d]) => d && d >= t && SUBJECTS[k]).sort((a, b) => a[1].localeCompare(b[1]))[0];
+    if (!next) return null;
+    const [subj, date] = next;
+    const days = Math.round((new Date(date + "T12:00") - new Date(t + "T12:00")) / 864e5);
+    const chs = J.chaptersOf(subj);
+    const unread = chs.filter(c => !J.chs(c.id).read);
+    const weak = chs.filter(c => J.chs(c.id).read).sort((a, b) => (J.chs(a.id).best ?? -1) - (J.chs(b.id).best ?? -1))[0];
+    const cards = J.dueCards(J.cards.filter(c => J.byId[c.ch].subject === subj)).length;
+    const nq = days > 30 ? 10 : days > 14 ? 15 : 20;
+    const perDay = unread.length ? Math.max(1, Math.ceil(unread.length / Math.max(1, days - 2))) : 0;
+    return { subj, date, days, unread, perDay, weak, cards, nq };
   };
   J.streak = () => { let n = 0; const set = new Set(S.days); const d = new Date(); for (; ;) { const k = d.toISOString().slice(0, 10); const loc = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); if (set.has(loc) || set.has(k)) { n++; d.setDate(d.getDate() - 1); } else break; } return n; };
   J.recommend = () => {
@@ -5610,6 +5647,15 @@ JBA.more("ip9", [
   ui.$ = $; ui.$$ = $$;
 
   const I = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+  /* Taille du texte de l'iPhone (Réglages > Luminosité et affichage > Taille du texte) : le site suit, jusqu'à +30 %. */
+  (function () {
+    try {
+      const e = document.createElement("span"); e.style.font = "-apple-system-body"; if (!e.style.font) return;
+      e.style.cssText += ";position:absolute;visibility:hidden"; e.textContent = "x"; document.documentElement.appendChild(e);
+      const px = parseFloat(getComputedStyle(e).fontSize); e.remove();
+      if (px && /iPhone|iPad|iPod/.test(navigator.userAgent)) document.documentElement.style.setProperty("--ts", Math.min(1.3, Math.max(1, px / 17)).toFixed(3));
+    } catch (err) { }
+  })();
   const ICON = ui.ICON = {
     home: I('<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>'),
     book: I('<path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 19.5V4.5M8 6h8M8 10h6"/>'),
@@ -5637,6 +5683,10 @@ JBA.more("ip9", [
     check: I('<path d="m5 12 5 5 9-10"/>'),
     x: I('<path d="M6 6l12 12M18 6 6 18"/>'),
     chev: I('<path d="m9 6 6 6-6 6"/>'),
+    mic: I('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/>'),
+    camera: I('<path d="M4 8h3l1.6-2.4h6.8L17 8h3v11H4z"/><circle cx="12" cy="13.2" r="3.4"/>'),
+    cal: I('<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/>'),
+    flag: I('<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>'),
     chat: I('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01" stroke-width="2.6"/>')
   };
 
@@ -5682,7 +5732,7 @@ JBA.more("ip9", [
     const ov = document.createElement("div"); ov.className = "celebrate";
     ov.innerHTML = `<form class="card" style="max-width:400px" id="name-form"><div style="width:150px">${H("happy")}</div>
       <h2>${first ? "Bienvenue !" : "Ton prénom"}</h2><p class="muted">${first ? "Comment tu t'appelles ? Holly va personnaliser toute l'appli pour toi." : "Il apparaît partout dans l'appli, avec « Boss » derrière."}</p>
-      <input class="input" id="name-in" maxlength="24" autocomplete="given-name" placeholder="Ton prénom" value="${esc(S.name || "")}" style="text-align:center;font-size:20px">
+      <input class="input" id="name-in" maxlength="24" autocomplete="given-name" placeholder="Ton prénom" value="${esc(S.name || "")}" style="text-align:center;font-size:calc(20px*var(--ts,1))">
       <p class="small muted" id="name-prev">Bienvenue chez toi, ${esc(J.name())} Boss.</p>
       <div class="row" style="justify-content:center"><button class="btn pri" type="submit">C'est moi</button>${first ? "" : `<button class="btn ghost" type="button" data-close>Annuler</button>`}</div></form>`;
     document.body.appendChild(ov);
@@ -5766,14 +5816,14 @@ JBA.more("ip9", [
   }
   /* Feuille « Plus », façon iOS : groupes arrondis, tuiles colorées, chevrons. */
   ui.sheetGroups = [];
-  const TILE = { chat: "#E0406E", book: "#FF9500", quiz: "#FF2D55", cards: "#5856D6", scale: "#34C759", exam: "#007AFF", trophy: "#FFCC00", dog: "#AF52DE", gear: "#8E8E93", home: "#FF3B30", moon: "#5E5CE6", focus: "#30B0C7" };
+  const TILE = { mic: "#FF9500", camera: "#34C759", cal: "#FF3B30", flag: "#FF9500", chat: "#E0406E", book: "#FF9500", quiz: "#FF2D55", cards: "#5856D6", scale: "#34C759", exam: "#007AFF", trophy: "#FFCC00", dog: "#AF52DE", gear: "#8E8E93", home: "#FF3B30", moon: "#5E5CE6", focus: "#30B0C7" };
   ui.sheetRow = (o) => `<${o.href ? `a href="${o.href}"` : `button type="button" data-act="${o.act}"`} class="prow">${o.lead || `<span class="tile" style="background:${TILE[o.i] || "#8E8E93"}">${ICON[o.i]}</span>`}<span class="pmain"><span class="pt">${o.t}</span>${o.sub ? `<span class="ps">${o.sub}</span>` : ""}</span>${o.end != null ? o.end : `<span class="pchev">${ICON.chev}</span>`}</${o.href ? "a" : "button"}>`;
   ui.sheetGroup = (label, rows) => `${label ? `<p class="plabel">${label}</p>` : ""}<div class="pgroup">${rows.join("")}</div>`;
   const toggle = on => `<span class="ptoggle ${on ? "on" : ""}" aria-hidden="true"><i></i></span>`;
   const sheetHTML = () => {
     const dark = document.documentElement.dataset.theme === "dark" || (S.theme === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
     return `<div class="psheet" role="dialog" aria-modal="true" aria-label="Plus"><span class="grab" aria-hidden="true"></span>
-      <div class="row between" style="padding:2px 4px 8px"><h2 style="font-size:30px">Plus</h2><button class="pclose" data-close aria-label="Fermer">${ICON.x}</button></div>
+      <div class="row between" style="padding:2px 4px 8px"><h2 style="font-size:calc(30px*var(--ts,1))">Plus</h2><button class="pclose" data-close aria-label="Fermer">${ICON.x}</button></div>
       ${ui.sheetGroups.map(f => f()).join("")}
       ${ui.sheetGroup("Réviser", [
         ui.sheetRow({ href: "#cours", i: "book", t: "Mes cours" }),
@@ -5858,7 +5908,7 @@ JBA.more("ip9", [
     VIEWS[name].after && VIEWS[name].after(arg);
     if (ui.animTab) { ui.animTab = false; const cb = $("#chbody"); if (cb) cb.classList.add("tabin"); }
     if (fx === "enter") ui.animate(main);
-    const key = name === "chapitre" ? "cours" : name === "casdetail" ? "cas" : name;
+    const key = name === "chapitre" ? "cours" : name === "casdetail" ? "cas" : name === "oral" ? "quiz" : name;
     $$("[data-nav]").forEach(a => a.classList.toggle("on", a.dataset.nav === key));
     $$("[data-tab]").forEach(a => a.classList.toggle("on", a.dataset.tab === key));
     if (/^#(voyage|amour)$/.test(S.last || "")) S.last = null;
@@ -5886,7 +5936,7 @@ JBA.more("ip9", [
     render() {
       const L = J.level(), d = J.day();
       const recs = J.recommend();
-      const errN = J.questions.filter(q => (S.q[q.id] || {}).last === "ko").length;
+      const errN = J.reviewDue().length;
       const goals = [
         { t: "Leçon", v: Math.min(d.lesson, 1), max: 1, c: "#FF2D55" },
         { t: "Questions", v: Math.min(d.q, 10), max: 10, c: "#34C759" },
@@ -5894,11 +5944,24 @@ JBA.more("ip9", [
       ];
       const ring = g => { const r = 26, C = 2 * Math.PI * r, f = g.v / g.max; return `<div class="gring"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="${r}" fill="none" stroke="${g.c}" stroke-opacity=".18" stroke-width="8"/><circle cx="32" cy="32" r="${r}" fill="none" stroke="${g.c}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - f)}" transform="rotate(-90 32 32)"/></svg><b class="tnum">${g.v}/${g.max}</b><span>${g.t}</span></div>`; };
       const last = S.last && S.last !== "#accueil" ? S.last : null;
+      const P = J.plan();
       const rows = [];
-      if (recs[0]) rows.push(ui.sheetRow({ href: recs[0].href, i: "book", t: esc(recs[0].txt) }));
-      if (errN) rows.push(ui.sheetRow({ act: "quiz-errors", i: "quiz", t: "Refaire mes erreurs", end: `<span class="pcount tnum">${errN}</span><span class="pchev">${ICON.chev}</span>` }));
-      if (!window.JBA_NOIA) rows.push(ui.sheetRow({ href: "#ia", i: "chat", t: "Demande à Holly", sub: "Une question sur tes cours ?" }));
-      rows.push(ui.sheetRow({ href: "#cartes", i: "cards", t: "Cartes du jour", end: `<span class="pcount tnum">${J.dueCards(J.cards).length || ""}</span><span class="pchev">${ICON.chev}</span>` }));
+      const count = n => `<span class="pcount tnum">${n || ""}</span><span class="pchev">${ICON.chev}</span>`;
+      let title = "Continuer";
+      if (P) {
+        title = `Partiel ${J.SUBJECTS[P.subj].short} · ${P.days === 0 ? "jour J" : "J-" + P.days}`;
+        if (P.unread.length) rows.push(ui.sheetRow({ href: `#ch-${P.unread[0].id}`, i: "book", t: `Lire : ${esc(P.unread[0].title)}`, sub: P.perDay > 1 ? `${P.perDay} leçons par jour pour tout voir à temps` : `${P.unread.length} leçon${P.unread.length > 1 ? "s" : ""} encore à lire` }));
+        else if (P.weak) rows.push(ui.sheetRow({ href: `#ch-${P.weak.id}`, i: "book", t: `Revoir : ${esc(P.weak.title)}`, sub: P.weak && J.chs(P.weak.id).best != null ? `Meilleur quiz ${J.chs(P.weak.id).best} %` : "Tout est lu : place aux fiches" }));
+        rows.push(`<button type="button" class="prow" data-act="quiz-plan" data-s="${P.subj}" data-n="${P.nq}"><span class="tile" style="background:#FF2D55">${ICON.quiz}</span><span class="pmain"><span class="pt">Quiz du jour</span><span class="ps">${P.nq} questions, tes erreurs en premier</span></span><span class="pchev">${ICON.chev}</span></button>`);
+        if (P.cards) rows.push(ui.sheetRow({ href: "#cartes", i: "cards", t: "Cartes à revoir", end: count(P.cards) }));
+        if (errN) rows.push(ui.sheetRow({ act: "quiz-errors", i: "quiz", t: "Mes erreurs", end: count(errN) }));
+      } else {
+        if (recs[0]) rows.push(ui.sheetRow({ href: recs[0].href, i: "book", t: esc(recs[0].txt) }));
+        if (errN) rows.push(ui.sheetRow({ act: "quiz-errors", i: "quiz", t: "Mes erreurs", sub: "À revoir aujourd'hui", end: count(errN) }));
+        rows.push(ui.sheetRow({ href: "#cartes", i: "cards", t: "Cartes du jour", end: count(J.dueCards(J.cards).length) }));
+        rows.push(ui.sheetRow({ act: "partiels", i: "cal", t: "Mes partiels", sub: "Ajoute tes dates : Holly prépare ton programme" }));
+      }
+      if (!window.JBA_NOIA) rows.push(ui.sheetRow({ href: "#ia", i: "chat", t: "Demande à Holly" }));
       return `
       <section class="hero home">
         <div class="stack" style="gap:14px">
@@ -5916,7 +5979,7 @@ JBA.more("ip9", [
         <p class="small muted tnum">${S.xp} XP${L.next ? ` · ${L.next.xp - S.xp} avant ${esc(L.next.name)}` : ""}${J.streak() > 1 ? ` · ${J.streak()} jours d'affilée` : ""}</p>
       </section>
 
-      <section class="stack" style="gap:0"><p class="plabel">Continuer</p><div class="pgroup">${rows.join("")}</div></section>
+      <section class="stack" style="gap:0"><div class="row between plabel-row"><p class="plabel">${title}</p>${P ? `<button class="btn link sm" data-act="partiels">Modifier</button>` : ""}</div><div class="pgroup">${rows.join("")}</div></section>
 
       <section class="stack" style="gap:0"><p class="plabel">Révision express</p>
         <div class="seg wide">${[5, 10, 15].map(m => `<button data-act="express" data-min="${m}">${m} min</button>`).join("")}</div></section>
@@ -5925,7 +5988,19 @@ JBA.more("ip9", [
     }
   };
   ACT.express = (b) => { const m = +b.dataset.min; J.express = { cards: m === 5 ? 8 : m === 10 ? 12 : 15, quiz: m === 5 ? 3 : m === 10 ? 6 : 10, min: m }; location.hash = "#cartes"; ui.toast(`Révision express de ${m} minutes : flashcards, puis quiz.`); };
-  ACT["quiz-errors"] = () => { J.pendingQuiz = { mode: "errors" }; location.hash = "#quiz"; };
+  ACT.partiels = () => {
+    const P = S.partiels || {};
+    const ov = document.createElement("div"); ov.className = "celebrate"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-modal", "true");
+    ov.innerHTML = `<div class="card stack" style="max-width:400px;text-align:left;align-items:stretch"><h2>Mes partiels</h2><p class="small muted">Holly prépare chaque jour ce qu'il faut réviser pour le prochain.</p>
+      ${["dc", "ip"].map(k => `<label class="stack" style="gap:4px"><span class="small" style="font-weight:600">${J.SUBJECTS[k].name}</span><input class="input" type="date" data-k="${k}" value="${esc(P[k] || "")}" min="${J.today()}"></label>`).join("")}
+      <div class="row"><button class="btn pri" data-save>Enregistrer</button><button class="btn ghost" data-close>Annuler</button></div></div>`;
+    document.body.appendChild(ov);
+    ov.addEventListener("click", e => {
+      if (e.target === ov || e.target.closest("[data-close]")) return ov.remove();
+      if (e.target.closest("[data-save]")) { S.partiels = {}; ov.querySelectorAll("input[type=date]").forEach(i => { if (i.value) S.partiels[i.dataset.k] = i.value; }); J.save(); ov.remove(); ui.toast(Object.keys(S.partiels).length ? "C'est noté. Holly prépare ton programme." : "Dates retirées."); ui.rerender(); }
+    });
+  };
+  ACT["quiz-errors"] = () => { J.pendingQuiz = { mode: "errors" }; J.quiz = null; if (location.hash === "#quiz") ui.rerender(); else location.hash = "#quiz"; };
 
   /* ======================= BIBLIOTHÈQUE ======================= */
   const STATUS = ui.STATUS = { decouvrir: "À découvrir", encours: "En cours", revoir: "À revoir", maitrisee: "Maîtrisée" };
@@ -5970,7 +6045,7 @@ JBA.more("ip9", [
       if (J._lastCh !== id) { chTab = "cours"; J._lastCh = id; const st = J.chs(id); st.opened++; if (st.status === "decouvrir") st.status = "encours"; J.save(); }
       if (ui.pendingTab) { chTab = ui.pendingTab; ui.pendingTab = null; }
       const st = J.chs(id), sub = J.SUBJECTS[c.subject];
-      const tabs = [["cours", "Cours"], ["fiche", "Fiche"], ["express", "Express"], ["juris", `Arrêts${c.juris.length ? " " + c.juris.length : ""}`], ["holly", "Holly explique"], ["entrainement", "S'entraîner"]];
+      const tabs = [["cours", "Cours"], ["fiche", "Fiche"], ["express", "Express"], ["juris", `Arrêts${c.juris.length ? " " + c.juris.length : ""}`], ["entrainement", "Réviser"], ["holly", "Holly"]];
       return `
       <a href="#cours" class="backlink">${ICON.back.replace("<svg", "<svg width=17 height=17")} Mes cours</a>
       <header class="stack" style="gap:6px">
@@ -6027,7 +6102,7 @@ JBA.more("ip9", [
     if (t === "express") return `<div class="card tint-rose stack" style="padding:clamp(20px,4vw,36px)">
       <div class="row between"><span class="eyebrow">Fiche express · 5 minutes</span><span class="pill fav">${esc(J.SUBJECTS[c.subject].short)} ${c.num}</span></div>
       <h2>${esc(c.title)}</h2>
-      <ol class="list" style="font-size:18px;gap:12px">${c.express.map(x => `<li>${esc(x)}</li>`).join("")}</ol>
+      <ol class="list" style="font-size:calc(18px*var(--ts,1));gap:12px">${c.express.map(x => `<li>${esc(x)}</li>`).join("")}</ol>
       <div class="grid g2" style="margin-top:6px"><div class="card flat stack"><b>À retenir absolument</b><ul class="list small">${c.keys.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div><div class="card flat stack"><b>Pièges</b><ul class="list small">${c.traps.slice(0, 4).map(x => `<li>${esc(x)}</li>`).join("")}</ul></div></div>
       ${ui.sayHTML("etudiant", "Cinq minutes, une fiche. Après, une question au hasard, pour voir si ça a tenu.", true)}
       <div class="row"><button class="btn pri" data-act="startquiz" data-ch="${c.id}" data-n="5">5 questions sur ce chapitre</button></div></div>`;
@@ -6072,7 +6147,7 @@ JBA.more("ip9", [
 /* Jojo Boss Academy — quiz, flashcards, cas pratiques, examens, Holly University, progression, réglages. */
 (function () {
   const J = window.JBA, S = J.S, esc = J.esc, H = window.Holly, A = window.ART, ui = J.ui, $ = ui.$, $$ = ui.$$, ICON = ui.ICON, VIEWS = ui.VIEWS, ACT = ui.ACT;
-  const chLabel = id => { const c = J.byId[id]; return `${J.SUBJECTS[c.subject].short} ${c.num} · ${c.title}`; };
+  const chLabel = id => { const c = J.byId[id]; if (!c) return "Tes notes"; return `${J.SUBJECTS[c.subject].short} ${c.num} · ${c.title}`; };
   const sushiIco = d => d === 1 ? A.maki(20, "#9DBF8E") : d === 2 ? A.maki(20, "#E7B84B") : d === 3 ? A.maki(20, "#F07B5A") : A.nigiri(26);
 
   /* ======================= SUSHI QUIZ ======================= */
@@ -6083,8 +6158,10 @@ JBA.more("ip9", [
       if (J.quiz && !J.quiz.finished) return quizQuestion();
       if (J.quiz && J.quiz.finished) return quizResult();
       const chList = J.list.filter(c => QC.subj === "all" || c.subject === QC.subj);
-      const errCount = J.questions.filter(q => (S.q[q.id] || {}).last === "ko").length;
+      const due = J.reviewDue().length;
       const seg = (f, opts, cur) => `<div class="seg wide">${opts.map(([k, t]) => `<button class="${cur === k ? "on" : ""}" data-act="qc" data-f="${f}" data-v="${k}">${t}</button>`).join("")}</div>`;
+      const rows = [ui.sheetRow({ act: "quiz-errors", i: "quiz", t: "Mes erreurs", sub: due ? "À revoir aujourd'hui" : "Rien à revoir aujourd'hui", end: `<span class="pcount tnum">${due || ""}</span><span class="pchev">${ICON.chev}</span>` })];
+      if (!window.JBA_NOIA) rows.push(ui.sheetRow({ act: "photoquiz", i: "camera", t: "Quiz de mes notes", sub: "Une photo, Holly fait 5 questions" }), ui.sheetRow({ href: "#oral", i: "mic", t: "À l'oral", sub: "Holly interroge, tu réponds à voix haute" }));
       return `
       <header class="row between" style="align-items:flex-end"><h1>Sushi Quiz</h1><div style="width:96px" class="deco">${H("sushi")}</div></header>
       <section class="stack" style="gap:0"><p class="plabel">Matière</p>${seg("subj", [["all", "Les deux"], ["dc", "Constit."], ["ip", "Droit privé"]], QC.subj)}</section>
@@ -6092,7 +6169,8 @@ JBA.more("ip9", [
       <section class="stack" style="gap:0"><p class="plabel">Difficulté</p>${seg("d", [[0, "Toutes"], [1, "Maki"], [2, "California"], [3, "Dragon"], [4, "Chef"]], QC.d)}</section>
       <details class="pdetails" ${QC.chs.length ? "open" : ""}><summary>Chapitres <span class="muted">${QC.chs.length ? QC.chs.length + " choisi" + (QC.chs.length > 1 ? "s" : "") : "Tous"}</span></summary>
         <div class="chips" style="margin-top:10px">${chList.map(c => `<button class="chip ${QC.chs.includes(c.id) ? "on" : ""}" data-act="qc-ch" data-id="${c.id}">${c.num} · ${esc(c.title)}</button>`).join("")}</div></details>
-      <div class="stack" style="gap:10px"><button class="btn pri block" data-act="qstart">Lancer le quiz</button>${errCount ? `<button class="btn link" data-act="quiz-errors">Refaire mes erreurs (${errCount})</button>` : ""}</div>`;
+      <button class="btn pri block" data-act="qstart">Lancer le quiz</button>
+      <section class="stack" style="gap:0"><p class="plabel">Autres façons de réviser</p><div class="pgroup">${rows.join("")}</div></section>`;
     }
   };
   ACT.qc = b => { const f = b.dataset.f; QC[f] = f === "subj" || f === "mode" ? b.dataset.v : +b.dataset.v; if (f === "subj") QC.chs = []; ui.rerender(); };
@@ -6101,7 +6179,10 @@ JBA.more("ip9", [
   ACT.startquiz = b => { J.pendingQuiz = { chs: [b.dataset.ch], n: +b.dataset.n, d: 0 }; J.quiz = null; location.hash = "#quiz"; };
   function startQuiz(p) {
     let pool = J.questions.slice();
-    if (p.mode === "errors") pool = pool.filter(q => (S.q[q.id] || {}).last === "ko");
+    if (p.custom) pool = p.custom;
+    else if (p.mode === "errors") { pool = J.reviewDue(); if (!pool.length) { ui.toast("Aucune erreur à revoir aujourd'hui. Holly fait la sieste."); J.quiz = null; return; } }
+    else if (p.mode === "notion") { const same = pool.filter(q => q.ch === p.ch && q.n === p.n), rest = J.shuffle(pool.filter(q => q.ch === p.ch && q.n !== p.n)); pool = J.shuffle(same).concat(rest).slice(0, Math.max(5, same.length)); p.n = pool.length; p.keep = true; }
+    else if (p.mode === "plan") { const subj = pool.filter(q => J.byId[q.ch].subject === p.subj); const due = J.shuffle(J.reviewDue(subj)).slice(0, Math.ceil(p.n / 2)); const ids = new Set(due.map(q => q.id)); const weakCh = new Set(J.list.filter(c => c.subject === p.subj && (J.chs(c.id).best == null || J.chs(c.id).best < 80)).map(c => c.id)); const other = J.shuffle(subj.filter(q => !ids.has(q.id) && (!weakCh.size || weakCh.has(q.ch)))); pool = due.concat(other).slice(0, p.n); p.keep = true; }
     else {
       if (p.chs && p.chs.length) pool = pool.filter(q => p.chs.includes(q.ch));
       else if (p.subj && p.subj !== "all") pool = pool.filter(q => J.byId[q.ch].subject === p.subj);
@@ -6113,19 +6194,42 @@ JBA.more("ip9", [
       const exact = J.shuffle(pool.filter(q => q.d === p.d));
       if (exact.length < n) { const rest = J.shuffle(pool.filter(q => q.d !== p.d)).sort((a, b) => Math.abs(a.d - p.d) - Math.abs(b.d - p.d)); picked = exact.concat(rest).slice(0, n); note = `Il n'y avait que ${exact.length} question${exact.length > 1 ? "s" : ""} « ${J.DIFF[p.d].name} » dans cette sélection : Holly a complété avec les niveaux voisins.`; }
       else picked = exact.slice(0, n);
-    } else picked = J.shuffle(pool).slice(0, n);
+    } else picked = p.keep ? pool.slice(0, n) : J.shuffle(pool).slice(0, n);
     if (!picked.length) { ui.toast("Aucune question dans cette sélection."); J.quiz = null; return; }
     J.quiz = { p, note, items: picked.map(q => ({ q, order: J.shuffle(q.o.map((_, i) => i)) })), i: 0, sel: [], answered: false, results: [], start: Date.now() };
   }
+  /* « Revoir dans le cours » : la partie du cours qui correspond à la question, sans quitter le quiz. */
+  const pages = p => { const m = String(p || "").match(/(\d+)(?:\s*-\s*(\d+))?/); return m ? [+m[1], +(m[2] || m[1])] : null; };
+  J.coursePart = q => {
+    const c = J.byId[q.ch]; if (!c) return null;
+    const def = c.defs.find(d => J.norm(d.t) === J.norm(q.n)) || null;
+    const qp = pages(q.p); let part = null;
+    if (qp) part = c.plan.find(x => { const r = pages(x.p); return r && qp[0] >= r[0] && qp[0] <= r[1]; }) || null;
+    if (!part) { const k = J.norm(q.n); part = c.plan.find(x => J.norm(x.h + " " + x.pts.join(" ")).includes(k)) || null; }
+    return part || def ? { c, part, def } : null;
+  };
+  const bestPts = (pts, q) => {
+    const words = new Set(J.norm(q.n + " " + q.q + " " + q.a.map(i => q.o[i]).join(" ")).split(/[^a-z0-9]+/).filter(w => w.length > 3));
+    const sc = pts.map((x, i) => ({ x, i, s: J.norm(x).split(/[^a-z0-9]+/).filter(w => words.has(w)).length }));
+    const top = sc.filter(o => o.s > 0).sort((a, b) => b.s - a.s).slice(0, 3).sort((a, b) => a.i - b.i).map(o => o.x);
+    return top.length ? top : pts.slice(0, 3);
+  };
+  function reviewHTML(q) {
+    const r = J.coursePart(q); if (!r) return "";
+    return `<details class="revoir"><summary>Revoir dans le cours</summary><div class="stack" style="gap:8px;margin-top:8px">
+      ${r.def ? `<p class="small"><b>${esc(r.def.t)} :</b> ${esc(r.def.d)}</p>` : ""}
+      ${r.part ? `<div><b class="small">${esc(r.part.h)}</b> <span class="ref">${esc(r.part.p)}</span><ul class="list small" style="margin-top:4px">${bestPts(r.part.pts, q).map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
+      <a class="small" href="#ch-${r.c.id}">Ouvrir le chapitre ›</a></div></details>`;
+  }
   function quizQuestion() {
     const Q = J.quiz, it = Q.items[Q.i], q = it.q, multi = q.a.length > 1, n = Q.items.length;
-    const fb = Q.answered ? (() => { const ok = Q.results[Q.i].ok; return `<div class="fb ${ok ? "ok" : "ko"}" aria-live="polite">${ui.sayHTML(ok ? "celebrate" : "perplexed", J.line(ok ? "bon" : "adele"), true, true)}<p><b>${ok ? "Bonne réponse." : "Réponse attendue : " + q.a.map(i => esc(q.o[i])).join(" ; ")}</b></p><p>${esc(q.e)}</p><p class="small muted">Notion : ${esc(q.n)} · ${esc(chLabel(q.ch))} · ${esc(q.p)}</p></div>`; })() : "";
+    const fb = Q.answered ? (() => { const ok = Q.results[Q.i].ok; return `<div class="fb ${ok ? "ok" : "ko"}" aria-live="polite">${ui.sayHTML(ok ? "celebrate" : "perplexed", J.line(ok ? "bon" : "adele"), true, true)}<p><b>${ok ? "Bonne réponse." : "Réponse attendue : " + q.a.map(i => esc(q.o[i])).join(" ; ")}</b></p><p>${esc(q.e)}</p><p class="small muted">Notion : ${esc(q.n)} · ${esc(chLabel(q.ch))}${q.p ? " · " + esc(q.p) : ""}</p>${ok ? "" : reviewHTML(q)}</div>`; })() : "";
     return `
       <div class="row between"><span class="eyebrow">Sushi Quiz · question ${Q.i + 1} sur ${n}</span><button class="btn ghost sm" data-act="qquit">Quitter</button></div>
       <div class="bar"><i style="width:${(Q.i + (Q.answered ? 1 : 0)) / n * 100}%"></i></div>
       ${Q.note && Q.i === 0 ? `<div class="note">${esc(Q.note)}</div>` : ""}
       <div class="card stack read" style="max-width:820px;width:100%;align-self:center">
-        <div class="row between"><span class="diff">${sushiIco(q.d)} ${J.DIFF[q.d].name}</span><span class="small muted">${esc(J.SUBJECTS[J.byId[q.ch].subject].short)} ${J.byId[q.ch].num}</span></div>
+        <div class="row between"><span class="diff">${sushiIco(q.d || 2)} ${J.DIFF[q.d || 2].name}</span><span class="small muted">${J.byId[q.ch] ? esc(J.SUBJECTS[J.byId[q.ch].subject].short) + " " + J.byId[q.ch].num : "Tes notes"}</span></div>
         <h2 style="font-size:clamp(21px,3vw,26px)">${esc(q.q)}</h2>
         ${multi ? `<p class="small" style="color:var(--turq);font-weight:700">Plusieurs réponses possibles.</p>` : ""}
         <div class="stack" style="gap:8px">${it.order.map(oi => {
@@ -6141,7 +6245,7 @@ JBA.more("ip9", [
     const Q = J.quiz, q = Q.items[Q.i].q;
     const ok = Q.sel.length === q.a.length && q.a.every(x => Q.sel.includes(x));
     Q.answered = true; Q.results[Q.i] = { id: q.id, ok, sel: Q.sel.slice() };
-    const s = S.q[q.id] = S.q[q.id] || { seen: 0, ok: 0, ko: 0 }; s.seen++; ok ? s.ok++ : s.ko++; s.last = ok ? "ok" : "ko";
+    if (!q.custom) J.answerQ(q, ok);
     J.day().q++; J.save(); ui.rerender();
   };
   ACT.qnext = () => { const Q = J.quiz; if (Q.i + 1 < Q.items.length) { Q.i++; Q.sel = []; Q.answered = false; ui.animNext = true; ui.rerender(); } else finishQuiz(); };
@@ -6149,9 +6253,9 @@ JBA.more("ip9", [
   function finishQuiz() {
     const Q = J.quiz; Q.finished = true;
     const ok = Q.results.filter(r => r.ok).length, n = Q.items.length, pct = Math.round(ok / n * 100);
-    const chs = [...new Set(Q.items.map(x => x.q.ch))];
+    const chs = [...new Set(Q.items.map(x => x.q.ch))].filter(c => J.byId[c]);
     const subj = [...new Set(chs.map(c => J.byId[c].subject))];
-    S.quizzes.push({ t: Date.now(), n, ok, pct, subj: subj.length === 1 ? subj[0] : "mix", chs });
+    if (!Q.p.custom) S.quizzes.push({ t: Date.now(), n, ok, pct, subj: subj.length === 1 ? subj[0] : "mix", chs });
     if (chs.length === 1) { const st = J.chs(chs[0]); st.tries++; st.best = Math.max(st.best || 0, pct); if (pct === 100 && st.read && st.status !== "maitrisee") st.status = "maitrisee"; if (pct < 50 && st.status === "encours") st.status = "revoir"; }
     let xp = 20, lbl = `Sushi Quiz : ${ok}/${n}`;
     if (pct === 100 && n >= 5) { xp += 15; lbl += " (sans-faute)"; }
@@ -6164,21 +6268,29 @@ JBA.more("ip9", [
   function quizResult() {
     const Q = J.quiz, ok = Q.results.filter(r => r.ok).length, n = Q.items.length, pct = Math.round(ok / n * 100);
     const wrong = Q.items.filter((x, i) => !Q.results[i].ok);
-    const notions = {}; wrong.forEach(x => { const k = x.q.ch + "|" + x.q.n; notions[k] = notions[k] || { ch: x.q.ch, n: x.q.n, c: 0 }; notions[k].c++; });
+    const notions = {}; wrong.forEach(x => { const k = x.q.ch + "|" + x.q.n; if (!J.byId[x.q.ch]) return; notions[k] = notions[k] || { ch: x.q.ch, n: x.q.n, c: 0 }; notions[k].c++; });
     const mood = pct === 100 ? "celebrate" : pct >= 70 ? "happy" : pct >= 40 ? "encourage" : "lost";
     return `
       <div class="card stack tint-rose" style="text-align:center;align-items:center">
         <span class="eyebrow">Résultat du Sushi Quiz</span>
         <div style="width:170px">${H(mood)}</div>
         <h1 class="tnum">${ok} / ${n}</h1>
-        <p class="hand" style="font-size:26px">${esc(J.line(pct === 100 ? "parfait" : pct >= 70 ? "qcmReussi" : pct >= 40 ? "moyen" : "bas"))}</p>
+        <p class="hand" style="font-size:calc(26px*var(--ts,1))">${esc(J.line(pct === 100 ? "parfait" : pct >= 70 ? "qcmReussi" : pct >= 40 ? "moyen" : "bas"))}</p>
         <div class="row" style="justify-content:center"><span class="pill maitrisee">${pct} %</span><span class="pill fav">+${Q.xp} XP</span></div>
       </div>
-      ${wrong.length ? `<div class="card stack"><h3>Notions à retravailler</h3><div class="chips">${Object.values(notions).map(x => `<a class="chip" href="#ch-${x.ch}" style="text-decoration:none">${esc(x.n)} <span class="small muted">· ${esc(J.SUBJECTS[J.byId[x.ch].subject].short)} ${J.byId[x.ch].num}</span></a>`).join("")}</div></div>
+      ${Object.keys(notions).length ? `<div class="card stack"><h3>Notions à retravailler</h3><div class="chips">${Object.values(notions).map(x => `<button class="chip" data-act="quiz-notion" data-ch="${x.ch}" data-n="${esc(x.n)}">${esc(x.n)} <span class="small muted">· ${esc(J.SUBJECTS[J.byId[x.ch].subject].short)} ${J.byId[x.ch].num}</span></button>`).join("")}</div><p class="small muted">Touche une notion pour t'entraîner dessus.</p></div>` : ""}
+      ${wrong.length ? `
       <div class="card stack"><h3>Tes erreurs, corrigées</h3>${wrong.map(x => `<div class="fiche-sec" style="grid-template-columns:1fr"><div class="stack" style="gap:6px"><b>${esc(x.q.q)}</b><p class="small"><span style="color:var(--ok);font-weight:700">Réponse :</span> ${x.q.a.map(i => esc(x.q.o[i])).join(" ; ")}</p><p class="small muted">${esc(x.q.e)}</p></div></div>`).join("")}</div>` : ""}
-      <div class="row"><button class="btn pri" data-act="qagain">Nouveau quiz</button>${wrong.length ? `<button class="btn sec" data-act="quiz-errors">Refaire mes erreurs</button>` : ""}${Q.items.length && new Set(Q.items.map(x => x.q.ch)).size === 1 ? `<a class="btn sec" href="#ch-${Q.items[0].q.ch}">Retour au chapitre</a>` : ""}</div>`;
+      <div class="row"><button class="btn pri" data-act="qagain">Nouveau quiz</button>${wrong.length && !Q.p.custom ? `<button class="btn sec" data-act="quiz-errors">Refaire mes erreurs</button>` : ""}${Q.p.custom ? `<button class="btn sec" data-act="photoquiz">Autre photo</button>` : ""}${Q.items.length && J.byId[Q.items[0].q.ch] && new Set(Q.items.map(x => x.q.ch)).size === 1 ? `<a class="btn sec" href="#ch-${Q.items[0].q.ch}">Retour au chapitre</a>` : ""}</div>`;
   }
   ACT.qagain = () => { J.quiz = null; ui.rerender(); };
+  ACT["quiz-notion"] = b => { J.pendingQuiz = { mode: "notion", ch: b.dataset.ch, n: b.dataset.n }; J.quiz = null; if (location.hash === "#quiz") ui.rerender(); else location.hash = "#quiz"; };
+  ACT["quiz-plan"] = b => { J.pendingQuiz = { mode: "plan", subj: b.dataset.s, n: +b.dataset.n }; J.quiz = null; if (location.hash === "#quiz") ui.rerender(); else location.hash = "#quiz"; };
+  ACT.photoquiz = () => {
+    let f = document.getElementById("pq-file");
+    if (!f) { f = document.createElement("input"); f.type = "file"; f.accept = "image/*"; f.multiple = true; f.id = "pq-file"; f.hidden = true; document.body.appendChild(f); f.addEventListener("change", () => { const files = [...f.files]; f.value = ""; if (files.length) J.photoQuiz(files); }); }
+    f.click();
+  };
 
   /* ======================= FLASHCARDS ======================= */
   const FC = { subj: "all", ch: "", kinds: [] };
@@ -6270,7 +6382,7 @@ JBA.more("ip9", [
     if (J.express) { const e = J.express; J.flash = null; J.pendingQuiz = { n: e.quiz, d: 0 }; J.quiz = null; setTimeout(() => { location.hash = "#quiz"; }, 0); return `<div class="card">${ui.sayHTML("happy", "Cartes terminées ! Maintenant, quelques questions.", true)}</div>`; }
     return `<div class="card stack" style="text-align:center;align-items:center"><span class="eyebrow">Session terminée</span><div style="width:160px">${H("encourage")}</div><h2>${F.i} cartes révisées</h2>
       <div class="row" style="justify-content:center"><span class="pill maitrisee">${F.stats[2]} maîtrisées</span><span class="pill revoir">${F.stats[1]} un peu</span><span class="pill decouvrir">${F.stats[0]} à revoir</span><span class="pill fav">+${F.xp} XP</span></div>
-      <p class="hand" style="font-size:24px">${esc(J.line("motivation"))}</p>
+      <p class="hand" style="font-size:calc(24px*var(--ts,1))">${esc(J.line("motivation"))}</p>
       <div class="row" style="justify-content:center"><button class="btn pri" data-act="fcagain">Autre session</button><a class="btn sec" href="#quiz">Passer au quiz</a></div></div>`;
   }
   ACT.fcagain = () => { J.flash = null; ui.rerender(); };
@@ -6300,7 +6412,7 @@ JBA.more("ip9", [
       <header class="stack"><span class="eyebrow">${esc(chLabel(chId))}</span><h1 style="font-size:clamp(28px,5vw,40px)">${esc(k.title)}</h1></header>
       <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))">
         <div class="stack">
-          <div class="card stack"><span class="eyebrow">Les faits</span><p style="font-size:17px">${esc(k.facts)}</p><div class="note"><b>Question :</b> ${esc(k.question)}</div></div>
+          <div class="card stack"><span class="eyebrow">Les faits</span><p style="font-size:calc(17px*var(--ts,1))">${esc(k.facts)}</p><div class="note"><b>Question :</b> ${esc(k.question)}</div></div>
           <div class="card stack"><label for="cas-txt"><b>Ta réponse</b> <span class="small muted">(enregistrée automatiquement)</span></label><textarea id="cas-txt" class="input" placeholder="Qualification… Problème de droit… Règle… Application… Conclusion…">${esc(s.text)}</textarea>
             <div class="row"><button class="btn pri" data-act="casshow" data-id="${id}">${s.shown ? "Masquer la correction" : "Voir la correction"}</button><a class="btn ghost sm" href="#ch-${chId}">Revoir le chapitre</a></div></div>
         </div>
@@ -6372,7 +6484,7 @@ JBA.more("ip9", [
       body = `<span class="diff">${sushiIco(it.q.d)} QCM · ${J.DIFF[it.q.d].name}</span><h2 style="font-size:clamp(20px,3vw,25px)">${esc(it.q.q)}</h2>${multi ? `<p class="small" style="color:var(--turq);font-weight:700">Plusieurs réponses possibles.</p>` : ""}<div class="stack" style="gap:8px">${it.order.map(oi => `<button class="q-opt ${multi ? "multi" : ""} ${sel.includes(oi) ? "sel" : ""}" data-act="exsel" data-o="${oi}"><span class="box"></span><span>${esc(it.q.o[oi])}</span></button>`).join("")}</div>`;
     } else {
       const lab = it.t === "def" ? "Question de cours" : it.t === "refl" ? "Question de réflexion" : "Cas pratique · " + esc(it.title);
-      body = `<span class="eyebrow">${lab}</span><p style="font-size:18px;white-space:pre-line">${esc(it.prompt)}</p><label for="ex-txt" class="small muted">Ta réponse</label><textarea id="ex-txt" class="input" style="min-height:${it.t === "def" ? 120 : 220}px">${esc(E.ans[E.i] || "")}</textarea>`;
+      body = `<span class="eyebrow">${lab}</span><p style="font-size:calc(18px*var(--ts,1));white-space:pre-line">${esc(it.prompt)}</p><label for="ex-txt" class="small muted">Ta réponse</label><textarea id="ex-txt" class="input" style="min-height:${it.t === "def" ? 120 : 220}px">${esc(E.ans[E.i] || "")}</textarea>`;
     }
     return `${head}<div class="card stack" style="max-width:820px;width:100%;align-self:center">${body}<div class="row between"><button class="btn ghost sm" data-act="exprev" ${E.i ? "" : "disabled"}>Précédent</button><button class="btn pri" data-act="exnext">${E.i + 1 < n ? "Suivant" : "Rendre ma copie"}</button></div></div>`;
   }
@@ -6407,7 +6519,7 @@ JBA.more("ip9", [
   ACT.exgrade = b => { J.exam.grades[+b.dataset.i] = +b.dataset.k; ui.rerender(); };
   ACT.exfinal = () => {
     const E = J.exam, sc = examScore();
-    const wrongN = {}; E.items.forEach((it, i) => { if (it.t !== "qcm") return; const s = E.ans[i] || []; if (!(s.length === it.q.a.length && it.q.a.every(a => s.includes(a)))) { wrongN[it.q.n] = (wrongN[it.q.n] || 0) + 1; const st = S.q[it.q.id] = S.q[it.q.id] || { seen: 0, ok: 0, ko: 0 }; st.seen++; st.ko++; st.last = "ko"; } else { const st = S.q[it.q.id] = S.q[it.q.id] || { seen: 0, ok: 0, ko: 0 }; st.seen++; st.ok++; st.last = "ok"; } });
+    const wrongN = {}; E.items.forEach((it, i) => { if (it.t !== "qcm") return; const sl = E.ans[i] || []; const ok = sl.length === it.q.a.length && it.q.a.every(a => sl.includes(a)); if (!ok) wrongN[it.q.n] = (wrongN[it.q.n] || 0) + 1; J.answerQ(it.q, ok); });
     const top = Object.entries(wrongN).sort((a, b) => b[1] - a[1]).slice(0, 3).map(x => x[0]);
     const analysis = (top.length ? `À retravailler en priorité : ${top.join(", ")}. ` : "Aucune erreur de QCM : bravo. ") + (sc.w.some(x => (E.grades[x.i] || 0) < x.it.max / 2) ? "Pour les réponses rédigées, reprends la fiche des notions où tu t'es notée sous la moyenne, puis refais un cas pratique." : "Tes réponses rédigées tiennent la route : continue avec un examen d'une autre matière.");
     E.saved = { note: sc.note, analysis };
@@ -6436,7 +6548,7 @@ JBA.more("ip9", [
   ACT.hline = () => { const keys = ["accueil", "bon", "mauvais", "motivation", "pause", "longue", "cas", "parfait"]; const k = keys[Math.floor(Math.random() * keys.length)]; const moods = { bon: "celebrate", mauvais: "perplexed", pause: "plage", longue: "sleepy", cas: "avocat", parfait: "friandise" }; $("#holly-line").innerHTML = ui.sayHTML(moods[k] || "happy", J.line(k), false, true); };
   ACT.pause = () => {
     const ov = document.createElement("div"); ov.className = "celebrate"; const end = Date.now() + 5 * 60e3;
-    ov.innerHTML = `<div class="card" style="max-width:460px"><span class="eyebrow">Pause Holly</span><div class="breathe" style="width:220px">${H("sieste")}</div><p class="hand" style="font-size:26px">${esc(J.line("pause"))}</p><p class="small muted">Inspire quatre secondes, expire six secondes. Holly ronfle doucement.</p><div class="timer" id="pause-t" style="font-size:22px">05:00</div><button class="btn sec" data-close>Je reprends</button></div>`;
+    ov.innerHTML = `<div class="card" style="max-width:460px"><span class="eyebrow">Pause Holly</span><div class="breathe" style="width:220px">${H("sieste")}</div><p class="hand" style="font-size:calc(26px*var(--ts,1))">${esc(J.line("pause"))}</p><p class="small muted">Inspire quatre secondes, expire six secondes. Holly ronfle doucement.</p><div class="timer" id="pause-t" style="font-size:calc(22px*var(--ts,1))">05:00</div><button class="btn sec" data-close>Je reprends</button></div>`;
     document.body.appendChild(ov);
     const t = setInterval(() => { const left = end - Date.now(); const el = $("#pause-t"); if (el) el.textContent = fmt(left); if (left <= 0) { clearInterval(t); ov.remove(); S.pauses++; J.addXP(5, "Pause Holly complète", "pause"); J._pauseNudged = false; J.sessionStart = Date.now(); ui.celebrate("Pause terminée", "Holly s'étire", "Cinq minutes de calme, +5 XP. On reprend ?", "plage"); } }, 1000);
     ov.addEventListener("click", e => { if (e.target.closest("[data-close]")) { clearInterval(t); ov.remove(); } });
@@ -6456,11 +6568,12 @@ JBA.more("ip9", [
       <section class="card stack" style="align-items:center;text-align:center;gap:8px">
         <span class="eyebrow">Niveau ${L.n} sur ${J.LEVELS.length}</span>
         <h2>${esc(L.name)}</h2>
-        <b class="bignum tnum" style="font-size:52px">${S.xp}<span style="font-size:22px;color:var(--ink2);font-weight:600"> XP</span></b>
+        <b class="bignum tnum" style="font-size:calc(52px*var(--ts,1))">${S.xp}<span style="font-size:calc(22px*var(--ts,1));color:var(--ink2);font-weight:600"> XP</span></b>
         <div class="bar" style="width:100%"><i style="width:${L.pct}%"></i></div>
         <span class="small muted">${L.next ? `${L.next.xp - S.xp} XP avant ${esc(L.next.name)}` : "Niveau maximum. Holly s'incline."}</span>
       </section>
-      <section class="grings2">${["dc", "ip"].map(sb => { const x = subjStats(sb); return `<div class="card stack" style="gap:10px"><span class="eyebrow">${J.SUBJECTS[sb].short}</span><b class="bignum tnum" style="font-size:40px">${x.prog}<span style="font-size:18px;color:var(--ink2)"> %</span></b><div class="bar"><i style="width:${x.prog}%"></i></div><div class="minis"><span><b class="tnum">${x.read}/${x.n}</b> leçons</span><span><b class="tnum">${x.avg == null ? "—" : x.avg + " %"}</b> aux quiz</span><span><b class="tnum">${x.m}</b> cartes sues</span></div></div>`; }).join("")}</section>
+      <section class="grings2">${["dc", "ip"].map(sb => { const x = subjStats(sb); return `<div class="card stack" style="gap:10px"><span class="eyebrow">${J.SUBJECTS[sb].short}</span><b class="bignum tnum" style="font-size:calc(40px*var(--ts,1))">${x.prog}<span style="font-size:calc(18px*var(--ts,1));color:var(--ink2)"> %</span></b><div class="bar"><i style="width:${x.prog}%"></i></div><div class="minis"><span><b class="tnum">${x.read}/${x.n}</b> leçons</span><span><b class="tnum">${x.avg == null ? "—" : x.avg + " %"}</b> aux quiz</span><span><b class="tnum">${x.m}</b> cartes sues</span></div></div>`; }).join("")}</section>
+      ${(() => { const w = J.weakNotions(5); return w.length ? `<section class="stack" style="gap:0"><p class="plabel">Mes points faibles</p><div class="pgroup">${w.map(x => `<button type="button" class="prow" data-act="quiz-notion" data-ch="${x.ch}" data-n="${esc(x.n)}"><span class="tile" style="background:#FF9500">${ICON.flag}</span><span class="pmain"><span class="pt">${esc(x.n)}</span><span class="ps">${esc(J.SUBJECTS[J.byId[x.ch].subject].short)} ${J.byId[x.ch].num} · ${x.count} question${x.count > 1 ? "s" : ""} à revoir</span></span><span class="pchev">${ICON.chev}</span></button>`).join("")}</div></section>` : `<section class="card flat">${ui.sayHTML("happy", "Aucun point faible pour l'instant. Fais quelques quiz et je te dirai où creuser.", true)}</section>`; })()}
       <section class="card stack"><div class="row between"><h3>Régularité</h3><span class="small muted tnum">${J.streak()} jour${J.streak() > 1 ? "s" : ""} d'affilée · ${S.days.length} au total</span></div><div class="ddays">${days}</div></section>
       ${["dc", "ip"].map(sb => `<section class="stack" style="gap:0"><p class="plabel">${J.SUBJECTS[sb].name}</p><div class="pgroup">${J.chaptersOf(sb).map(c => { const st = J.chs(c.id), p = J.chapterProgress(c); return `<a class="prow" href="#ch-${c.id}"><span class="tile num-tile">${c.num}</span><span class="pmain"><span class="pt">${esc(c.title)}</span><span class="ps">${ui.STATUS[st.status]}${st.best != null ? ` · meilleur quiz ${st.best} %` : ""}</span></span><span class="mini-ring" style="--p:${p};--c:${dot[st.status]}"></span><span class="pchev">${ICON.chev}</span></a>`; }).join("")}</div></section>`).join("")}
       <details class="pdetails"><summary>Badges <span class="muted">${got}/${J.BADGES.length}</span></summary><div class="pgroup" style="margin-top:10px;box-shadow:none;background:var(--surface2)">${J.BADGES.map(b => `<div class="prow ${S.badges[b.id] ? "" : "dim"}"><span class="bmedal">${medal(b)}</span><span class="pmain"><span class="pt">${esc(b.name)}</span><span class="ps">${S.badges[b.id] ? "Obtenu le " + esc(S.badges[b.id]) : esc(b.desc)}</span></span>${S.badges[b.id] ? `<span class="pcount" style="color:#34C759">${ICON.check}</span>` : ""}</div>`).join("")}</div></details>
@@ -6479,6 +6592,7 @@ JBA.more("ip9", [
       <header class="stack"><h1>Réglages</h1></header>
       <section class="stack" style="gap:0"><p class="plabel">Profil</p><div class="pgroup">
         ${ui.sheetRow({ act: "askname", i: "home", t: "Prénom", end: `<span class="pval">${esc(J.name())} Boss</span><span class="pchev">${ICON.chev}</span>` })}
+        ${ui.sheetRow({ act: "partiels", i: "cal", t: "Mes partiels", end: `<span class="pval">${(() => { const P = J.plan(); return P ? esc(J.SUBJECTS[P.subj].short) + " · " + new Date(P.date + "T12:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : "Aucun"; })()}</span><span class="pchev">${ICON.chev}</span>` })}
         <div class="prow"><span class="tile" style="background:#5E5CE6">${ICON.moon}</span><span class="pmain"><span class="pt">Apparence</span></span></div>
         <div class="setbox" style="border-top:0;padding-top:0"><div class="seg wide">${[["system", "Auto"], ["light", "Clair"], ["dark", "Sombre"]].map(([k, t]) => `<button class="${S.theme === k ? "on" : ""}" data-act="settheme" data-k="${k}">${t}</button>`).join("")}</div></div>
       </div></section>
@@ -6492,7 +6606,7 @@ JBA.more("ip9", [
       <section class="stack" style="gap:0"><p class="plabel">Sauvegarde</p><div class="pgroup">
         ${ui.sheetRow({ act: "copyexp", i: "file", t: "Copier mon code de sauvegarde", end: "" })}
         <details class="pdet"><summary class="prow"><span class="tile" style="background:#0A84FF">${ICON.back}</span><span class="pmain"><span class="pt">Importer une sauvegarde</span></span><span class="pchev">${ICON.chev}</span></summary>
-          <div class="setbox"><textarea class="input" id="imp" style="min-height:90px;font-size:12px" placeholder="Colle ici un code de sauvegarde"></textarea><button class="btn sec sm" data-act="imp" style="align-self:flex-start">Importer</button></div></details>
+          <div class="setbox"><textarea class="input" id="imp" style="min-height:90px;font-size:calc(12px*var(--ts,1))" placeholder="Colle ici un code de sauvegarde"></textarea><button class="btn sec sm" data-act="imp" style="align-self:flex-start">Importer</button></div></details>
         ${confirmReset ? `<div class="setbox" style="border-top:.5px solid var(--line)"><span class="small" style="color:var(--ko);font-weight:600">Tout effacer ? Ta progression sur cet appareil sera perdue.</span><div class="row"><button class="btn sm" style="background:#FF3B30;color:#fff" data-act="reset2">Oui, tout effacer</button><button class="btn ghost sm" data-act="reset0">Annuler</button></div></div>` : `<button type="button" class="prow danger" data-act="reset1"><span class="tile" style="background:#FF3B30">${ICON.x}</span><span class="pmain"><span class="pt">Réinitialiser ma progression</span></span></button>`}
       </div></section>
       <section class="stack" style="gap:0"><p class="plabel">À propos</p><div class="pgroup">
@@ -7030,6 +7144,120 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
     ACT["ia-stop"] = () => { if (IA.ctl) IA.ctl.abort(); };
     ACT["ia-clear"] = () => { if (IA.busy) return; IA.msgs = []; saveChat(); refreshAll(); };
     ACT["ia-ch"] = b => { IA.scope = b.dataset.id; location.hash = "#ia"; };
+
+    /* ---------- Une question unique à Holly (quiz photo, correction orale) ---------- */
+    async function once(text, o = {}) {
+      let s = IA.sample; if (s === undefined) s = await IA.ready;
+      if (!s) throw { code: "nokey" };
+      const imgs = o.images && o.images.length ? o.images : null;
+      if (s.engine === "gemini") return (await s([{ role: "user", content: text, images: imgs }], { system: o.system || "" })).text;
+      const content = imgs ? [...imgs.map(im => ({ type: "image", source: { type: "base64", media_type: im.mime, data: im.data } })), { type: "text", text }] : text;
+      const msgs = o.system ? [{ role: "user", content: o.system }, { role: "assistant", content: "Compris." }, { role: "user", content }] : [{ role: "user", content }];
+      return (await s(msgs, { cache: false, modelTier: "default" })).text;
+    }
+    const busyOv = (txt, mood) => { const ov = document.createElement("div"); ov.className = "celebrate"; ov.innerHTML = `<div class="card" style="max-width:380px"><div class="holly-wrap bob">${H(mood)}</div><p class="hand" style="font-size:calc(24px*var(--ts,1))">${esc(txt)}</p><span class="ia-typing" aria-label="Chargement"><i></i><i></i><i></i></span></div>`; document.body.appendChild(ov); return ov; };
+
+    /* ---------- Quiz de mes notes : Holly fabrique 5 questions à partir d'une photo ---------- */
+    J.photoQuiz = async files => {
+      if (IA.sample === null) { ui.toast("Ajoute d'abord ta clé Gemini (Réglages) pour que Holly lise tes photos."); return; }
+      const imgs = [];
+      for (const f of files.slice(0, 4)) { try { const im = await loadImg(f); imgs.push({ mime: "image/jpeg", data: shrink(im, 1600, .85).split(",")[1] }); } catch (e) { } }
+      if (!imgs.length) { ui.toast("Cette photo n'a pas pu être lue. Essaie une capture d'écran."); return; }
+      const ov = busyOv("Holly lit tes notes…", "etudiant");
+      try {
+        const txt = await once(`Voici la photo de mes notes ou d'un exercice de droit. Fabrique exactement 5 questions de QCM pour m'entraîner, uniquement à partir de ce qui est écrit sur la photo (n'invente aucune règle, date ou arrêt qui n'y figure pas).
+Réponds UNIQUEMENT avec un tableau JSON, sans texte autour, de la forme :
+[{"q":"question","o":["choix A","choix B","choix C","choix D"],"a":[0],"e":"explication courte","n":"notion","d":2}]
+- "a" : indices des bonnes réponses (une ou plusieurs) ; "d" : difficulté de 1 à 4.
+- Mauvaises réponses plausibles, en français, courtes.
+- Si la photo est illisible ou ne contient pas de droit, réponds [].`, { images: imgs });
+        const m = String(txt || "").match(/\[[\s\S]*\]/); let arr = [];
+        try { arr = JSON.parse(m ? m[0] : "[]"); } catch (e) { arr = []; }
+        const qs = (Array.isArray(arr) ? arr : []).filter(x => x && typeof x.q === "string" && Array.isArray(x.o) && x.o.length >= 2 && Array.isArray(x.a) && x.a.length && x.a.every(i => Number.isInteger(i) && i >= 0 && i < x.o.length))
+          .slice(0, 5).map((x, i) => ({ id: "photo-" + Date.now() + "-" + i, ch: "photo", custom: true, q: x.q, o: x.o.map(String), a: x.a, e: String(x.e || ""), n: String(x.n || "Tes notes"), p: "", d: [1, 2, 3, 4].includes(+x.d) ? +x.d : 2 }));
+        ov.remove();
+        if (!qs.length) { ui.toast("Holly n'a pas réussi à lire cette photo. Essaie avec une photo plus nette, bien éclairée."); return; }
+        J.pendingQuiz = { custom: qs, n: qs.length }; J.quiz = null;
+        if (location.hash === "#quiz") ui.rerender(); else location.hash = "#quiz";
+      } catch (e) {
+        ov.remove();
+        ui.toast(e && e.code === "nokey" ? "Ajoute ta clé Gemini dans les Réglages pour réveiller Holly." : e && e.code ? (ERR[e.code] || "Holly n'a pas pu lire la photo. Réessaie.") : "Ici, Holly n'arrive pas à lire les photos : essaie depuis l'appli sur ton iPhone.");
+      }
+    };
+
+    /* ---------- À l'oral : Holly pose une question, on répond à voix haute, Holly corrige ---------- */
+    const OR = { subj: "all", it: null, ans: "", res: null, busy: false, rec: null, listening: false };
+    const oralPool = () => {
+      const out = [];
+      J.list.filter(c => OR.subj === "all" || c.subject === OR.subj).forEach(c => {
+        c.defs.forEach(d => out.push({ ch: c.id, q: `Définis : « ${d.t} ».`, model: d.d }));
+        c.eli5.forEach(e => out.push({ ch: c.id, q: `Explique simplement : ${e.notion}.`, model: `${e.def} ${e.summary}` }));
+        c.juris.forEach(j => { if (j.solution) out.push({ ch: c.id, q: `Que retient l'arrêt ${j.name} (${j.court}, ${j.date}) ?`, model: j.solution + (j.portee ? " Portée : " + j.portee : "") }); });
+      });
+      return out;
+    };
+    const newOral = () => { const p = oralPool(); OR.it = p[Math.floor(Math.random() * p.length)] || null; OR.ans = ""; OR.res = null; stopRec(); };
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    function stopRec() { if (OR.rec) { try { OR.rec.stop(); } catch (e) { } } OR.rec = null; OR.listening = false; }
+    VIEWS.oral = {
+      render() {
+        if (!OR.it) newOral();
+        const it = OR.it, c = it && J.byId[it.ch];
+        const seg = `<div class="seg wide">${[["all", "Les deux"], ["dc", "Constit."], ["ip", "Droit privé"]].map(([k, t]) => `<button class="${OR.subj === k ? "on" : ""}" data-act="or-subj" data-k="${k}">${t}</button>`).join("")}</div>`;
+        const res = OR.res;
+        return `
+        <a href="#quiz" class="backlink">${ICON.back.replace("<svg", "<svg width=17 height=17")} Sushi Quiz</a>
+        <header class="row between" style="align-items:flex-end"><h1>À l'oral</h1><div style="width:90px" class="deco">${H("prof")}</div></header>
+        ${seg}
+        ${it ? `<div class="card stack read" style="max-width:820px;width:100%;align-self:center">
+          <span class="small muted">${esc(J.SUBJECTS[c.subject].short)} ${c.num} · ${esc(c.title)}</span>
+          <h2 style="font-size:clamp(21px,3vw,26px)">${esc(it.q)}</h2>
+          ${res ? "" : `<textarea class="input" id="or-ans" rows="4" placeholder="${SR ? "Touche le micro et réponds à voix haute…" : "Réponds à voix haute avec le micro du clavier, ou écris ta réponse."}">${esc(OR.ans)}</textarea>
+          <div class="row">${SR ? `<button class="btn sec" data-act="or-mic" id="or-mic" aria-pressed="${OR.listening}">${ICON.mic.replace("<svg", "<svg width=18 height=18")} ${OR.listening ? "J'ai fini" : "Parler"}</button>` : ""}<button class="btn pri" data-act="or-check" ${OR.busy ? "disabled" : ""}>${OR.busy ? "Holly réfléchit…" : "Corriger"}</button><button class="btn link" data-act="or-skip">Passer</button></div>`}
+          ${res ? `<div class="fb ${res.ok === false ? "ko" : "ok"}">
+            ${res.txt ? `<div class="ia-body or-md">${md(res.txt)}</div>` : ""}
+            ${OR.ans ? `<p class="small muted"><b>Ta réponse :</b> ${esc(OR.ans)}</p>` : ""}
+            <p class="small"><b>Ce qu'il fallait dire :</b> ${esc(it.model)}</p>
+            ${res.self ? `<div class="row"><button class="btn sec sm" data-act="or-self" data-v="1">J'avais bon</button><button class="btn ghost sm" data-act="or-self" data-v="0">À revoir</button></div>` : ""}</div>
+          <div class="row"><button class="btn pri" data-act="or-next">Question suivante</button><a class="btn sec" href="#ch-${c.id}">Revoir le chapitre</a></div>` : ""}
+        </div>` : `<div class="card empty">Aucune question disponible.</div>`}`;
+      },
+      after() { const t = document.getElementById("or-ans"); if (t) t.addEventListener("input", () => { OR.ans = t.value; }); }
+    };
+    ACT["or-subj"] = b => { OR.subj = b.dataset.k; newOral(); ui.rerender(); };
+    ACT["or-skip"] = ACT["or-next"] = () => { newOral(); ui.animNext = true; ui.rerender(); };
+    ACT["or-mic"] = () => {
+      if (OR.listening) { stopRec(); ui.rerender(); return; }
+      const r = new SR(); r.lang = "fr-FR"; r.interimResults = true; r.continuous = true;
+      const base = OR.ans ? OR.ans.trim() + " " : "";
+      r.onresult = e => { let t = ""; for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript; OR.ans = base + t; const ta = document.getElementById("or-ans"); if (ta) ta.value = OR.ans; };
+      r.onerror = e => { if (e.error === "not-allowed") ui.toast("Autorise le micro pour répondre à voix haute (ou utilise la dictée du clavier)."); stopRec(); ui.rerender(); };
+      r.onend = () => { if (OR.listening) { OR.listening = false; OR.rec = null; ui.rerender(); } };
+      try { r.start(); OR.rec = r; OR.listening = true; ui.rerender(); } catch (e) { ui.toast("Le micro n'est pas disponible ici : utilise la dictée du clavier."); }
+    };
+    ACT["or-check"] = async () => {
+      const ta = document.getElementById("or-ans"); if (ta) OR.ans = ta.value.trim();
+      stopRec();
+      if (!OR.ans) { ui.toast("Réponds d'abord, même en quelques mots."); return; }
+      const it = OR.it;
+      let s = IA.sample; if (s === undefined) { OR.busy = true; ui.rerender(); s = await IA.ready; OR.busy = false; }
+      if (!s) { OR.res = { self: true }; ui.rerender(); return; }
+      OR.busy = true; ui.rerender();
+      try {
+        const txt = await once(`Tu es Holly, professeur de droit bienveillant mais exigeant. Corrige la réponse orale de ${J.name()}, étudiante en L1.
+Question : ${it.q}
+Réponse attendue (d'après son cours) : ${it.model}
+Sa réponse (dictée à voix haute, ignore les fautes de transcription) : ${OR.ans}
+Réponds en français, en 3 lignes maximum :
+1re ligne exactement « Note : X/5 ».
+Puis ce qui est juste, et ce qui manque ou est faux, en t'appuyant uniquement sur la réponse attendue.`);
+        const m = String(txt).match(/(\d)\s*\/\s*5/); const note = m ? +m[1] : null;
+        OR.res = { txt, ok: note == null ? null : note >= 3 };
+        if (note != null) J.addXP(note >= 4 ? 5 : 2, "Révision à l'oral", "oral");
+      } catch (e) { OR.res = { self: true, txt: e && e.code === "rate_limited" ? "Holly est un peu essoufflé : compare toi-même avec la réponse du cours." : "" }; }
+      OR.busy = false; ui.rerender();
+    };
+    ACT["or-self"] = b => { const ok = b.dataset.v === "1"; J.addXP(ok ? 3 : 1, "Révision à l'oral", "oral"); ui.toast(ok ? J.line("bon") : "On la retravaillera. Holly note ça dans son carnet."); newOral(); ui.rerender(); };
   })();
 
   ui.mount();
@@ -7158,7 +7386,7 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
 })();
 
 </script>
-<script>window.JBA_BUILD="20261105-104555";
+<script>window.JBA_BUILD="20261105-180344";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
