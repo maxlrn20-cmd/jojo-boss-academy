@@ -7496,39 +7496,36 @@ DIRE: ce que tu dis à voix haute
       const pool = J.shuffle(oralPool()).filter(x => !due.some(d => d.q === x.q));
       return J.shuffle(due.concat(pool.slice(0, 16 - due.length)));
     }
-    function liveSystem(items) {
-      items = items || LV.items;
+    /* Holly ne connaît PAS les réponses à l'avance : elle reçoit chaque question une par une,
+       et la réponse du cours seulement quand elle la demande (outil « correction »), une fois que Jojo a répondu.
+       Impossible, donc, de répondre à sa place. */
+    function liveSystem() {
       const nm = J.name();
       return `Tu es Holly, la prof de droit de ${nm} dans l'appli Jojo Boss Academy. Tu lui fais passer un ORAL DE RÉVISION en direct, à voix haute, en français uniquement. ${nm} est en première année de licence de droit.
 
 TA FAÇON DE PARLER
-- Parle comme une vraie personne au téléphone avec une amie qu'elle fait réviser : chaleureuse, vive, drôle, naturelle, avec des petites réactions spontanées (« Ah, bien vu ! », « Hmm, presque… », « Attends, attends… »).
-- Phrases courtes. Jamais de listes, jamais de « premièrement, deuxièmement ». Tu ne lis jamais un texte.
-- Réagis vraiment à ce qu'elle dit, reprends ses mots. Varie toujours tes formulations.
-- Une seule question à la fois. Dès que tu as posé ta question, TU T'ARRÊTES DE PARLER et tu attends sa réponse en silence, aussi longtemps qu'il faut.
-- RÈGLE ABSOLUE : tu ne donnes JAMAIS la réponse, un indice ou la correction avant qu'elle ait répondu elle-même. Ne réponds jamais à ta propre question. Si tu entends ta propre voix ou du bruit, ignore-le.
+- Comme une vraie personne au téléphone avec une amie qu'elle fait réviser : chaleureuse, vive, drôle, naturelle, avec des réactions spontanées (« Ah, bien vu ! », « Hmm, presque… »).
+- Phrases courtes, jamais de listes. Réagis à ce qu'elle dit. Varie tes formulations.
 
-LE DÉROULÉ
-- Commence par un bonjour très court (une phrase) et pose tout de suite la question 1. Tu peux reformuler la question à l'oral pour qu'elle sonne naturelle.
-- Après sa réponse, juge-la UNIQUEMENT d'après la « référence » du cours (ne l'invente jamais, ne cite rien qui n'y est pas) :
-  · juste (l'essentiel y est, même dit autrement) : félicite en quelques mots, éventuellement un petit détail utile ;
-  · partiel : dis ce qui manque ; si un seul élément manque, relance-la une fois (« Et tu te rappelles qui… ? ») avant de conclure ;
-  · faux ou « je ne sais pas » : donne la bonne réponse en une ou deux phrases simples, avec une astuce pour la retenir si tu en as une.
-- Quand elle se trompe, tu peux la taquiner en la comparant à « la grosse Adèle » (une copine, c'est leur blague à elles) : une phrase courte et drôle, environ une erreur sur deux, jamais deux fois la même blague. Invente-en de nouvelles dans ce style : ${J.shuffle(J.ADELE.simple).slice(0, 5).map(x => "« " + x + " »").join(" ")}
-- Seulement APRÈS sa réponse et ta correction, appelle l'outil noter, puis enchaîne directement sur la question suivante, sans demander la permission.
-- Si elle te pose une question ou te demande d'expliquer, explique simplement en 20 secondes maximum, puis reprends l'oral.
-- Si elle dit « répète », répète. Si elle dit « passe », note « faux » et passe. Si elle veut arrêter, fais un bilan chaleureux en une phrase et appelle l'outil terminer.
-- Sa voix est transcrite automatiquement : tolère les noms propres, les mots latins et les dates mal prononcés.
-- Ne dis jamais les mots « référence » ou « réponse attendue ». Dis « article » pour « art. ».
-
-LES QUESTIONS (dans l'ordre)
-${items.map((x, i) => `${i + 1}. [${J.SUBJECTS[J.byId[x.ch].subject].short} ${J.byId[x.ch].num}] ${x.q}\n   Référence : ${x.model}`).join("\n")}
-Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle terminer.`;
+LE DÉROULÉ (très important)
+1. Tu reçois les questions UNE PAR UNE. Pose la question reçue (tu peux la reformuler légèrement), puis TAIS-TOI et attends sa réponse. Ne donne jamais la réponse, ni un indice, ni un exemple avant qu'elle ait parlé. Tu ne connais pas la réponse : ne l'invente pas.
+2. Quand elle a répondu, appelle l'outil « correction » pour recevoir la réponse de son cours. Juge UNIQUEMENT d'après elle :
+   · juste (l'essentiel y est, même dit autrement) : félicite en quelques mots ;
+   · partiel : dis ce qui manque, en une phrase ;
+   · faux ou « je ne sais pas » : donne la bonne réponse en une ou deux phrases simples.
+3. Puis appelle l'outil « noter » avec ton verdict. Il te donne la question suivante : enchaîne directement en la posant, puis tais-toi à nouveau.
+- Quand elle se trompe, tu peux la taquiner en la comparant à « la grosse Adèle » (une copine, c'est leur blague) : une phrase courte et drôle, environ une erreur sur deux, jamais deux fois la même. Dans ce style : ${J.shuffle(J.ADELE.simple).slice(0, 4).map(x => "« " + x + " »").join(" ")}
+- Si elle te pose une question ou demande d'expliquer, réponds simplement en 20 secondes maximum, puis repose ta question.
+- « Répète » : répète la question. « Passe » : appelle correction, donne la réponse en une phrase, puis noter « faux ». Si elle veut arrêter : bilan chaleureux en une phrase, puis outil « terminer ».
+- Sa voix est transcrite automatiquement : tolère les noms propres, le latin et les dates mal reconnus. Si tu n'as entendu que du bruit ou ta propre voix, ce n'est pas une réponse : attends.
+- Ne dis jamais « référence » ni « réponse attendue ». Dis « article » pour « art. ».`;
     }
     const liveTools = [{ functionDeclarations: [
-      { name: "noter", description: "Enregistre le résultat d'une question dès que tu l'as jugée.", parameters: { type: "OBJECT", properties: { numero: { type: "INTEGER", description: "Numéro de la question (1, 2, 3…)" }, verdict: { type: "STRING", enum: ["juste", "partiel", "faux"] } }, required: ["numero", "verdict"] } },
+      { name: "correction", description: "Donne la réponse du cours pour la question en cours. À appeler seulement après la réponse de l'étudiante." },
+      { name: "noter", description: "Enregistre ton verdict sur la question en cours et renvoie la question suivante à poser.", parameters: { type: "OBJECT", properties: { verdict: { type: "STRING", enum: ["juste", "partiel", "faux"] } }, required: ["verdict"] } },
       { name: "terminer", description: "Termine l'oral après le bilan." }
     ] }];
+    const qLabel = it => `« ${it.q} » (${J.SUBJECTS[J.byId[it.ch].subject].short} ${J.byId[it.ch].num})`;
 
     /* ---------- Micro : capture, réduction à 16 kHz, envoi ---------- */
     const WORKLET = `class M extends AudioWorkletProcessor{process(i){const c=i[0]&&i[0][0];if(c)this.port.postMessage(c.slice(0));return true}}registerProcessor("jba-mic",M);`;
@@ -7608,7 +7605,7 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
         ws.onopen = () => ws.send(JSON.stringify({ setup: {
           model: "models/" + c.m,
           generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: c.v } } } },
-          systemInstruction: { parts: [{ text: liveSystem(items) }] },
+          systemInstruction: { parts: [{ text: liveSystem() }] },
           tools: liveTools,
           inputAudioTranscription: {}, outputAudioTranscription: {},
           realtimeInputConfig: { automaticActivityDetection: { silenceDurationMs: 520, prefixPaddingMs: 100 } }
@@ -7620,7 +7617,12 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
         };
         ws.onclose = ev => {
           if (!ok) { const r = ev.reason || ""; if (/api key|API_KEY|permission|PERMISSION_DENIED/i.test(r) && !/model/i.test(r)) return reject({ code: "bad_key", message: r }); if (/quota|RESOURCE_EXHAUSTED|rate/i.test(r)) return reject({ code: "rate_limited", message: r }); if (attempt === 0 && saved) { try { localStorage.removeItem(LKEY); } catch (e) { } } return connect(attempt + 1, items).then(resolve, reject); }
-          if (LV.on && LV.ws === ws) { LV.err = ev.code === 1000 ? "" : (/quota|RESOURCE_EXHAUSTED/i.test(ev.reason || "") ? "Holly a atteint la limite gratuite de Gemini pour l'instant. Réessaie un peu plus tard." : "La connexion avec Holly s'est coupée."); liveEnd(true); }
+          if (LV.on && LV.ws === ws) {
+            LV.ws = null; LV.ready = false;
+            if (/quota|RESOURCE_EXHAUSTED/i.test(ev.reason || "")) { LV.err = "Holly a atteint la limite gratuite de Gemini pour l'instant. Réessaie un peu plus tard."; liveEnd(true); }
+            else if (LV.ending) liveEnd(true);
+            else if (document.visibilityState === "visible") liveResume();
+          }
         };
         ws.onerror = () => { };
       });
@@ -7637,26 +7639,64 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
       }
       if (m.toolCall && m.toolCall.functionCalls) {
         const resp = m.toolCall.functionCalls.map(fc => {
+          const it = LV.items[LV.cur];
+          if (fc.name === "correction") {
+            if (!it) return { id: fc.id, name: fc.name, response: { fin: true } };
+            if (!LV.heard) return { id: fc.id, name: fc.name, response: { refus: `${J.name()} n'a encore rien répondu. Ne donne pas la réponse : attends en silence qu'elle parle.` } };
+            LV.corr = true;
+            return { id: fc.id, name: fc.name, response: { question: it.q, reponse_du_cours: it.model } };
+          }
           if (fc.name === "noter") {
-            const a = fc.args || {}, it = LV.items[(+a.numero || 0) - 1], v = a.verdict;
-            if (!LV.heard) return { id: fc.id, name: fc.name, response: { result: "refusé", raison: `${J.name()} n'a encore rien répondu. Ne donne pas la réponse : repose la question et attends en silence qu'elle réponde.` } };
-            LV.heard = false;
-            if (it && !it.done) {
-              it.done = v; LV.cur = Math.max(LV.cur, +a.numero);
-              if (v === "juste") { LV.score.ok++; J.addXP(3, "Oral avec Holly", "oral"); if (it.qref) J.answerQ(it.qref, true); }
-              else if (v === "partiel") { LV.score.part++; J.addXP(1, "Oral avec Holly", "oral"); }
-              else { LV.score.ko++; if (it.qref) J.answerQ(it.qref, false); }
-              paintTop();
-            }
+            const v = (fc.args || {}).verdict;
+            if (!it) return { id: fc.id, name: fc.name, response: { fin: true, consigne: "Toutes les questions sont faites : fais le bilan en deux phrases puis appelle terminer." } };
+            if (!LV.heard && !LV.corr) return { id: fc.id, name: fc.name, response: { refus: `${J.name()} n'a pas encore répondu. Attends sa réponse.` } };
+            LV.heard = false; LV.corr = false;
+            if (v === "juste") { LV.score.ok++; J.addXP(3, "Oral avec Holly", "oral"); if (it.qref) J.answerQ(it.qref, true); }
+            else if (v === "partiel") { LV.score.part++; J.addXP(1, "Oral avec Holly", "oral"); }
+            else { LV.score.ko++; if (it.qref) J.answerQ(it.qref, false); }
+            it.done = v || "faux"; LV.cur++;
+            paintTop();
+            const nx = LV.items[LV.cur];
+            return { id: fc.id, name: fc.name, response: nx ? { question_suivante: qLabel(nx), numero: LV.cur + 1, total: LV.items.length, consigne: "Pose-la maintenant, puis tais-toi et attends sa réponse." } : { fin: true, consigne: "C'était la dernière : fais le bilan en deux phrases puis appelle terminer." } };
           }
           if (fc.name === "terminer") LV.ending = true;
           return { id: fc.id, name: fc.name, response: { result: "ok" } };
         });
         send({ toolResponse: { functionResponses: resp } });
       }
-      if (m.goAway) LV.ending = true;
+      if (m.goAway) LV.t0 = Date.now() - 14.4 * 60e3;
     }
 
+    /* ---------- Écran toujours allumé pendant l'oral ---------- */
+    const WAKE = { lock: null, vid: null };
+    async function wakeOn() {
+      try { if (navigator.wakeLock && !WAKE.lock) { WAKE.lock = await navigator.wakeLock.request("screen"); WAKE.lock.addEventListener("release", () => { WAKE.lock = null; }); } } catch (e) { WAKE.lock = null; }
+      /* Secours pour les iPhone où l'API ne marche pas : une mini-vidéo muette en boucle empêche la mise en veille. */
+      try {
+        if (!WAKE.vid) { const v = document.createElement("video"); v.setAttribute("playsinline", ""); v.setAttribute("muted", ""); v.muted = true; v.loop = true; v.src = "data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAMpbW9vdgAAAGxtdmhkAAAAAAAAAAAAAAAAAAAD6AAAB9AAAQAAAQAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAlN0cmFrAAAAXHRraGQAAAADAAAAAAAAAAAAAAABAAAAAAAAB9AAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAABAAAAAQAAAAAAAkZWR0cwAAABxlbHN0AAAAAAAAAAEAAAfQAAAAAAABAAAAAAHLbWRpYQAAACBtZGhkAAAAAAAAAAAAAAAAAABAAAAAgABVxAAAAAAALWhkbHIAAAAAAAAAAHZpZGUAAAAAAAAAAAAAAABWaWRlb0hhbmRsZXIAAAABdm1pbmYAAAAUdm1oZAAAAAEAAAAAAAAAAAAAACRkaW5mAAAAHGRyZWYAAAAAAAAAAQAAAAx1cmwgAAAAAQAAATZzdGJsAAAAtnN0c2QAAAAAAAAAAQAAAKZhdmMxAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAABAAEABIAAAASAAAAAAAAAABFUxhdmM2MC4zMS4xMDIgbGlieDI2NAAAAAAAAAAAAAAAGP//AAAALGF2Y0MBQsAK/+EAFWdCwAraewEQAAADABAAAAMAIPEiagEABGjOD8gAAAAQcGFzcAAAAAEAAAABAAAAFGJ0cnQAAAAAAAAKOAAACjgAAAAYc3R0cwAAAAAAAAABAAAAAgAAQAAAAAAUc3RzcwAAAAAAAAABAAAAAQAAABxzdHNjAAAAAAAAAAEAAAABAAAAAgAAAAEAAAAcc3RzegAAAAAAAAAAAAAAAgAAAoUAAAAJAAAAFHN0Y28AAAAAAAAAAQAAA1kAAABidWR0YQAAAFptZXRhAAAAAAAAACFoZGxyAAAAAAAAAABtZGlyYXBwbAAAAAAAAAAAAAAAAC1pbHN0AAAAJal0b28AAAAdZGF0YQAAAAEAAAAATGF2ZjYwLjE2LjEwMAAAAAhmcmVlAAAClm1kYXQAAAJvBgX//2vcRem95tlIt5Ys2CDZI+7veDI2NCAtIGNvcmUgMTY0IHIzMTA4IDMxZTE5ZjkgLSBILjI2NC9NUEVHLTQgQVZDIGNvZGVjIC0gQ29weWxlZnQgMjAwMy0yMDIzIC0gaHR0cDovL3d3dy52aWRlb2xhbi5vcmcveDI2NC5odG1sIC0gb3B0aW9uczogY2FiYWM9MCByZWY9MSBkZWJsb2NrPTE6MDowIGFuYWx5c2U9MHgxOjB4MTExIG1lPWhleCBzdWJtZT0yIHBzeT0xIHBzeV9yZD0xLjAwOjAuMDAgbWl4ZWRfcmVmPTAgbWVfcmFuZ2U9MTYgY2hyb21hX21lPTEgdHJlbGxpcz0wIDh4OGRjdD0wIGNxbT0wIGRlYWR6b25lPTIxLDExIGZhc3RfcHNraXA9MSBjaHJvbWFfcXBfb2Zmc2V0PTAgdGhyZWFkcz0xIGxvb2thaGVhZF90aHJlYWRzPTEgc2xpY2VkX3RocmVhZHM9MCBucj0wIGRlY2ltYXRlPTEgaW50ZXJsYWNlZD0wIGJsdXJheV9jb21wYXQ9MCBjb25zdHJhaW5lZF9pbnRyYT0wIGJmcmFtZXM9MCB3ZWlnaHRwPTAga2V5aW50PTI1MCBrZXlpbnRfbWluPTEgc2NlbmVjdXQ9NDAgaW50cmFfcmVmcmVzaD0wIHJjX2xvb2thaGVhZD0xMCByYz1jcmYgbWJ0cmVlPTEgY3JmPTIzLjAgcWNvbXA9MC42MCBxcG1pbj0wIHFwbWF4PTY5IHFwc3RlcD00IGlwX3JhdGlvPTEuNDAgYXE9MToxLjAwAIAAAAAOZYiEBb///w9FAAFPf4AAAAAFQZogFfU="; v.style.cssText = "position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;bottom:0;left:0"; document.body.appendChild(v); WAKE.vid = v; }
+        const pr = WAKE.vid.play(); if (pr && pr.catch) pr.catch(() => { });
+      } catch (e) { }
+    }
+    function wakeOff() { try { WAKE.lock && WAKE.lock.release(); } catch (e) { } WAKE.lock = null; try { WAKE.vid && WAKE.vid.pause(); } catch (e) { } }
+    /* Reprise après une coupure (écran verrouillé, appel, réseau) : on se reconnecte et Holly reprend à la même question. */
+    async function liveResume() {
+      if (!LV.on || LV.resuming) return; LV.resuming = true;
+      try {
+        wakeOn();
+        if (LV.ctx && LV.ctx.state !== "running") await LV.ctx.resume();
+        if (!(MIC.stream && MIC.stream.getAudioTracks().some(t => t.readyState === "live"))) { try { LV.node && LV.node.disconnect(); LV.micSrc && LV.micSrc.disconnect(); } catch (e) { } MIC.stream = null; await startMic(); }
+        if (!LV.ws || LV.ws.readyState > 1) {
+          setSt("connecting"); hush();
+          LV.ws = await connect(0); LV.ready = true; LV.heard = false; LV.corr = false; LV.tries = 0;
+          if (LV.items[LV.cur]) kickoff(true); else liveEnd();
+        }
+      } catch (e) { LV.tries = (LV.tries || 0) + 1; if (LV.tries >= 3) { LV.err = "La connexion avec Holly n'a pas pu reprendre. Relance l'oral : ta progression est gardée."; liveEnd(true); } else setTimeout(() => { LV.resuming = false; liveResume(); }, 1500); return; }
+      LV.resuming = false;
+    }
+    function kickoff(again) {
+      const it = LV.items[LV.cur];
+      send({ clientContent: { turns: [{ role: "user", parts: [{ text: again ? `On reprend l'oral là où on en était (la connexion a été coupée). Dis juste « On reprend ! » puis pose-moi cette question et attends ma réponse : ${qLabel(it)}` : `Bonjour Holly, on commence l'oral (${LV.items.length} questions). Dis-moi bonjour en une phrase, puis pose-moi la question 1 et attends ma réponse : ${qLabel(it)}` }] }], turnComplete: true } });
+    }
     function dropPre() { if (LV.pre) { LV.pre.p.then(ws => { try { ws && ws !== LV.ws && ws.close(1000); } catch (e) { } }).catch(() => { }); LV.pre = null; } }
     function prewarm() {
       if (!liveOK() || LV.on || OR.on || (LV.pre && LV.pre.subj === OR.subj)) return;
@@ -7666,20 +7706,21 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
       pre.p = connect(0, items).catch(() => null); LV.pre = pre;
     }
     async function liveStart() {
-      LV.on = true; LV.st = "connecting"; LV.log = []; LV.score = { ok: 0, part: 0, ko: 0 }; LV.cur = 0; LV.err = ""; LV.ending = false; LV.muted = false; LV.ready = false; LV.heard = false; LV.t0 = Date.now();
+      LV.on = true; LV.st = "connecting"; LV.log = []; LV.score = { ok: 0, part: 0, ko: 0 }; LV.cur = 0; LV.err = ""; LV.ending = false; LV.muted = false; LV.ready = false; LV.heard = false; LV.corr = false; LV.t0 = Date.now();
       /* Connexion préparée dès l'ouverture de la page : Holly répond tout de suite. */
       const pre = LV.pre && LV.pre.subj === OR.subj && Date.now() - LV.pre.t < 8 * 60e3 ? LV.pre : null;
       LV.pre = null;
       LV.items = pre ? pre.items : liveItems();
       const C = window.AudioContext || window.webkitAudioContext;
       try { LV.ctx = new C({ latencyHint: "interactive" }); LV.ctx.resume(); } catch (e) { }
+      wakeOn();
       ui.rerender();
       try {
         const wsP = pre ? pre.p.then(ws => ws && ws.readyState === 1 ? ws : connect(0)).catch(() => connect(0)) : connect(0);
         const [ws] = await Promise.all([wsP, startMic()]);
         LV.ws = ws;
         LV.ready = true; setSt("thinking");
-        send({ clientContent: { turns: [{ role: "user", parts: [{ text: "Bonjour Holly, on commence l'oral." }] }], turnComplete: true } });
+        kickoff();
         meter();
       } catch (e) {
         LV.lastErr = String((e && (e.message || e.code || e.name)) || e); const code = e && (e.code || e.name);
@@ -7690,7 +7731,7 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
     }
     function liveEnd(silent) {
       if (!LV.on) return;
-      LV.on = false; cancelAnimationFrame(LV.raf);
+      LV.on = false; cancelAnimationFrame(LV.raf); wakeOff();
       hush();
       try { LV.ws && LV.ws.close(1000); } catch (e) { } LV.ws = null;
       try { LV.stream && LV.stream.getTracks().forEach(t => t.enabled = false); } catch (e) { } LV.stream = null;
@@ -7702,13 +7743,18 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
       if (location.hash === "#oral") ui.rerender();
     }
     addEventListener("hashchange", () => { if (location.hash !== "#oral") { dropPre(); if (LV.on) liveEnd(true); } });
-    document.addEventListener("visibilitychange", () => { if (LV.on && document.visibilityState === "hidden") liveEnd(true); });
+    document.addEventListener("visibilitychange", () => {
+      if (!LV.on) return;
+      if (document.visibilityState === "hidden") { LV.hiddenAt = Date.now(); hush(); }
+      else { if (LV.hiddenAt && Date.now() - LV.hiddenAt > 5 * 60e3) { LV.err = "L'oral s'est arrêté pendant que l'écran était éteint."; liveEnd(true); return; } liveResume(); }
+    });
     function meter() {
       const h = document.getElementById("lv-holly");
       if (h) { const v = LV.st === "speaking" ? LV.lvOut : LV.st === "listening" && !LV.muted ? LV.lvIn * 2.2 : 0; h.style.setProperty("--lv", Math.min(1, v * 4).toFixed(3)); }
       LV.lvOut *= .86;
       if (LV.ending && !LV.srcs.length && LV.st !== "speaking" && Date.now() - LV.t0 > 3000) { /* attendu */ }
-      if (Date.now() - LV.t0 > 14.5 * 60e3) { LV.err = "Fin de la séance (15 minutes maximum)."; liveEnd(true); return; }
+      /* Google limite une connexion à 15 minutes : on en ouvre une nouvelle sans couper l'oral. */
+      if (LV.ws && LV.ready && ((Date.now() - LV.t0 > 13.5 * 60e3 && LV.st === "listening" && !LV.heard) || Date.now() - LV.t0 > 14.5 * 60e3)) { LV.t0 = Date.now(); const w = LV.ws; try { w.close(1000); } catch (e) { } }
       LV.raf = requestAnimationFrame(meter);
     }
     function liveTopHTML() {
@@ -7904,7 +7950,7 @@ Quand tu as fini toutes les questions, fais un bilan en deux phrases et appelle 
 })();
 
 </script>
-<script>window.JBA_BUILD="20261105-185016";
+<script>window.JBA_BUILD="20261105-185959";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
