@@ -712,6 +712,35 @@ body.ia-on .toast{bottom:calc(var(--ia-bot,0px) + 118px)}
 .or-md p{margin:0 0 6px}
 #or-ans{min-height:110px;font-size:calc(17px*var(--ts,1))}
 #or-mic[aria-pressed="true"]{background:var(--ko2);color:var(--ko)}
+
+/* Oral avec Holly */
+.or-start{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:6px}
+.or-page{display:flex;flex-direction:column;gap:10px;min-height:calc(100dvh - 190px)}
+.or-stage{display:flex;flex-direction:column;gap:14px;flex:1}
+.or-holly{width:150px;align-self:center;position:relative;transition:transform .3s var(--ease)}
+.or-holly.listening{transform:scale(.92)}
+.or-holly::after{content:"";position:absolute;inset:8% 4%;border-radius:50%;box-shadow:0 0 0 0 rgba(255,45,85,.35);pointer-events:none}
+.or-holly.listening::after{animation:orpulse 1.6s infinite}
+@keyframes orpulse{0%{box-shadow:0 0 0 0 rgba(255,45,85,.35)}100%{box-shadow:0 0 0 26px rgba(255,45,85,0)}}
+.or-score{display:flex;justify-content:center;gap:14px;font-size:calc(13px*var(--ts,1));color:var(--ink2)}
+.or-score span:first-child{color:var(--ok);font-weight:600}
+.or-log{display:flex;flex-direction:column;gap:8px;max-height:38dvh;overflow-y:auto;padding:2px}
+.or-b{max-width:86%;padding:10px 14px;border-radius:20px;font-size:calc(16px*var(--ts,1));line-height:1.4}
+.or-b.new{animation:rise .28s var(--ease) both}
+.or-b.holly{background:var(--surface);align-self:flex-start;border-bottom-left-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.or-b.holly.v-juste{background:var(--ok2,#E3F6E8)}
+.or-b.holly.v-faux{background:var(--ko2)}
+.or-b.me{background:var(--framboise);color:#fff;align-self:flex-end;border-bottom-right-radius:6px}
+.or-b.me.live{opacity:.75;min-width:40px}
+.or-b.me.live:empty::before{content:"…"}
+.or-ctl{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:auto}
+.or-mic{width:76px;height:76px;border-radius:50%;border:0;background:var(--framboise);color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 18px rgba(210,51,95,.3);transition:transform .2s var(--ease),background .2s}
+.or-mic svg{width:32px;height:32px}
+.or-mic:active{transform:scale(.94)}
+.or-mic.listening{background:#FF3B30;animation:orpulse 1.6s infinite}
+.or-mic.speaking,.or-mic.thinking{background:var(--surface3);color:var(--ink);box-shadow:none}
+.or-mic .ia-typing i{background:var(--ink2)}
+@media (prefers-reduced-motion:reduce){.or-holly.listening::after,.or-mic.listening{animation:none}}
 </style>
 </head><body>
 <div id="root"></div>
@@ -6161,7 +6190,7 @@ JBA.more("ip9", [
       const due = J.reviewDue().length;
       const seg = (f, opts, cur) => `<div class="seg wide">${opts.map(([k, t]) => `<button class="${cur === k ? "on" : ""}" data-act="qc" data-f="${f}" data-v="${k}">${t}</button>`).join("")}</div>`;
       const rows = [ui.sheetRow({ act: "quiz-errors", i: "quiz", t: "Mes erreurs", sub: due ? "À revoir aujourd'hui" : "Rien à revoir aujourd'hui", end: `<span class="pcount tnum">${due || ""}</span><span class="pchev">${ICON.chev}</span>` })];
-      if (!window.JBA_NOIA) rows.push(ui.sheetRow({ act: "photoquiz", i: "camera", t: "Quiz de mes notes", sub: "Une photo, Holly fait 5 questions" }), ui.sheetRow({ href: "#oral", i: "mic", t: "À l'oral", sub: "Holly interroge, tu réponds à voix haute" }));
+      if (!window.JBA_NOIA) rows.push(ui.sheetRow({ act: "photoquiz", i: "camera", t: "Quiz de mes notes", sub: "Une photo, Holly fait 5 questions" }), ui.sheetRow({ href: "#oral", i: "mic", t: "À l'oral", sub: "Une vraie conversation : Holly pose, tu réponds" }));
       return `
       <header class="row between" style="align-items:flex-end"><h1>Sushi Quiz</h1><div style="width:96px" class="deco">${H("sushi")}</div></header>
       <section class="stack" style="gap:0"><p class="plabel">Matière</p>${seg("subj", [["all", "Les deux"], ["dc", "Constit."], ["ip", "Droit privé"]], QC.subj)}</section>
@@ -7150,10 +7179,10 @@ ${picked.length ? picked.map(chText).join("\n\n") : "(Aucun chapitre ne correspo
       let s = IA.sample; if (s === undefined) s = await IA.ready;
       if (!s) throw { code: "nokey" };
       const imgs = o.images && o.images.length ? o.images : null;
-      if (s.engine === "gemini") return (await s([{ role: "user", content: text, images: imgs }], { system: o.system || "" })).text;
+      if (s.engine === "gemini") return (await s([{ role: "user", content: text, images: imgs }], { system: o.system || "", onText: o.onText })).text;
       const content = imgs ? [...imgs.map(im => ({ type: "image", source: { type: "base64", media_type: im.mime, data: im.data } })), { type: "text", text }] : text;
       const msgs = o.system ? [{ role: "user", content: o.system }, { role: "assistant", content: "Compris." }, { role: "user", content }] : [{ role: "user", content }];
-      return (await s(msgs, { cache: false, modelTier: "default" })).text;
+      return (await s(msgs, { cache: false, modelTier: "default", onText: o.onText })).text;
     }
     const busyOv = (txt, mood) => { const ov = document.createElement("div"); ov.className = "celebrate"; ov.innerHTML = `<div class="card" style="max-width:380px"><div class="holly-wrap bob">${H(mood)}</div><p class="hand" style="font-size:calc(24px*var(--ts,1))">${esc(txt)}</p><span class="ia-typing" aria-label="Chargement"><i></i><i></i><i></i></span></div>`; document.body.appendChild(ov); return ov; };
 
@@ -7185,79 +7214,212 @@ Réponds UNIQUEMENT avec un tableau JSON, sans texte autour, de la forme :
       }
     };
 
-    /* ---------- À l'oral : Holly pose une question, on répond à voix haute, Holly corrige ---------- */
-    const OR = { subj: "all", it: null, ans: "", res: null, busy: false, rec: null, listening: false };
+    /* ---------- À l'oral : une vraie conversation avec Holly ----------
+       Holly pose la question à voix haute, le micro s'ouvre, elle répond, Holly dit si c'est juste
+       (ou ce qui manque), puis enchaîne. Tout se fait à la voix ; les boutons restent là en secours. */
+    const OR = { seq: 0, seen: new Set(), sayId: 0, fromTap: false, autoFail: false, subj: "", on: false, st: "idle", it: null, turns: [], log: [], score: { ok: 0, part: 0, ko: 0 }, n: 0, heard: "", typed: "", rec: null, noMic: false, ended: null };
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const TTS = window.speechSynthesis;
+    const rx = /^(lesquel|parmi|quels? |quelles? )|(…|\.\.\.|:)\s*$|complétez/i;
     const oralPool = () => {
-      const out = [];
-      J.list.filter(c => OR.subj === "all" || c.subject === OR.subj).forEach(c => {
-        c.defs.forEach(d => out.push({ ch: c.id, q: `Définis : « ${d.t} ».`, model: d.d }));
-        c.eli5.forEach(e => out.push({ ch: c.id, q: `Explique simplement : ${e.notion}.`, model: `${e.def} ${e.summary}` }));
-        c.juris.forEach(j => { if (j.solution) out.push({ ch: c.id, q: `Que retient l'arrêt ${j.name} (${j.court}, ${j.date}) ?`, model: j.solution + (j.portee ? " Portée : " + j.portee : "") }); });
+      const out = [], subj = OR.subj || "all";
+      J.list.filter(c => subj === "all" || c.subject === subj).forEach(c => {
+        c.defs.forEach(d => out.push({ ch: c.id, q: `Définis : ${d.t}.`, model: d.d }));
+        c.eli5.forEach(e => out.push({ ch: c.id, q: `Explique-moi simplement : ${e.notion}.`, model: `${e.def} ${e.summary}` }));
+        c.juris.forEach(j => { if (j.solution) out.push({ ch: c.id, q: `Que retient l'arrêt ${j.name} ?`, model: `${j.name} (${j.court}, ${j.date}) : ${j.solution}` }); });
       });
+      J.questions.filter(q => (subj === "all" || J.byId[q.ch].subject === subj) && q.a.length === 1 && !rx.test(q.q) && !/\bsont\b.*\?$/.test(q.q)).forEach(q => out.push({ ch: q.ch, q: q.q, model: `${q.o[q.a[0]]}. ${q.e}`, qref: q }));
       return out;
     };
-    const newOral = () => { const p = oralPool(); OR.it = p[Math.floor(Math.random() * p.length)] || null; OR.ans = ""; OR.res = null; stopRec(); };
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    function stopRec() { if (OR.rec) { try { OR.rec.stop(); } catch (e) { } } OR.rec = null; OR.listening = false; }
+    const pickOral = () => {
+      const due = J.shuffle(J.reviewDue(J.questions.filter(q => (!OR.subj || OR.subj === "all" || J.byId[q.ch].subject === OR.subj) && q.a.length === 1 && !rx.test(q.q))));
+      if (due.length && Math.random() < .4) { const q = due[0]; return { ch: q.ch, q: q.q, model: `${q.o[q.a[0]]}. ${q.e}`, qref: q }; }
+      const p = oralPool(); return p[Math.floor(Math.random() * p.length)] || null;
+    };
+    /* Voix : la voix française de l'appareil (de préférence masculine pour Holly) */
+    let voice = null;
+    /* Voix de femme française, la meilleure disponible sur l'appareil (Premium / améliorée en priorité). */
+    const pickVoice = () => {
+      if (!TTS) return;
+      const v = TTS.getVoices().filter(x => /^fr(-|_)/i.test(x.lang));
+      const fem = /audrey|aur[ée]lie|marie|am[ée]lie|virginie|chantal|julie|hortense|denise|c[ée]line|l[ée]a\b|sandy|flo\b|shelley|grandma/i;
+      const male = /thomas|daniel|nicolas|henri|paul|jacques|eddy|reed|rocko|grandpa|ralph/i;
+      const score = x => (fem.test(x.name) ? 10 : male.test(x.name) ? -10 : 0) + (/premium|enhanced|am[ée]lior/i.test(x.name + " " + (x.voiceURI || "")) ? 4 : 0) + (/fr[-_]FR/i.test(x.lang) ? 2 : 0) + (x.localService ? 1 : 0);
+      voice = v.sort((a, b) => score(b) - score(a))[0] || null;
+    };
+    if (TTS) { pickVoice(); try { TTS.addEventListener("voiceschanged", pickVoice); } catch (e) { } }
+    const clean = t => String(t || "").replace(/[*_#`>]/g, "").replace(/\s+/g, " ").trim();
+    const prep = t => clean(t).replace(/\bart\.\s/gi, "article ").replace(/\bC\. civ\./g, "Code civil").replace(/\bC\. pén\./g, "Code pénal").replace(/\bal\.\s/g, "alinéa ").replace(/\bCEDH\b/g, "C E D H").replace(/\bQPC\b/g, "Q P C");
+    /* File de paroles : Holly peut commencer à parler avant d'avoir fini de « penser ». */
+    function speaker() {
+      try { TTS && TTS.cancel(); } catch (e) { }
+      const id = ++OR.sayId; let pend = 0, fin = false, cb = null, started = false, ahead = 0;
+      const check = () => { if (fin && pend === 0 && id === OR.sayId && OR.on) { const c = cb; cb = null; c && setTimeout(c, 120); } };
+      return {
+        push(t) {
+          t = prep(t); if (!t || id !== OR.sayId) return;
+          if (!started) { started = true; OR.st = "speaking"; paint(); }
+          if (!TTS) return;
+          pend++; ahead += t.length;
+          const u = new SpeechSynthesisUtterance(t); u.lang = "fr-FR"; if (voice) u.voice = voice; u.rate = 1.04; u.pitch = 1;
+          let d = false; const g = setTimeout(() => end(), 4000 + ahead * 95);
+          const end = () => { if (d) return; d = true; clearTimeout(g); pend--; ahead = Math.max(0, ahead - t.length); check(); };
+          u.onend = end; u.onerror = end; TTS.speak(u);
+        },
+        done(then) { fin = true; cb = then; if (!TTS) { pend = 0; } check(); },
+        get id() { return id; }
+      };
+    }
+    function say(text, then) { OR.st = "speaking"; paint(); const sp = speaker(); sp.push(text); sp.done(then); }
+    function stopAll() { OR.sayId++; try { TTS && TTS.cancel(); } catch (e) { } if (OR.rec) { try { OR.rec.abort(); } catch (e) { } OR.rec = null; } }
+    function listen() {
+      if (!OR.on) return;
+      OR.heard = "";
+      const tap = OR.fromTap; OR.fromTap = false;
+      if (!tap && OR.autoFail && SR && !OR.noMic) { OR.st = "tap"; paint(); return; }
+      if (!SR || OR.noMic) { OR.st = "typing"; paint(); return; }
+      let r; try { r = new SR(); } catch (e) { OR.noMic = true; OR.st = "typing"; paint(); return; }
+      r.lang = "fr-FR"; r.interimResults = true; r.continuous = false; r.maxAlternatives = 1;
+      let got = "", ended = false;
+      const t = setTimeout(() => { try { r.stop(); } catch (e) { } }, 25000);
+      r.onresult = e => { got = ""; for (let i = 0; i < e.results.length; i++) got += e.results[i][0].transcript; OR.heard = got; const h = document.getElementById("or-heard"); if (h) h.textContent = got; };
+      r.onerror = e => { if (e.error === "not-allowed" || e.error === "service-not-allowed") { if (tap) { OR.noMic = true; ui.toast("Le micro de l'appli est bloqué ici : réponds avec la dictée du clavier."); } else OR.autoFail = true; } };
+      r.onend = () => { if (ended) return; ended = true; clearTimeout(t); OR.rec = null; if (!OR.on) return; if (got.trim()) answer(got.trim()); else { OR.st = OR.noMic ? "typing" : "tap"; paint(); } };
+      try { r.start(); OR.rec = r; OR.st = "listening"; paint(); } catch (e) { if (tap) OR.noMic = true; else OR.autoFail = true; OR.st = OR.noMic ? "typing" : "tap"; paint(); }
+    }
+    function ask() {
+      OR.it = pickOral(); OR.turns = []; OR.n++;
+      if (!OR.it) { OR.st = "idle"; paint(); return; }
+      OR.log.push({ who: "holly", t: OR.it.q }); trimLog();
+      say(OR.it.q, listen);
+    }
+    const trimLog = () => { OR.log = OR.log.slice(-6); };
+    const cmd = t => { const x = J.norm(t); if (/^(stop|arrete|on arrete|termine|fin)\b/.test(x)) return "stop"; if (/^(repete|tu peux repeter|redis)/.test(x)) return "repeat"; if (/^(passe|suivant|question suivante|une autre)/.test(x)) return "skip"; return ""; };
+    async function answer(text) {
+      OR.log.push({ who: "me", t: text }); trimLog();
+      const c = cmd(text);
+      if (c === "stop") return end();
+      if (c === "repeat") return say(OR.it.q, listen);
+      if (c === "skip") { OR.log.push({ who: "holly", t: "D'accord, on passe." }); return say("D'accord, on passe.", ask); }
+      OR.st = "thinking"; paint();
+      OR.turns.push({ who: "élève", t: text });
+      let s = IA.sample; if (s === undefined) s = await IA.ready;
+      if (!s) { selfCheck(); return; }
+      const q = OR.it.qref;
+      let sp = null, said = 0, verdict = "", nextQ = null, bubble = null, intro = "";
+      const header = t => { const v = t.match(/VERDICT\s*:\s*([a-zA-Zéè]+)/i); if (v) verdict = J.norm(v[1]); const n = t.match(/SUIVANTE\s*:\s*(oui|non)/i); if (n) nextQ = n[1].toLowerCase() === "oui"; };
+      const bodyOf = t => { const m = t.match(/DIRE\s*:\s*([\s\S]*)/i); return m ? m[1] : null; };
+      const begin = () => {
+        if (sp) return; sp = speaker();
+        if (verdict === "faux" && Math.random() < .5) { const L = J.LINES.adele.filter(x => !/relis|correction|écrire|écrit/i.test(x)); intro = L[Math.floor(Math.random() * L.length)]; sp.push(intro); }
+        bubble = { who: "holly", t: intro, v: verdict }; OR.log.push(bubble); trimLog();
+      };
+      const feed = (body, final) => {
+        const rest = body.slice(said); let cut = -1;
+        if (final) cut = rest.length; else { const re = /[.!?…](?=\s)/g; let m; while ((m = re.exec(rest))) cut = m.index + 1; }
+        if (cut <= 0) return;
+        const chunk = rest.slice(0, cut); said += cut;
+        if (chunk.trim()) { sp.push(chunk); bubble.t = clean((bubble.t ? bubble.t + " " : "") + chunk); paint(); }
+      };
+      let txt;
+      try {
+        txt = await once(`Question posée : ${OR.it.q}
+Réponse attendue (d'après son cours, c'est la référence) : ${OR.it.model}
+Échange sur cette question :
+${OR.turns.map(x => `${x.who === "élève" ? J.name() : "Holly"} : ${x.t}`).join("\n")}
+
+Réponds EXACTEMENT sur trois lignes, dans cet ordre :
+VERDICT: juste | partiel | faux | autre
+SUIVANTE: oui | non
+DIRE: ce que tu dis à voix haute
+- juste : l'essentiel y est (même formulé autrement). partiel : il manque un élément important. faux : c'est inexact ou hors sujet. autre : elle pose une question, demande une explication ou dit qu'elle ne sait pas.
+- DIRE : 1 ou 2 phrases courtes, naturelles, comme à l'oral, sans liste ni symbole. Si juste : félicite en quelques mots, ajoute au besoin un détail utile. Si partiel ou faux : donne la bonne réponse en une phrase. Si autre : explique brièvement puis repose la question autrement.
+- SUIVANTE : oui pour passer à la question suivante ; non pour lui laisser une seconde chance (après « autre », ou après un « partiel » où il manque un seul mot).`, {
+          system: `Tu es Holly, professeur de droit à la voix douce, tendre et un peu taquin. Tu fais réviser ${J.name()}, étudiante en L1 de droit, À L'ORAL, en conversation. Sa réponse est dictée : ignore les fautes de transcription et les noms propres ou mots latins mal reconnus. Juge uniquement d'après la réponse attendue du cours, sans inventer de règle. Sois bref : chaque phrase est lue à voix haute.`,
+          onText: ({ text }) => { header(text); const body = bodyOf(text); if (body != null) { begin(); feed(body, false); } }
+        });
+      } catch (e) {
+        if (sp) { /* déjà en train de parler : on termine ce qui a été dit */ feed(bodyOf(e && e.text || "") || "", true); sp.done(() => setTimeout(ask, 300)); return; }
+        OR.st = "error"; OR.err = e && e.code === "rate_limited" ? "Holly est essoufflé (trop de demandes d'un coup). Attends une minute, puis touche le micro." : e && e.code === "network" ? "Pas de connexion : l'oral avec Holly a besoin d'Internet." : (ERR[e && e.code] || "Holly n'a pas entendu la réponse du serveur. Touche le micro pour réessayer."); OR.turns.pop(); paint(); return;
+      }
+      header(txt);
+      let body = bodyOf(txt);
+      if (body == null) body = String(txt || "").replace(/^(VERDICT|SUIVANTE)\s*:.*$/gim, "");
+      begin(); feed(body, true);
+      if (!clean(bubble.t)) { const fb = verdict === "juste" ? "C'est juste, bravo !" : OR.it.model; sp.push(fb); bubble.t = fb; paint(); }
+      bubble.v = verdict;
+      if (verdict === "juste") { OR.score.ok++; J.addXP(3, "Oral avec Holly", "oral"); if (q) J.answerQ(q, true); }
+      else if (verdict === "partiel") { OR.score.part++; J.addXP(1, "Oral avec Holly", "oral"); }
+      else if (verdict === "faux") { OR.score.ko++; if (q) J.answerQ(q, false); }
+      OR.turns.push({ who: "holly", t: bubble.t });
+      const next = nextQ !== false || OR.turns.length >= 6;
+      paint();
+      sp.done(next ? ask : listen);
+    }
+    function selfCheck() { OR.log.push({ who: "holly", t: "Voici la réponse du cours : " + OR.it.model }); OR.st = "self"; say("Voici la réponse du cours. " + OR.it.model + " Tu avais bon ?", () => { OR.st = "self"; paint(); }); }
+    function end() {
+      stopAll(); OR.on = false; OR.st = "idle";
+      const s = OR.score, tot = s.ok + s.part + s.ko;
+      OR.ended = tot ? s : null;
+      if (tot) { const msg = `Fin de l'oral : ${s.ok} juste${s.ok > 1 ? "s" : ""} sur ${tot}. ${s.ok / tot >= .7 ? "Je suis très fier de toi." : "On reprendra les erreurs demain."}`; say(msg, () => { OR.st = "idle"; paint(); }); OR.st = "idle"; }
+      ui.rerender();
+    }
+    addEventListener("hashchange", () => { if (OR.on && location.hash !== "#oral") { stopAll(); OR.on = false; OR.st = "idle"; } });
+
+    const STATE = { speaking: ["Holly parle…", "Touche pour l'interrompre"], listening: ["Je t'écoute…", "Parle, puis fais une pause"], thinking: ["Holly réfléchit…", ""], tap: ["À toi", "Touche le micro pour répondre"], typing: ["À toi", "Écris ou dicte ta réponse avec le micro du clavier"], self: ["À toi de juger", ""], error: ["Oups", ""], idle: ["", ""] };
+    const mood = () => OR.st === "listening" ? "etudiant" : OR.st === "thinking" ? "perplexed" : OR.log.length && OR.log[OR.log.length - 1].v === "juste" ? "celebrate" : OR.log.length && OR.log[OR.log.length - 1].v === "faux" ? "lost" : "prof";
+    function stageHTML() {
+      const [t1, t2] = STATE[OR.st] || ["", ""], s = OR.score;
+      const bubbles = OR.log.map(m => { if (!m.k) m.k = ++OR.seq; const nw = !OR.seen.has(m.k); OR.seen.add(m.k); return `<div class="or-b ${m.who}${m.v ? " v-" + m.v : ""}${nw ? " new" : ""}">${esc(m.t)}</div>`; }).join("");
+      const live = OR.st === "listening" ? `<div class="or-b me live" id="or-heard">${esc(OR.heard)}</div>` : "";
+      const mic = `<button class="or-mic ${OR.st}" data-act="or-mic" aria-label="${OR.st === "listening" ? "J'ai fini de répondre" : OR.st === "speaking" ? "Interrompre Holly" : "Répondre"}">${OR.st === "thinking" ? `<span class="ia-typing"><i></i><i></i><i></i></span>` : ICON.mic}</button>`;
+      return `
+        <div class="or-holly ${OR.st}"><div class="${OR.st === "speaking" ? "bob" : ""}">${H(mood())}</div></div>
+        <div class="or-score tnum"><span>${s.ok} juste${s.ok > 1 ? "s" : ""}</span><span>${s.part} presque</span><span>${s.ko} à revoir</span></div>
+        <div class="or-log" id="or-log">${bubbles}${live}</div>
+        ${OR.st === "error" ? `<p class="small" style="color:var(--ko);text-align:center">${esc(OR.err || "")}</p>` : ""}
+        ${OR.st === "typing" ? `<div class="row" style="gap:8px"><input class="input" id="or-type" placeholder="Ta réponse…" enterkeyhint="send" style="flex:1" value="${esc(OR.typed)}"><button class="btn pri" data-act="or-send">Envoyer</button></div>` : ""}
+        ${OR.st === "self" ? `<div class="row" style="justify-content:center"><button class="btn pri" data-act="or-self" data-v="1">J'avais bon</button><button class="btn sec" data-act="or-self" data-v="0">À revoir</button></div>` : ""}
+        ${OR.st !== "typing" && OR.st !== "self" ? `<div class="or-ctl">${mic}<b>${t1}</b><span class="small muted">${t2}</span></div>` : ""}
+        <div class="row" style="justify-content:center;gap:4px"><button class="btn link" data-act="or-repeat">Répéter</button><button class="btn link" data-act="or-skip">Passer</button><button class="btn link" data-act="or-end">Terminer</button></div>
+        <p class="small muted" style="text-align:center">Tu peux aussi dire « répète », « passe » ou « stop ». ${TTS ? "" : "Cet appareil ne sait pas lire à voix haute : lis la question à l'écran."}</p>`;
+    }
+    function paint() { const el = document.getElementById("or-stage"); if (!el) return; el.innerHTML = stageHTML(); const lg = document.getElementById("or-log"); if (lg) lg.scrollTop = lg.scrollHeight; const ti = document.getElementById("or-type"); if (ti) { ti.addEventListener("input", () => { OR.typed = ti.value; }); ti.addEventListener("keydown", e => { if (e.key === "Enter") ACT["or-send"](); }); if (matchMedia("(hover:hover)").matches) ti.focus(); } }
     VIEWS.oral = {
       render() {
-        if (!OR.it) newOral();
-        const it = OR.it, c = it && J.byId[it.ch];
-        const seg = `<div class="seg wide">${[["all", "Les deux"], ["dc", "Constit."], ["ip", "Droit privé"]].map(([k, t]) => `<button class="${OR.subj === k ? "on" : ""}" data-act="or-subj" data-k="${k}">${t}</button>`).join("")}</div>`;
-        const res = OR.res;
-        return `
-        <a href="#quiz" class="backlink">${ICON.back.replace("<svg", "<svg width=17 height=17")} Sushi Quiz</a>
-        <header class="row between" style="align-items:flex-end"><h1>À l'oral</h1><div style="width:90px" class="deco">${H("prof")}</div></header>
-        ${seg}
-        ${it ? `<div class="card stack read" style="max-width:820px;width:100%;align-self:center">
-          <span class="small muted">${esc(J.SUBJECTS[c.subject].short)} ${c.num} · ${esc(c.title)}</span>
-          <h2 style="font-size:clamp(21px,3vw,26px)">${esc(it.q)}</h2>
-          ${res ? "" : `<textarea class="input" id="or-ans" rows="4" placeholder="${SR ? "Touche le micro et réponds à voix haute…" : "Réponds à voix haute avec le micro du clavier, ou écris ta réponse."}">${esc(OR.ans)}</textarea>
-          <div class="row">${SR ? `<button class="btn sec" data-act="or-mic" id="or-mic" aria-pressed="${OR.listening}">${ICON.mic.replace("<svg", "<svg width=18 height=18")} ${OR.listening ? "J'ai fini" : "Parler"}</button>` : ""}<button class="btn pri" data-act="or-check" ${OR.busy ? "disabled" : ""}>${OR.busy ? "Holly réfléchit…" : "Corriger"}</button><button class="btn link" data-act="or-skip">Passer</button></div>`}
-          ${res ? `<div class="fb ${res.ok === false ? "ko" : "ok"}">
-            ${res.txt ? `<div class="ia-body or-md">${md(res.txt)}</div>` : ""}
-            ${OR.ans ? `<p class="small muted"><b>Ta réponse :</b> ${esc(OR.ans)}</p>` : ""}
-            <p class="small"><b>Ce qu'il fallait dire :</b> ${esc(it.model)}</p>
-            ${res.self ? `<div class="row"><button class="btn sec sm" data-act="or-self" data-v="1">J'avais bon</button><button class="btn ghost sm" data-act="or-self" data-v="0">À revoir</button></div>` : ""}</div>
-          <div class="row"><button class="btn pri" data-act="or-next">Question suivante</button><a class="btn sec" href="#ch-${c.id}">Revoir le chapitre</a></div>` : ""}
-        </div>` : `<div class="card empty">Aucune question disponible.</div>`}`;
+        if (!OR.subj) { const P = J.plan(); OR.subj = P ? P.subj : "all"; }
+        const noIA = IA.sample === null;
+        if (!OR.on) {
+          const E = OR.ended;
+          return `
+          <a href="#quiz" class="backlink">${ICON.back.replace("<svg", "<svg width=17 height=17")} Sushi Quiz</a>
+          <header class="stack" style="gap:6px"><h1>À l'oral avec Holly</h1><p class="muted">Holly te pose des questions à voix haute. Tu réponds en parlant, il te dit si c'est juste, puis il enchaîne.</p></header>
+          ${E ? `<section class="card stack" style="align-items:center;text-align:center"><span class="eyebrow">Dernier oral</span><h2 class="tnum">${E.ok} / ${E.ok + E.part + E.ko}</h2><p class="small muted">${E.part} presque · ${E.ko} à revoir (elles rejoignent « Mes erreurs » quand elles viennent du quiz)</p></section>` : ""}
+          <section class="stack" style="gap:0"><p class="plabel">Matière</p><div class="seg wide">${[["all", "Les deux"], ["dc", "Constit."], ["ip", "Droit privé"]].map(([k, t]) => `<button class="${OR.subj === k ? "on" : ""}" data-act="or-subj" data-k="${k}">${t}</button>`).join("")}</div></section>
+          <div class="or-start"><div style="width:170px">${H("prof")}</div>
+            <button class="btn pri block" data-act="or-start">${E ? "Recommencer" : "Commencer l'oral"}</button>
+            <p class="small muted" style="text-align:center">${noIA ? "Sans clé Gemini, Holly lit les questions et la réponse du cours, et c'est toi qui juges. Ajoute ta clé dans Réglages pour qu'il te corrige." : "Avec des écouteurs, c'est encore mieux : Holly ne s'entend pas lui-même."}</p></div>`;
+        }
+        return `<div class="or-page"><span class="eyebrow" style="text-align:center">À l'oral avec Holly</span><div id="or-stage" class="or-stage">${stageHTML()}</div></div>`;
       },
-      after() { const t = document.getElementById("or-ans"); if (t) t.addEventListener("input", () => { OR.ans = t.value; }); }
+      after() { paint(); }
     };
-    ACT["or-subj"] = b => { OR.subj = b.dataset.k; newOral(); ui.rerender(); };
-    ACT["or-skip"] = ACT["or-next"] = () => { newOral(); ui.animNext = true; ui.rerender(); };
+    ACT["or-subj"] = b => { OR.subj = b.dataset.k; ui.rerender(); };
+    ACT["or-start"] = () => {
+      OR.on = true; OR.log = []; OR.score = { ok: 0, part: 0, ko: 0 }; OR.n = 0; OR.ended = null; OR.err = ""; OR.typed = "";
+      /* La première question part pendant le toucher : c'est ce qui autorise la voix sur iPhone. */
+      ui.rerender(); ask();
+    };
     ACT["or-mic"] = () => {
-      if (OR.listening) { stopRec(); ui.rerender(); return; }
-      const r = new SR(); r.lang = "fr-FR"; r.interimResults = true; r.continuous = true;
-      const base = OR.ans ? OR.ans.trim() + " " : "";
-      r.onresult = e => { let t = ""; for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript; OR.ans = base + t; const ta = document.getElementById("or-ans"); if (ta) ta.value = OR.ans; };
-      r.onerror = e => { if (e.error === "not-allowed") ui.toast("Autorise le micro pour répondre à voix haute (ou utilise la dictée du clavier)."); stopRec(); ui.rerender(); };
-      r.onend = () => { if (OR.listening) { OR.listening = false; OR.rec = null; ui.rerender(); } };
-      try { r.start(); OR.rec = r; OR.listening = true; ui.rerender(); } catch (e) { ui.toast("Le micro n'est pas disponible ici : utilise la dictée du clavier."); }
+      if (OR.st === "listening") { if (OR.rec) { try { OR.rec.stop(); } catch (e) { } } return; }
+      if (OR.st === "thinking") return;
+      stopAll(); OR.fromTap = true; listen();
     };
-    ACT["or-check"] = async () => {
-      const ta = document.getElementById("or-ans"); if (ta) OR.ans = ta.value.trim();
-      stopRec();
-      if (!OR.ans) { ui.toast("Réponds d'abord, même en quelques mots."); return; }
-      const it = OR.it;
-      let s = IA.sample; if (s === undefined) { OR.busy = true; ui.rerender(); s = await IA.ready; OR.busy = false; }
-      if (!s) { OR.res = { self: true }; ui.rerender(); return; }
-      OR.busy = true; ui.rerender();
-      try {
-        const txt = await once(`Tu es Holly, professeur de droit bienveillant mais exigeant. Corrige la réponse orale de ${J.name()}, étudiante en L1.
-Question : ${it.q}
-Réponse attendue (d'après son cours) : ${it.model}
-Sa réponse (dictée à voix haute, ignore les fautes de transcription) : ${OR.ans}
-Réponds en français, en 3 lignes maximum :
-1re ligne exactement « Note : X/5 ».
-Puis ce qui est juste, et ce qui manque ou est faux, en t'appuyant uniquement sur la réponse attendue.`);
-        const m = String(txt).match(/(\d)\s*\/\s*5/); const note = m ? +m[1] : null;
-        OR.res = { txt, ok: note == null ? null : note >= 3 };
-        if (note != null) J.addXP(note >= 4 ? 5 : 2, "Révision à l'oral", "oral");
-      } catch (e) { OR.res = { self: true, txt: e && e.code === "rate_limited" ? "Holly est un peu essoufflé : compare toi-même avec la réponse du cours." : "" }; }
-      OR.busy = false; ui.rerender();
-    };
-    ACT["or-self"] = b => { const ok = b.dataset.v === "1"; J.addXP(ok ? 3 : 1, "Révision à l'oral", "oral"); ui.toast(ok ? J.line("bon") : "On la retravaillera. Holly note ça dans son carnet."); newOral(); ui.rerender(); };
+    ACT["or-send"] = () => { const t = (OR.typed || "").trim(); if (!t) { ui.toast("Réponds d'abord, même en quelques mots."); return; } OR.typed = ""; answer(t); };
+    ACT["or-repeat"] = () => { if (!OR.on || !OR.it) return; stopAll(); say(OR.it.q, listen); };
+    ACT["or-skip"] = () => { if (!OR.on) return; stopAll(); ask(); };
+    ACT["or-end"] = () => end();
+    ACT["or-self"] = b => { const ok = b.dataset.v === "1"; ok ? OR.score.ok++ : OR.score.ko++; if (OR.it && OR.it.qref) J.answerQ(OR.it.qref, ok); J.addXP(ok ? 3 : 1, "Oral avec Holly", "oral"); ask(); };
   })();
 
   ui.mount();
@@ -7386,7 +7548,7 @@ Puis ce qui est juste, et ce qui manque ou est faux, en t'appuyant uniquement su
 })();
 
 </script>
-<script>window.JBA_BUILD="20261105-180344";
+<script>window.JBA_BUILD="20261105-181411";
 /* Mise à jour automatique : compare la version embarquée à version.json et recharge si une nouvelle version est en ligne. */
 (function () {
   const B = window.JBA_BUILD; if (!B || !window.fetch) return;
